@@ -20,5 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('cadastro', views.cadastro),
     path('login',views.login_user),
-    path('pagina',views.pagina),
+    path('pagina_aluno',views.pagina_aluno),
+    path('pagina_professor',views.pagina_professor),
 ]
