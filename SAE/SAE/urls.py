@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,4 +24,6 @@ urlpatterns = [
     path('login',views.login_user),
     path('pagina_aluno',views.pagina_aluno),
     path('pagina_professor',views.pagina_professor),
-]
+    path('baixar/<str:arquivo>',views.baixar, name='baixar'),
+    path('visualizar/<str:arquivo>',views.visualizar, name='visualizar'),
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
