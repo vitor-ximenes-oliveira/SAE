@@ -58,6 +58,46 @@ def login_user(request):
                     messages.info(request, "Nome/senha inválido(s)")
             return render(request,"login.html")
 
+def visualizar(request,arquivo):
+    extensoes = [".pdf", ".txt", ".png", ".jpg", ".gif", ".bmp",".mp3"]
+    if arquivo.endswith(tuple(extensoes)):
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+        arquivo = open(diretorio_arquivo, 'rb') 
+        abrir_Arquivo = FileResponse(arquivo)
+        return abrir_Arquivo
+    elif arquivo.endswith('.xlsx'):
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+        excel = win32com.client.Dispatch('Excel.Application',pythoncom.CoInitialize())
+        excel.Visible = True
+        abrir_excel = excel.Workbooks.Open(diretorio_arquivo, None,True)
+        return HttpResponseRedirect("/atividades") 
+    elif arquivo.endswith('.docx'): 
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+        word=win32com.client.Dispatch("Word.Application",pythoncom.CoInitialize())
+        word.Visible = True
+        abrir_excel = word.Documents.Open(diretorio_arquivo, None,True)
+        return HttpResponseRedirect("/atividades") 
+    elif arquivo.endswith('.pptx'):
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+        PowerPoint = win32com.client.Dispatch("Powerpoint.Application",pythoncom.CoInitialize())
+        PowerPoint.Visible = True
+        Abrir_PowerPoint = PowerPoint.Presentations.Open(diretorio_arquivo, None,True)
+        return HttpResponseRedirect("/atividades") 
+    else:
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+        os.system(diretorio_arquivo)    
+        return HttpResponseRedirect("/atividades") 
+    
+def baixar(request, arquivo):
+    if arquivo != '':
+        diretorio_arquivo = (os.path.join(settings.MEDIA_ROOT, arquivo))
+        diretorio = open(diretorio_arquivo,'rb')
+        download_arquivo = HttpResponse(diretorio ,content_type="aplicacao/arquivo")
+        download_arquivo ['Content-Disposition'] = "attachment; nome_arquivo=" + arquivo
+        return download_arquivo
+    else:
+        return render(request ,'atividades.html')    
+
 def pagina_aluno(request):
     form = AlunoForm(request.POST)
     return render(request,"pagina_aluno.html")
