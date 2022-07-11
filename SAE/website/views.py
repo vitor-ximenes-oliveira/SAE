@@ -102,8 +102,38 @@ def baixar(request, arquivo):
         download_arquivo ['Content-Disposition'] = "attachment; nome_arquivo=" + arquivo
         return download_arquivo
     else:
-        return render(request ,'atividades.html')    
+        return render(request ,'atividades.html')
 
+def feedback(request):
+    form = FeedBackForm(request.POST)
+    if request.method == 'POST':
+        try:
+            justificativa1 = request.POST.get("Justificativa1")
+            justificativa2 = request.POST.get("Justificativa2")
+            justificativa3 = request.POST.get("Justificativa3")             
+            justificativa4 = request.POST.get("Justificativa4")             
+            justificativa5 = request.POST.get("Justificativa5")             
+            justificativa6 = request.POST.get("Justificativa6")             
+            justificativa7 = request.POST.get("Justificativa7")             
+            justificativa8 = request.POST.get("Justificativa8")             
+            justificativa9 = request.POST.get("Justificativa9")
+            pergunta1 = request.POST.get("btn-radio")
+            pergunta2 = request.POST.get("btn-radio2")
+            pergunta3 = request.POST.get("btn-radio3")
+            pergunta4 = request.POST.get("btn-radio4")
+            pergunta5 = request.POST.get("btn-radio5")
+            pergunta6 = request.POST.get("btn-radio6")
+            pergunta7 = request.POST.get("btn-radio7")
+            pergunta8 = request.POST.get("btn-radio8")
+            pergunta9 = request.POST.get("btn-radio9")
+            feedback = Feedback.objects.create(pergunta1=pergunta1,justificativa1=justificativa1,pergunta2=pergunta2,justificativa2=justificativa2,pergunta3=pergunta3,justificativa3=justificativa3,pergunta4=pergunta4,justificativa4=justificativa4,pergunta5=pergunta5,justificativa5=justificativa5,pergunta6=pergunta6,justificativa6=justificativa6,pergunta7=pergunta7,justificativa7=justificativa7,pergunta8=pergunta8,justificativa8=justificativa8,pergunta9=pergunta9,justificativa9=justificativa9)
+            feedback.save() 
+            messages.success(request,"Feedback enviado com sucesso")           
+            return redirect("/feedback")
+        except IntegrityError:
+            messages.error(request, "Preencha todos os campos")
+    return render(request, 'feedback.html', {'form': form})
+    
 def pagina_aluno(request):
     form = AlunoForm(request.POST)
     return render(request,"pagina_aluno.html")
