@@ -1,8 +1,8 @@
 from datetime import datetime
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password, check_password
-from website.forms import AlunoForm, ProfessorForm
-from website.models import Aluno, Professor
+from website.forms import AlunoForm, ProfessorForm, FeedBackForm
+from website.models import Aluno, Professor, Feedback
 from django.contrib import messages
 import os
 import pythoncom
@@ -10,6 +10,7 @@ import win32com.client
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from SAE import settings
 from SAE.settings import BASE_DIR, MEDIA_ROOT
+from django.db import DataError, IntegrityError
 
 def cadastro(request):
     form = AlunoForm(request.POST)
