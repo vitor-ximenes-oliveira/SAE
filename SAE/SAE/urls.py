@@ -25,4 +25,5 @@ urlpatterns = [
     path('baixar/<str:arquivo>',views.baixar, name='baixar'),
     path('visualizar/<str:arquivo>',views.visualizar, name='visualizar'),
     path('feedback',views.feedback),
+    path('sair',views.sair),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
