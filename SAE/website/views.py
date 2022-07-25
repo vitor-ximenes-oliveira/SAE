@@ -1,8 +1,9 @@
 from datetime import datetime
+from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password, check_password
-from website.forms import AlunoForm, ProfessorForm, FeedBackForm
-from website.models import Aluno, Professor, Feedback
+from website.forms import AlunoForm, FeedBackForm, ProfessorForm
+from website.models import Aluno, Feedback, Professor
 from django.contrib import messages
 import os
 import pythoncom
@@ -10,7 +11,9 @@ import win32com.client
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from SAE import settings
 from SAE.settings import BASE_DIR, MEDIA_ROOT
-from django.db import DataError, IntegrityError
+from django.contrib.auth import login,authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 def cadastro(request):
     form = AlunoForm(request.POST)
@@ -30,15 +33,22 @@ def cadastro(request):
         except (Aluno.DoesNotExist, Professor.DoesNotExist):
             al_nome = request.POST.get("al_nome")
             al_email = request.POST.get("al_email")
-            data = request.POST.get("al_nascimento")
+            al_nascimento = request.POST.get("al_nascimento")
             try:
-                al_nascimento = datetime.strptime(data,"%d/%m/%Y")
                 al_senha = make_password(request.POST.get("al_senha"))
                 professor = Professor()
                 if (professor.esta_ativo == False):
+                    al_nome = request.POST.get("al_nome")
+                    al_senha = make_password(request.POST.get("al_senha"))
+                    autenticar_usuario = User(username=al_nome, password=al_senha)
+                    autenticar_usuario.save()       
                     user = Aluno.objects.create(al_nome=al_nome, al_email=al_email,al_nascimento=al_nascimento,al_senha=al_senha)
                     user.save()    
                 else:
+                    al_nome = request.POST.get("al_nome")
+                    al_senha = make_password(request.POST.get("al_senha"))
+                    autenticar_usuario = User(username=al_nome, password=al_senha)
+                    autenticar_usuario.save()       
                     user = Professor.objects.create(pf_nome=al_nome, pf_email=al_email,pf_nascimento=al_nascimento,pf_senha=al_senha)
                     user.save()
                 messages.success(request,"Conta criada com sucesso")           
@@ -49,22 +59,37 @@ def cadastro(request):
 
 def login_user(request):        
             if request.method == 'POST':
+                print("BATATA DOCE")
                 try:
                     al_nome = request.POST.get("al_nome")
                     al_senha = request.POST.get("al_senha")
-                    user =Aluno.objects.get(al_nome=al_nome)                
+                    user =Aluno.objects.get(al_nome=al_nome)
                     if user:
                         checar_senha=check_password(al_senha, user.al_senha)
                         if checar_senha:
                             professor = Professor()
                             if (professor.esta_ativo == False):
+                                autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')                    
+                                login(request, autenticar_usuario)
                                 return redirect('/pagina_aluno')
-                            else:
+                            else:                
+                                autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
+                                login(request, autenticar_usuario)
                                 return redirect('/pagina_professor')                            
                 except (Aluno.DoesNotExist, Professor.DoesNotExist):   
                     messages.info(request, "Nome/senha inválido(s)")
+                except (Aluno.MultipleObjectsReturned,Professor.DoesNotExist):
+                    autenticar_usuario = User.objects.filter(username=al_nome).first()
+                    if autenticar_usuario:
+                        login(request, autenticar_usuario)
+                        if (professor.esta_ativo == False):
+                            return redirect('/pagina_aluno')
+                        else:
+                            login(request, autenticar_usuario)
+                            return redirect('/pagina_professor')  
             return render(request,"login.html")
 
+@login_required(login_url='/login')
 def visualizar(request,arquivo):
     extensoes = [".pdf", ".txt", ".png", ".jpg", ".gif", ".bmp",".mp3"]
     if arquivo.endswith(tuple(extensoes)):
@@ -94,7 +119,8 @@ def visualizar(request,arquivo):
         diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
         os.system(diretorio_arquivo)    
         return HttpResponseRedirect("/atividades") 
-    
+
+@login_required(login_url='/login')
 def baixar(request, arquivo):
     if arquivo != '':
         diretorio_arquivo = (os.path.join(settings.MEDIA_ROOT, arquivo))
@@ -105,6 +131,7 @@ def baixar(request, arquivo):
     else:
         return render(request ,'atividades.html')
 
+@login_required(login_url='/login')
 def feedback(request):
     form = FeedBackForm(request.POST)
     if request.method == 'POST':
@@ -134,11 +161,19 @@ def feedback(request):
         except IntegrityError:
             messages.error(request, "Preencha todos os campos")
     return render(request, 'feedback.html', {'form': form})
-    
+
+@login_required(login_url='/login')
+def sair(request):
+    logout(request)
+    messages.success(request,"Você saiu do seu perfil")
+    return HttpResponseRedirect('/login')
+
+@login_required(login_url='/login')
 def pagina_aluno(request):
     form = AlunoForm(request.POST)
     return render(request,"pagina_aluno.html")
 
+@login_required(login_url='/login')
 def pagina_professor(request):
     form = ProfessorForm(request.POST)
     return render(request,"pagina_professor.html")
