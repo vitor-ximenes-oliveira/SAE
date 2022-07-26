@@ -59,7 +59,6 @@ def cadastro(request):
 
 def login_user(request):        
             if request.method == 'POST':
-                print("BATATA DOCE")
                 try:
                     al_nome = request.POST.get("al_nome")
                     al_senha = request.POST.get("al_senha")
