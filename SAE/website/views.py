@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password, check_password
 from website.forms import AlunoForm, FeedBackForm, ProfessorForm
-from website.models import Aluno, Feedback, Professor
+from website.models import Aluno, Feedback, Professor, Turmas
 from django.contrib import messages
 import os
 import pythoncom
