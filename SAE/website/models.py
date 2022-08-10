@@ -52,3 +52,14 @@ class Feedback(models.Model):
     justificativa9 = models.CharField(max_length=255,blank = False)
     class Meta:
         db_table = "feedback"        
+
+class Turmas(models.Model):
+    idTurma = models.AutoField(primary_key=True)
+    ano_letivo = models.CharField(max_length=10,blank = False)
+    classe = models.CharField(max_length=10,blank = False)
+    alu = models.ForeignKey('Aluno', on_delete = models.CASCADE,related_name='classes')
+    prof = models.ForeignKey('Professor', on_delete = models.CASCADE,related_name='classes')
+    class Meta:
+        db_table = 'turmas'
+    def __str__(self):
+        return "%s %s %s" %(self.idTurma,self.ano_letivo,self.classe)        
