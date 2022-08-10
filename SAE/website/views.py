@@ -167,6 +167,16 @@ def sair(request):
     messages.success(request,"Você saiu do seu perfil")
     return HttpResponseRedirect('/login')
 
+def turmas(request,idProfessor):
+        if request.method == 'POST':
+            classe = request.POST.get('classe')
+            alunos = Turmas.objects.raw("select idTurma, a.al_nome from turmas t join aluno a on t.alu_id = a.ra join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))
+        else:
+            alunos = ""
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))         
+        return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos})
+
 @login_required(login_url='/login')
 def pagina_aluno(request):
     form = AlunoForm(request.POST)
