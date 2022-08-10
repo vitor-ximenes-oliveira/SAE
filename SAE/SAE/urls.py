@@ -26,4 +26,5 @@ urlpatterns = [
     path('visualizar/<str:arquivo>',views.visualizar, name='visualizar'),
     path('feedback',views.feedback),
     path('sair',views.sair),
+    path('turmas/<int:idProfessor>',views.turmas),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
