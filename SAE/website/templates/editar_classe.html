@@ -11,7 +11,7 @@
       {% endfor %}
       
     </select>  
-</form>
+
         {% csrf_token %}
         
       <button id="id_atualizar" type="submit" name="atualizar" value="atualizar">Atualizar</button><br>
@@ -26,7 +26,7 @@
         <br>
         <button type="submit" name="editar" value="editar">Atualizar classe existente</button><br>
     </form>
-    
+    </form>
 {% for message in messages %}
 <p id="messages">{{message}}</p>
 {% endfor %}
