@@ -1,0 +1,51 @@
+<body>
+
+
+<form action="" method="post" enctype="multipart/form-data" >
+<div class="container_login">
+  <div class="label-float">
+      <label>Nome da classe: </label>     
+      <input type="text" name="classe" placeholder=" " />
+  </div>
+</div>
+<div class="container_ano_letivo">
+  <div class="label-float">
+    <label>Ano letivo: </label>
+      <input type="text" name="ano_letivo" placeholder=" " />
+      
+  </div>
+</div>
+
+<form action="" method="post" enctype="multipart/form-data" >
+  <select id="prof" name="professor" class="custom-select custom-select-sm input-small">
+    <option disabled="true" selected>---Selecione um Professor---</option>
+    {%for prof in professores%}
+    <option value="{{prof.idProfessor}}">{{prof.pf_nome}}</option>
+    {% endfor %}   
+    </select>
+    {% csrf_token %}
+     
+<form method="POST" class="post-form" action="">
+    {% for aluno in alunos %}
+    <br>
+    {{aluno.ra}}
+      <input type="checkbox" id="s" name="aluno_ra" value="{{aluno.pk}}">
+      <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">{{aluno.al_nome}}</label>
+    {% endfor %}
+    <br>
+  <button type="submit" name="enviar" class="link-button" value="enviar">Inserir nova classe</button><br>
+
+  <label>Insira o ID do professor para inserir alunos em uma classe já existente: </label>     
+      <input type="text" name="idProfessor" placeholder=" " /><br> 
+  <button type="submit" name="existente" class="link-button" value="existente">Inserir em uma já existente</button>
+</form>
+</form>
+</form>
+{% for message in messages %}
+<p id="messages">{{message}}</p>
+{% endfor %}
+
+</form>
+</form>
+</form>
+</body>

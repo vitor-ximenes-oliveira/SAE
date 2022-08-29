@@ -1,0 +1,12 @@
+npm install docx-pdf
+<title>Lista de arquivos</title>
+{%for m in material_aluno%}
+{{m.arquivo}}
+<a href="/baixar/{{m.arquivo}}">Baixar</a>
+&nbsp; &nbsp; &nbsp;<a href="/visualizar/{{m.arquivo}}?alu={{m.alu}}">Visualizar</a><br>
+
+<input type="hidden" value="next" value="{{m.alu}}">
+
+{% endfor %}
+
+<a href="../{{m.arquivo}}">Clique em mim</a>

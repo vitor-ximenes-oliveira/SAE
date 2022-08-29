@@ -1,0 +1,34 @@
+<title>Editar Classe</title>
+
+<body> 
+<form action="" method="POST" enctype="multipart/form-data" >
+    <select id="classe" name="classe" class="custom-select custom-select-sm input-small">
+      <option disabled="true" selected="selected" a>---Selecione uma classe---</option>
+      {%for turma in turmas%}
+      <option value="{{turma.classe}}" 
+      {% if turma.classe == classe2 %} selected {% endif %}>
+      {{turma.classe}}</option>
+      {% endfor %}
+      
+    </select>  
+</form>
+        {% csrf_token %}
+        
+      <button id="id_atualizar" type="submit" name="atualizar" value="atualizar">Atualizar</button><br>
+         
+    <form method="POST" class="post-form" action="">
+        {% for aluno in alunos %}
+        <br>
+        {{aluno.ra}}
+          <input type="checkbox" id="s" name="aluno_ra" value="{{aluno.pk}}">
+          <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">{{aluno.al_nome}}</label>
+        {% endfor %}
+        <br>
+        <button type="submit" name="editar" value="editar">Atualizar classe existente</button><br>
+    </form>
+    
+{% for message in messages %}
+<p id="messages">{{message}}</p>
+{% endfor %}
+  </body>
+  
