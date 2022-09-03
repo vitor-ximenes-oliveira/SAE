@@ -28,11 +28,7 @@ from SAE import settings
 from SAE.settings import BASE_DIR, MEDIA_ROOT
 from django.contrib.auth import login,authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait 
-from selenium.webdriver.support import expected_conditions as EC    
+from django.contrib.auth.models import User 
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -43,7 +39,6 @@ import pythoncom
 import pyautogui
 from djangoconvertvdoctopdf.convertor import StreamingConvertedPdf
 from pptx import Presentation
-import pandas as pd
 import win32com.client
 import win32gui
 import win32process
