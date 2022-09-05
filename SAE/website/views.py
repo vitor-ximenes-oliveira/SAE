@@ -28,7 +28,11 @@ from SAE import settings
 from SAE.settings import BASE_DIR, MEDIA_ROOT
 from django.contrib.auth import login,authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait 
+from selenium.webdriver.support import expected_conditions as EC    
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -39,6 +43,7 @@ import pythoncom
 import pyautogui
 from djangoconvertvdoctopdf.convertor import StreamingConvertedPdf
 from pptx import Presentation
+import pandas as pd
 import win32com.client
 import win32gui
 import win32process
@@ -241,14 +246,14 @@ def enviar_arquivo(request,idProfessor):
     if 'atualizar' in request.POST:
         classe = request.POST.get('classe')
         classe_aux = request.POST.get('classe')
-        alunos = Turmas.objects.raw("select idTurma, a.al_nome from turmas t join aluno a on t.alu_id = a.ra join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
+        alunos = Aluno.objects.raw("select a.ra, a.al_nome from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
         turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))        
     elif 'enviar' in request.POST:
         try:
             classe = request.POST.get('classe')
             classe_aux = request.POST.get('classe')            
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))   
-            alunos = Turmas.objects.raw("select idTurma, a.al_nome from turmas t join aluno a on t.alu_id = a.ra join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.ra",[classe,idProfessor])
+            alunos = Aluno.objects.raw("select a.ra, a.al_nome from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
             alunos_ra = request.POST.getlist('aluno_ra')
             if not alunos_ra:
                 messages.error(request,"Selecione um aluno")
@@ -257,14 +262,12 @@ def enviar_arquivo(request,idProfessor):
                 arq = EnviarArquivo()
                 arquivo = request.FILES['arquivo']
                 arq.arquivo = arquivo
-                alu = Aluno.objects.get(ra=alu_ra)
+                alu = Aluno.objects.get(pk=alu_ra)
                 arq.alu = alu
                 arq.save()
             messages.success(request,"Arquivo enviado com sucesso")
         except (MultiValueDictKeyError,TypeError):
             messages.error(request,"Selecione um arquivo")
-        except Aluno.DoesNotExist:
-            messages.error(request,"Selecione um aluno")
     else:
         alunos = ""
         classe_aux = ""
@@ -284,39 +287,40 @@ def pagina_professor(request,idProfessor):
 
 def inserir_classe(request):
     if 'enviar' in request.POST:
-        alunos = Aluno.objects.all()
-        ano_letivo = request.POST.get("ano_letivo")
-        classe = request.POST.get("classe")
-        professores = Professor.objects.all()
-        alu_id = list(Turmas.objects.values_list('alu_id',flat=True))
-        aluno_ra = list(request.POST.getlist('aluno_ra'))
-        idProfessor = request.POST.get("professor")
-        if idProfessor is None:
-            messages.error(request,"Selecione um professor")
-            return redirect('inserir_classe')
-        diferenca = sum(alu == aluno for a, b in zip((alu_id), (aluno_ra)))
-        anos_letivos = request.POST.getlist("ano_letivo")
-        if request.POST.get("classe") and request.POST.get("ano_letivo"):
-            for cla in Turmas.objects.order_by('classe').values_list('classe',flat=True):
-                for prof in Turmas.objects.values_list('prof_id',flat=True):
-                  for ano in anos_letivos:
-                    if diferenca == 0 and (str(cla) == str(classe)) and ano_letivo==ano:
-                        messages.error(request, "Já foi inserida uma classe com essas informações")
-                        return redirect('/inserir_classe')
-        else:
-            messages.error(request,"Preecha todos os campos da opção que deseja executar")
-            return redirect("/inserir_classe")
-        for aluno in request.POST.getlist('aluno_ra'):
-            for professor in request.POST.getlist('professor'):              
-                        turmas = Turmas()
-                        id_professor = Professor.objects.get(pk=professor)
-                        turmas.prof = id_professor
-                        id_aluno = Aluno.objects.get(pk=aluno)
-                        turmas.alu = id_aluno
-                        turmas.classe = classe
-                        turmas.ano_letivo = ano_letivo           
-                        turmas.save()
-        messages.success(request,"Turma criada com sucesso")
+        try:
+            alunos = Aluno.objects.all()
+            ano_letivo = request.POST.get("ano_letivo")
+            classe = request.POST.get("classe")
+            professores = Professor.objects.all()
+            idProfessor = request.POST.get("professor")
+            profi = Turmas.objects.filter(prof=idProfessor).values_list('prof_id',flat=True).first()
+            nova_turma = Turmas.objects.get(ano_letivo=ano_letivo,classe=classe,prof=profi)
+            if idProfessor is None:
+                messages.error(request,"Selecione um professor")
+                return redirect('inserir_classe')
+        except Turmas.MultipleObjectsReturned:         
+                messages.error(request,"Já existe uma turma com essas informações")
+                return redirect('/inserir_classe')
+        except Turmas.DoesNotExist:
+            if request.POST.get("classe") and request.POST.get("ano_letivo"):
+                alunos_selecionados = request.POST.getlist('aluno_ra')
+                if idProfessor is None or not alunos_selecionados:
+                        messages.error(request,"Preencha todos os campos da opção que deseja executar")
+                        return redirect("/inserir_classe")
+                for aluno in alunos_selecionados:
+                    for professor in request.POST.getlist('professor'):              
+                            turmas = Turmas()
+                            id_professor = Professor.objects.get(pk=professor)
+                            turmas.prof = id_professor
+                            id_aluno = Aluno.objects.get(pk=aluno)
+                            turmas.alu = id_aluno
+                            turmas.classe = classe
+                            turmas.ano_letivo = ano_letivo           
+                            turmas.save()
+                messages.success(request,"Turma criada com sucesso")
+            else:
+                messages.error(request,"Preencha todos os campos da opção que deseja executar")
+                return redirect("/inserir_classe")  
         turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id")  
     elif 'classe_existente' in request.POST:
         alunos = Aluno.objects.all()
