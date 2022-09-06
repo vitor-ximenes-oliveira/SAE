@@ -25,7 +25,7 @@ urlpatterns = [
     path('cadastro', views.cadastro),
     path('login',views.login_user),
     path('pagina_aluno',views.pagina_aluno),
-    path('pagina_professor',views.pagina_professor),
+    path('telaProfessor/<int:idProfessor>',views.pagina_professor,name='telaProfessor'),
     path('baixar/<str:arquivo>',views.baixar, name='baixar'),
     path('visualizar/<str:arquivo>',views.visualizar, name='visualizar'),
     path('feedback',views.feedback),
