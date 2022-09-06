@@ -1,19 +1,22 @@
 from datetime import datetime
+from urllib.request import Request
 from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password, check_password
+#from urllib3 import HTTPResponse
 from website.forms import AlunoForm, FeedBackForm, ProfessorForm
 from website.models import Aluno, Feedback, Professor, Turmas
 from django.contrib import messages
 import os
-import pythoncom
-import win32com.client
+#import pythoncom
+#import win32com.client
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from SAE import settings
 from SAE.settings import BASE_DIR, MEDIA_ROOT
 from django.contrib.auth import login,authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+import matplotlib as plt
 
 def cadastro(request):
     form = AlunoForm(request.POST)
@@ -55,7 +58,7 @@ def cadastro(request):
                 return redirect("/login")
             except ValueError:
                 messages.info(request, "Formato de data inválida. Insira no seguinte formato: ##/##/####")            
-    return render(request, 'cadastro.html', {'form': form})
+    return render(request, 'CadastroProfessor.html', {'form': form})
 
 def login_user(request):        
             if request.method == 'POST':
@@ -130,7 +133,7 @@ def baixar(request, arquivo):
     else:
         return render(request ,'atividades.html')
 
-@login_required(login_url='/login')
+#@login_required(login_url='/login')
 def feedback(request):
     form = FeedBackForm(request.POST)
     if request.method == 'POST':
@@ -159,7 +162,7 @@ def feedback(request):
             return redirect("/feedback")
         except IntegrityError:
             messages.error(request, "Preencha todos os campos")
-    return render(request, 'feedback.html', {'form': form})
+    return render(request, 'feedback.html',  {'form': form})
 
 @login_required(login_url='/login')
 def sair(request):
@@ -182,7 +185,167 @@ def pagina_aluno(request):
     form = AlunoForm(request.POST)
     return render(request,"pagina_aluno.html")
 
-@login_required(login_url='/login')
+#@login_required(login_url='/login')
 def pagina_professor(request):
     form = ProfessorForm(request.POST)
-    return render(request,"pagina_professor.html")
+    return render(request,"telaProfessor.html")
+
+
+def teste(request):
+
+    ruim = 0
+    bom = 0
+    medio = 0
+    excelente = 0
+
+    ruim2 = 0
+    bom2 = 0
+    medio2 = 0
+    excelente2 = 0
+
+    ruim3 = 0
+    bom3 = 0
+    medio3 = 0
+    excelente3 = 0
+
+    ruim4 = 0
+    bom4 = 0
+    medio4 = 0
+    excelente4 = 0
+
+    ruim5 = 0
+    bom5 = 0
+    medio5 = 0
+    excelente5 = 0
+
+    ruim6 = 0
+    bom6 = 0
+    medio6 = 0
+    excelente6 = 0
+
+    ruim7 = 0
+    bom7 = 0
+    medio7 = 0
+    excelente7 = 0
+
+    ruim8 = 0
+    bom8 = 0
+    medio8 = 0
+    excelente8 = 0
+
+    ruim9 = 0
+    bom9 = 0
+    medio9 = 0
+    excelente9 = 0
+
+    pergunta1 = Feedback.objects.values_list("pergunta1", flat=True)
+
+    for x in pergunta1:
+        if(x == 'Ruim'):
+            ruim+=1
+        elif(x == 'Bom'):
+            bom+=1
+        elif(x == 'Ótimo'):
+            medio+=1
+        else:
+            excelente+=1
+
+
+    pergunta2 = Feedback.objects.values_list("pergunta2", flat=True)
+
+    for x in pergunta2:
+        if(x == 'Ruim'):
+            ruim2+=1
+        elif(x == 'Bom'):
+            bom2+=1
+        elif(x == 'Ótimo'):
+            medio2+=1
+        else:
+            excelente2+=1
+
+    pergunta3 = Feedback.objects.values_list("pergunta3", flat=True)
+
+    for x in pergunta3:
+        if(x == 'Ruim'):
+            ruim3+=1
+        elif(x == 'Bom'):
+            bom3+=1
+        elif(x == 'Ótimo'):
+            medio3+=1
+        else:
+            excelente3+=1
+
+    pergunta4 = Feedback.objects.values_list("pergunta4", flat=True)
+
+    for x in pergunta4:
+        if(x == 'Ruim'):
+            ruim4+=1
+        elif(x == 'Bom'):
+            bom4+=1
+        elif(x == 'Ótimo'):
+            medio4+=1
+        else:
+            excelente4+=1
+
+    pergunta5 = Feedback.objects.values_list("pergunta5", flat=True)
+
+    for x in pergunta5:
+        if(x == 'Ruim'):
+            ruim5+=1
+        elif(x == 'Bom'):
+            bom5+=1
+        elif(x == 'Ótimo'):
+            medio5+=1
+        else:
+            excelente5+=1
+
+    pergunta6 = Feedback.objects.values_list("pergunta6", flat=True)
+
+    for x in pergunta6:
+        if(x == 'Ruim'):
+            ruim6+=1
+        elif(x == 'Bom'):
+            bom6+=1
+        elif(x == 'Ótimo'):
+            medio6+=1
+        else:
+            excelente6+=1
+
+    pergunta7 = Feedback.objects.values_list("pergunta7", flat=True)
+
+    for x in pergunta7:
+        if(x == 'Ruim'):
+            ruim7+=1
+        elif(x == 'Bom'):
+            bom7+=1
+        elif(x == 'Ótimo'):
+            medio7+=1
+        else:
+            excelente7+=1
+
+    pergunta8 = Feedback.objects.values_list("pergunta8", flat=True)
+
+    for x in pergunta8:
+        if(x == 'Ruim'):
+            ruim8+=1
+        elif(x == 'Bom'):
+            bom8+=1
+        elif(x == 'Ótimo'):
+            medio8+=1
+        else:
+            excelente8+=1
+
+    pergunta9 = Feedback.objects.values_list("pergunta9", flat=True)
+
+    for x in pergunta9:
+        if(x == 'Ruim'):
+            ruim9+=1
+        elif(x == 'Bom'):
+            bom9+=1
+        elif(x == 'Ótimo'):
+            medio9+=1
+        else:
+            excelente9+=1        
+    return render(request, "graficosFeedback.html" , {"ruim" : ruim, "bom" : bom, "medio" : medio , "excelente": excelente, "ruim2" : ruim2, "bom2" : bom2, "medio2" : medio2 , "excelente2": excelente2, "ruim3" : ruim3, "bom3" : bom3, "medio3" : medio3 , "excelente3": excelente3, "ruim4" : ruim4, "bom4" : bom4, "medio4" : medio4 , "excelente4": excelente4, "ruim5" : ruim5, "bom5" : bom5, "medio5" : medio5 , "excelente5": excelente5, "ruim6" : ruim6, "bom6" : bom6, "medio6" : medio6 , "excelente6": excelente6, "ruim7" : ruim7, "bom7" : bom7, "medio7" : medio7 , "excelente7": excelente7, "ruim8" : ruim8, "bom8" : bom8, "medio8" : medio8 , "excelente8": excelente8, "ruim9" : ruim9, "bom9" : bom9, "medio9" : medio9 , "excelente9": excelente9})
+                
+           

@@ -1,0 +1,13 @@
+body {
+    font-family: roboto;
+    background-color: #aacdec;
+    color: #5d49cc;
+}
+
+.container_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 2px solid;
+}

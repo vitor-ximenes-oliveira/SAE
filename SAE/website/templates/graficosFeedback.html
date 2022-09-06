@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback dos Alunos</title>
+    <link rel="stylesheet" href="{% static 'estilos/graficosFeedback.css'%}">
+</head>
+
+<body>
+
+    {% block grafico %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ["Element", "Density", { role: "style" } ],
+           ["Ruim", {{ruim}}, "Red"],
+           ["Bom", {{bom}}, "Yellow"],
+           ["Médio", {{medio}}, "Blue"],
+           ["Excelente", {{excelente}}, "Green"]
+          ]);
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            title: "1. Qual o nível de satisfação com a didática do(a) professor(a) durante as aulas?",
+            width: 600,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+          chart.draw(view, options);
+      }
+      </script>
+
+    <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
+
+    {% endblock%}
+
+    {% block grafico2 %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ["Element", "Density", { role: "style" } ],
+           ["Ruim", {{ruim2}}, "Red"],
+           ["Bom", {{bom2}}, "Yellow"],
+           ["Médio", {{medio2}}, "Blue"],
+           ["Excelente", {{excelente2}}, "Green"]
+          ]);
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            title: "2. Qual o nível de satisfação com o material usado em aula?",
+            width: 600,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values2"));
+          chart.draw(view, options);
+      }
+      </script>
+
+    <div id="columnchart_values2" style="width: 900px; height: 300px;"></div>
+
+    {% endblock%}
+
+    {% block grafico3 %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ["Element", "Density", { role: "style" } ],
+           ["Ruim", {{ruim3}}, "Red"],
+           ["Bom", {{bom3}}, "Yellow"],
+           ["Médio", {{medio3}}, "Blue"],
+           ["Excelente", {{excelente3}}, "Green"]
+          ]);
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            title: "3. Qual o nível de satisfação com o material enviado pelo(a) professor(a)?",
+            width: 600,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values3"));
+          chart.draw(view, options);
+      }
+      </script>
+
+    <div id="columnchart_values3" style="width: 900px; height: 300px;"></div>
+
+    {% endblock%}
+
+
+    {% block grafico4 %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ["Element", "Density", { role: "style" } ],
+           ["Ruim", {{ruim4}}, "Red"],
+           ["Bom", {{bom4}}, "Yellow"],
+           ["Médio", {{medio4}}, "Blue"],
+           ["Excelente", {{excelente4}}, "Green"]
+          ]);
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            title: "4. Qual o nível de satisfação com a solução de dúvidas do professor(a)?",
+            width: 600,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values4"));
+          chart.draw(view, options);
+      }
+      </script>
+
+    <div id="columnchart_values4" style="width: 900px; height: 300px;"></div>
+
+    {% endblock%}
+
+    {% block grafico5 %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ["Element", "Density", { role: "style" } ],
+           ["Ruim", {{ruim5}}, "Red"],
+           ["Bom", {{bom5}}, "Yellow"],
+           ["Médio", {{medio5}}, "Blue"],
+           ["Excelente", {{excelente5}}, "Green"]
+          ]);
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            title: "5. Qual o nível de satisfação com o cumprimento do conteúdo proposto?",
+            width: 600,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values5"));
+          chart.draw(view, options);
+      }
+      </script>
+
+    <div id="columnchart_values5" style="width: 900px; height: 300px;"></div>
+
+    {% endblock%}
+
+    {% block grafico6 %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ["Element", "Density", { role: "style" } ],
+           ["Ruim", {{ruim6}}, "Red"],
+           ["Bom", {{bom6}}, "Yellow"],
+           ["Médio", {{medio6}}, "Blue"],
+           ["Excelente", {{excelente6}}, "Green"]
+          ]);
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            title: "6. Qual o nível de motivação com as aulas do(a) professor(a)?",
+            width: 600,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values6"));
+          chart.draw(view, options);
+      }
+      </script>
+
+    <div id="columnchart_values6" style="width: 900px; height: 300px;"></div>
+
+    {% endblock%}
+
+    {% block grafico7 %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ["Element", "Density", { role: "style" } ],
+           ["Ruim", {{ruim7}}, "Red"],
+           ["Bom", {{bom7}}, "Yellow"],
+           ["Médio", {{medio7}}, "Blue"],
+           ["Excelente", {{excelente7}}, "Green"]
+          ]);
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            title: "7. Qual o nível de satisfação com a correção de provas e atividades?",
+            width: 600,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values7"));
+          chart.draw(view, options);
+      }
+      </script>
+
+    <div id="columnchart_values7" style="width: 900px; height: 300px;"></div>
+
+    {% endblock%}
+
+    {% block grafico8 %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ["Element", "Density", { role: "style" } ],
+           ["Ruim", {{ruim8}}, "Red"],
+           ["Bom", {{bom8}}, "Yellow"],
+           ["Médio", {{medio8}}, "Blue"],
+           ["Excelente", {{excelente8}}, "Green"]
+          ]);
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            title: "8. Qual o nível de conforto para tirar dúvidas com o(a) professor(a)?",
+            width: 600,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values8"));
+          chart.draw(view, options);
+      }
+      </script>
+
+    <div id="columnchart_values8" style="width: 900px; height: 300px;"></div>
+
+    {% endblock%}
+
+    {% block grafico9 %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load("current", {packages:['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable([
+            ["Element", "Density", { role: "style" } ],
+           ["Ruim", {{ruim9}}, "Red"],
+           ["Bom", {{bom9}}, "Yellow"],
+           ["Médio", {{medio9}}, "Blue"],
+           ["Excelente", {{excelente9}}, "Green"]
+          ]);
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            title: "9. Qual sua satisfação com as aulas no geral?",
+            width: 600,
+            height: 400,
+            bar: {groupWidth: "95%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values9"));
+          chart.draw(view, options);
+      }
+      </script>
+
+    <div id="columnchart_values9" style="width: 900px; height: 300px;"></div>
+
+    {% endblock%}
+
+
+
+    {% block content %}
+
+    <div id="columnchart_values">
+
+    </div>
+
+    <div id = "columnchart_values2">
+
+    </div>
+
+    <div id = "columnchart_values3">
+
+    </div>
+
+    <div id = "columnchart_values4">
+
+    </div>
+
+    <div id = "columnchart_values5">
+
+    </div>
+
+    <div id = "columnchart_values6">
+
+    </div>
+
+    <div id = "columnchart_values7">
+
+    </div>
+
+    <div id = "columnchart_values8">
+
+    </div>
+
+    <div id = "columnchart_values9">
+
+    </div>
+
+    {% endblock %}
+
+
+
+</body>

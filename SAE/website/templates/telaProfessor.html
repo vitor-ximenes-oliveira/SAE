@@ -1,36 +1,42 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
+{% load static%}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../estilos/Professor.css">
+    <link rel="stylesheet" href="{% static 'estilos/Professor.css' %}">
     <title>Professor</title>
 </head>
 
 <body>
+    {% for message in messages %}
+        <p id="messages">{{message}}</p>
+    {% endfor %}
+
+    <form method="POST" class="post-form" action="graficosFeedback">
+        {% csrf_token %}
     <div class="btn_logout">
-        <button>Logo out</button>
+        <button>Log out</button>
     </div>
     <div class="container_telaProfessor">
 
-        <button type="submit">
-            <div class="card">
-                <img src="../imagens/icon_Formulario.png" alt="">
-                <p>Criar Formulario</p>
+        <button type="button">
+            <div class="card" id="card_form">
+                    <img src="{% static 'imagens/icon_Formulario.png' %}">
+                    <p>Criar Formulario</p>
             </div>
         </button>
         <button type="submit">
-            <div class="card">
-                <img src="../imagens/icon_feedback.png" alt="">
-                <p>Exibir Feddback</p>
+            <div class="card" id="card_feedback">
+                    <img src="{% static 'imagens/icon_feedback.png'%}">
+                    <p>Exibir Feedback</p>
             </div>
         </button>
-        <button type="submit">
-            <div class="card">
-                <img src="../imagens/Icon_Perfil.png" alt="">
-                <p>Perfil</p>
+        <button type="button">
+            <div class="card" id="card_perfil">
+                <img src="{% static 'imagens/icon_Perfil.png'%}">
+               <p>Perfil</p>
             </div>
         </button>
     </div>
@@ -38,11 +44,19 @@
     <div class="container_telaProfessor">
         <button type="submit">
             <div class="card">
-                <img src="../imagens/icon_turmas.png" alt="">
+                <img src="{% static 'imagens/icon_turmas.png'%}">
                 <p>Turma exemplo</p>
             </div>
         </button>
     </div>
 </body>
+
+<script>
+    document.getElementById("card_form").onclicked = function(){
+
+    }
+
+
+</script>
 
 </html>
