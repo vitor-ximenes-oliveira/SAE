@@ -11,6 +11,8 @@
 </head>
 
 <body class="Cadastro">
+    <form method="POST" class="post-form" action="/cadastro">
+        {% csrf_token %}
     <div class="loginPage CadastroProfessor">
         <div class="container_textoHome">
             <div class="iconLogin">
@@ -21,31 +23,31 @@
         <div class="container_CadastroProfessor">
             <div class="campos_flex">
                 <div class="label-float">
-                    <input type="text" placeholder=" " />
+                    <input type="text" name="al_nome" placeholder=" " minlength="1" required/>
                     <label>Nome Completo</label>
                 </div>
                 <div class="label-float">
-                    <input type="text" placeholder=" " />
+                    <input type="email" name="al_email" placeholder=" " pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.com" minlength="1" required>
                     <label>E-mail</label>
                 </div>
             </div>
             <div class="campos_flex">
                 <div class="label-float">
-                    <input type="date" placeholder=" " />
+                    <input type="date" name="al_nascimento" placeholder=" " max="2020-12-31" min="1900-12-31"/>
                     <label>Data de Nascimento</label>
                 </div>
                 <div class="label-float">
-                    <input type="text" placeholder=" " />
+                    <input type="text" name="pf_materia" placeholder="" minlength="1" required/>
                     <label>Matéria</label>
                 </div>
             </div>
             <div class="campos_flex">
                 <div class="label-float">
-                    <input type="password" placeholder=" " />
+                    <input type="password" name="al_senha" placeholder=" " minlength="1" required/>
                     <label>Senha</label>
                 </div>
                 <div class="label-float">
-                    <input type="password" placeholder=" " />
+                    <input type="password" name="confir_senha" placeholder=" " minlength="1" required/>
                     <label>Confirme a Senha</label>
                 </div>
             </div>
@@ -54,6 +56,12 @@
         </div>
 
     </div>
+
+</form>
+
+{% for message in messages %}
+    <p id="messages">{{message}}</p>
+{% endfor %}
 </body>
 
 </html>

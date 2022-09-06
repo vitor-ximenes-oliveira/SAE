@@ -1,0 +1,30 @@
+<title>Enviar Arquivo</title>
+
+   <body>
+    <form action="" method="post" enctype="multipart/form-data" >
+    <select id="ra" name="classe" class="custom-select custom-select-sm input-small">
+      <option disabled="true" selected>---Selecione uma classe---</option>
+      {%for turma in turmas%}
+      <option value="{{turma.classe}}">{{turma.classe}}</option>
+      {% endfor %}
+      
+    </select>  
+    {% csrf_token %}
+    <button type="submit" name="turma" value="turma">Atualizar</button><br>
+   
+    <input type="file" id="myFile" name="arquivo">
+   
+      {% for aluno in alunos %}
+      <br>
+      {{aluno.ra}}
+        <input type="checkbox" id="s" name="ra" value="{{aluno.pk}}">
+        <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">{{aluno.al_nome}}</label>
+
+      {% endfor %}
+      <br>
+    <button type="submit" name="enviar" class="link-button" value="enviar">Enviar</button><br>
+    </form>   
+    {% for message in messages %}
+    <p id="messages">{{message}}</p>
+    {% endfor %}
+  </body>

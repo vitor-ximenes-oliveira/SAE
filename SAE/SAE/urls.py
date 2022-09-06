@@ -31,5 +31,13 @@ urlpatterns = [
     path('feedback',views.feedback),
     path('sair',views.sair),
     path('turmas/<int:idProfessor>',views.turmas),
+<<<<<<< HEAD
     path('graficosFeedback', views.teste),
+=======
+    path('enviar_arquivo/<int:idProfessor>',views.enviar_arquivo),
+    path('telaProfessor/<int:idProfessor>',views.pagina_professor),
+    path('atividades/<int:ra>',views.atividades,name='atividades'),
+    path('inserir',views.inserir,name='inserir'),
+    url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
+>>>>>>> 4f6170309d58fd502618cc1413307dae676206bc
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

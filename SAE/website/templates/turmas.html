@@ -1,0 +1,25 @@
+<title>Turmas</title>
+
+{% for message in messages %}
+<p id="messages">{{message}}</p>
+{% endfor %}
+
+   <body>
+    <form action="" method="post" enctype="multipart/form-data" >
+    <select id="ra" name="classe" class="custom-select custom-select-sm input-small">
+      <option disabled="true" selected>---Selecione uma classe---</option>
+      {%for turma in turmas%}
+      <option value="{{turma.classe}}">{{turma.classe}}</option>
+      {% endfor %}
+      
+    </select>  
+    {% csrf_token %}
+    <button type="submit" name="turma" value="turma">Atualizar</button><br>
+      {% for aluno in alunos %}
+      <br>
+      {{aluno.ra}}    
+      <a href="/PerfilAluno/{{aluno.ra}}">{{aluno.al_nome}}</a>
+      
+      {% endfor %}
+    </form>   
+   </body>
