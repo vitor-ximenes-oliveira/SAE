@@ -481,6 +481,9 @@ def pagina_professor(request,idProfessor):
     professor = idProfessor
     if 'turmas' in request.POST:
         return redirect("/turmas/"+str(idProfessor))
+    elif 'Log out' in request.POST:
+        sair(request)
+        return redirect("login")
     return render(request,"telaProfessor.html")
 
 def inserir_classe(request):
