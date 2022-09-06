@@ -125,12 +125,6 @@ def cadastro(request):
                             user = Professor.objects.create(pf_nome=al_nome, pf_email=al_email,pf_nascimento=al_nascimento,pf_materia=pf_materia,pf_senha=al_senha)
                             user.save()
                 messages.success(request,"Conta criada com sucesso")           
-<<<<<<< HEAD
-                return redirect("/login")
-            except ValueError:
-                messages.info(request, "Formato de data inválida. Insira no seguinte formato: ##/##/####")            
-    return render(request, 'CadastroProfessor.html', {'form': form})
-=======
                 return redirect("/login")           
             except (ValueError,ValidationError):
                 messages.info(request, "Data de nascimento inválida")  
@@ -139,38 +133,48 @@ def cadastro(request):
             except (Aluno.MultipleObjectsReturned,Professor.MultipleObjectsReturned,IntegrityError):  
                 messages.error(request,"Preencha todos os campos")        
     return render(request, 'cadastro.html')
->>>>>>> 4f6170309d58fd502618cc1413307dae676206bc
 
 def login_user(request):        
             if 'login' in request.POST:
                 try:
                     al_nome = request.POST.get("al_nome")
                     al_senha = request.POST.get("al_senha")
-                    user =Aluno.objects.get(al_nome=al_nome)
+                    professor = Professor()
+                    if (professor.esta_ativo == False):
+                        user = Aluno.objects.get(al_nome=al_nome)
+                    else:
+                        user = Professor.objects.get(pf_nome=al_nome)
+                    if not request.POST.get("al_nome") or not request.POST.get("al_senha"):
+                        messages.error(request, "Preencha todos os campos")
+                        return redirect('login_user')
                     if user:
-                        checar_senha=check_password(al_senha, user.al_senha)
+                        professor = Professor()
+                        if (professor.esta_ativo == False):
+                            checar_senha=check_password(al_senha, user.al_senha)
+                        else:
+                            checar_senha=check_password(al_senha, user.pf_senha)
                         if checar_senha:
-                            professor = Professor()
-                            if (professor.esta_ativo == False):
+                            if (professor.esta_ativo == False):        
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')                    
                                 login(request, autenticar_usuario)
-                                return redirect('/pagina_aluno')
+                                return redirect('telaAluno/'+str(user.ra)) 
                             else:                
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
                                 login(request, autenticar_usuario)
-                                return redirect('/pagina_professor')                            
+                                return redirect('telaProfessor/'+str(user.idProfessor))                            
                 except (Aluno.DoesNotExist, Professor.DoesNotExist):   
-                    messages.info(request, "Nome ou/e senha inválido(s)")
+                    messages.error(request, "Nome ou/e senha inválido(s)")
                 except (Aluno.MultipleObjectsReturned,Professor.DoesNotExist,User.MultipleObjectsReturned):
                     autenticar_usuario = User.objects.filter(username=al_nome).first()
                     if autenticar_usuario:
                         login(request, autenticar_usuario)
                         professor = Professor()
                         if (professor.esta_ativo == False):
-                            return redirect('/pagina_aluno')
+                            return redirect('telaAluno/'+str(user.ra)) 
                         else:
                             login(request, autenticar_usuario)
-                            return redirect('/pagina_professor')
+                            user = Professor.objects.get(pf_nome=al_nome)
+                            return redirect('telaProfessor'+str(user.idProfessor))
             elif 'cadastro' in request.POST:
                 return redirect('/cadastro')  
             return render(request,"login.html")
