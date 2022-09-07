@@ -20,6 +20,7 @@ class Professor(models.Model):
     pf_senha = models.CharField(max_length=100)
     pf_nascimento = models.DateField()
     isProf = models.BooleanField(default=1)
+    pf_materia = models.CharField(max_length=100)
 
     @property
     def esta_ativo(self):
@@ -88,4 +89,4 @@ def sobrescrever_arquivo(sender, **kwargs):
         print("Arquivo substituido com sucesso")
         os.remove(arquivo_igual)
 
-User._meta.get_field('username')._unique = False
+User._meta.get_field('username')._unique = True

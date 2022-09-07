@@ -94,7 +94,7 @@ def cadastro(request):
                 return redirect("/login")
             except ValueError:
                 messages.info(request, "Formato de data inválida. Insira no seguinte formato: ##/##/####")            
-    return render(request, 'CadastroProfessor.html', {'form': form})
+    return render(request, 'CadastroProfessor.html')
 
 def login_user(request):        
             if 'login' in request.POST:
@@ -270,7 +270,7 @@ def pagina_professor(request):
     return render(request,"telaProfessor.html")
 
 
-def graficoFeedback(request):
+def graficosFeedback(request):
 
     ruim = 0
     bom = 0
