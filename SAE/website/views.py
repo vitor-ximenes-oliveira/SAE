@@ -270,7 +270,7 @@ def pagina_professor(request):
     return render(request,"telaProfessor.html")
 
 
-def teste(request):
+def graficoFeedback(request):
 
     ruim = 0
     bom = 0
