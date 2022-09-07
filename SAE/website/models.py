@@ -19,6 +19,7 @@ class Professor(models.Model):
     pf_email = models.EmailField()
     pf_senha = models.CharField(max_length=100)
     pf_nascimento = models.DateField()
+    pf_materia = models.CharField(max_length=50,blank=False)
     isProf = models.BooleanField(default=1)
 
     @property
