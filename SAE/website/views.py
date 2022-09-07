@@ -144,9 +144,9 @@ def login_user(request):
                         user = Aluno.objects.get(al_nome=al_nome)
                     else:
                         user = Professor.objects.get(pf_nome=al_nome)
-                    if not request.POST.get("al_nome") or not request.POST.get("al_senha"):
+                    if not al_nome or not al_senha:
                         messages.error(request, "Preencha todos os campos")
-                        return redirect('login_user')
+                        return redirect('login')
                     if user:
                         professor = Professor()
                         if (professor.esta_ativo == False):
@@ -174,7 +174,7 @@ def login_user(request):
                         else:
                             login(request, autenticar_usuario)
                             user = Professor.objects.get(pf_nome=al_nome)
-                            return redirect('telaProfessor'+str(user.idProfessor))
+                            return redirect('telaProfessor/'+str(user.idProfessor))
             elif 'cadastro' in request.POST:
                 return redirect('/cadastro')  
             return render(request,"login.html")
@@ -211,7 +211,7 @@ def visualizar_arquivo(request,arquivo):
     else:
         diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
         os.system(diretorio_arquivo)    
-        os.chmod(diretorio_arquivo,stat.S_IRWXO)  
+        os.chmod(diretorio_arquivo,S_IREAD)  
         fk_alu = request.GET.get("alu",'')      
         return redirect('../atividades/'+str(fk_alu))
 
@@ -267,12 +267,14 @@ def sair(request):
 def turmas(request,idProfessor):
         if request.method == 'POST':
             classe = request.POST.get('classe')
+            classe_aux = request.POST.get('classe')
             alunos = Turmas.objects.raw("select idTurma, a.al_nome from turmas t join aluno a on t.alu_id = a.ra join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))
         else:
             alunos = ""
+            classe_aux = ""
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))         
-        return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos})
+        return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos,'classe_aux':classe_aux})
 
 def enviar_arquivo(request,idProfessor):
     if 'atualizar' in request.POST:
