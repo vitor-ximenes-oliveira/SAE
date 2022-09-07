@@ -88,4 +88,4 @@ def sobrescrever_arquivo(sender, **kwargs):
         print("Arquivo substituido com sucesso")
         os.remove(arquivo_igual)
 
-User._meta.get_field('username')._unique = True
+User._meta.get_field('username')._unique = False
