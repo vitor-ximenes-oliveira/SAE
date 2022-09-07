@@ -13,12 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+from django import views
 from django.contrib import admin
 from django.urls import path
 from website import views
-from django.conf.urls.static import static
+from django.conf.urls import url
 from django.conf import settings
-
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,18 +28,14 @@ urlpatterns = [
     path('login',views.login_user),
     path('pagina_aluno',views.pagina_aluno),
     path('pagina_professor',views.pagina_professor),
-    path('baixar/<str:arquivo>',views.baixar, name='baixar'),
-    path('visualizar/<str:arquivo>',views.visualizar, name='visualizar'),
+    path('baixar_arquivo/<str:arquivo>',views.baixar_arquivo, name='baixar_arquivo'),
+    path('visualizar_arquivo/<str:arquivo>',views.visualizar_arquivo, name='visualizar_arquivo'),
     path('feedback',views.feedback),
     path('sair',views.sair),
     path('turmas/<int:idProfessor>',views.turmas),
-<<<<<<< HEAD
-    path('graficosFeedback', views.teste),
-=======
-    path('enviar_arquivo/<int:idProfessor>',views.enviar_arquivo),
+    path('enviar_arquivo/<int:idProfessor>',views.enviar_arquivo,name='enviar_arquivo'),
     path('telaProfessor/<int:idProfessor>',views.pagina_professor),
     path('atividades/<int:ra>',views.atividades,name='atividades'),
-    path('inserir',views.inserir,name='inserir'),
+    path('inserir_classe',views.inserir_classe,name='inserir_classe'),
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
->>>>>>> 4f6170309d58fd502618cc1413307dae676206bc
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

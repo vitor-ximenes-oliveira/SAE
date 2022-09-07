@@ -68,8 +68,9 @@ class Feedback(models.Model):
     justificativa9 = models.CharField(max_length=255,blank = True)
     class Meta:
         db_table = "feedback"
-        
- class EnviarArquivo(models.Model):
+
+
+class EnviarArquivo(models.Model):
     idEnvio = models.AutoField(primary_key=True)
     arquivo = models.FileField(upload_to="", null=True, blank=True)
     alu = models.ForeignKey(Aluno,on_delete=models.CASCADE)
@@ -87,4 +88,4 @@ def sobrescrever_arquivo(sender, **kwargs):
         print("Arquivo substituido com sucesso")
         os.remove(arquivo_igual)
 
-User._meta.get_field('username')._unique = False
+User._meta.get_field('username')._unique = True

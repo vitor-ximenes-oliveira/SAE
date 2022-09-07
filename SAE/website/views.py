@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-from datetime import datetime
-from urllib.request import Request
-from django.db import IntegrityError
-from django.shortcuts import redirect, render
-from django.contrib.auth.hashers import make_password, check_password
-#from urllib3 import HTTPResponse
-from website.forms import AlunoForm, FeedBackForm, ProfessorForm
-from website.models import Aluno, Feedback, Professor, Turmas
-=======
 from asyncio.windows_events import NULL
 from audioop import reverse
 from collections import OrderedDict
@@ -29,7 +19,6 @@ from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password, check_password
 from website.models import Aluno, EnviarArquivo, Feedback, Professor, Turmas
->>>>>>> 4f6170309d58fd502618cc1413307dae676206bc
 from django.contrib import messages
 import os
 #import pythoncom
@@ -39,43 +28,20 @@ from SAE import settings
 from SAE.settings import BASE_DIR, MEDIA_ROOT
 from django.contrib.auth import login,authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-<<<<<<< HEAD
-import matplotlib as plt
-=======
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait 
-from selenium.webdriver.support import expected_conditions as EC    
+from django.contrib.auth.models import User  
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.urls import reverse
 from io import StringIO
-from docx2pdf import convert
-import pythoncom
-import pyautogui
-from djangoconvertvdoctopdf.convertor import StreamingConvertedPdf
-from pptx import Presentation
-import pandas as pd
-import win32com.client
-import win32gui
-import win32process
 import os
-import cherrypy
-import webbrowser
-import time
 import subprocess as sp
 from stat import S_ENFMT, S_IREAD, S_IRWXU, S_IWRITE, S_IWUSR
 import subprocess
 from pathlib import Path
-import xlrd, webbrowser
-import pandas as pd
-from PIL import Image
-import openpyxl
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
->>>>>>> 4f6170309d58fd502618cc1413307dae676206bc
+#from PIL import Image
+#from django.db.models.signals import pre_save
+##from django.dispatch import receiver
 
 def cadastro(request):
     if request.method == 'POST':
@@ -125,21 +91,10 @@ def cadastro(request):
                             user = Professor.objects.create(pf_nome=al_nome, pf_email=al_email,pf_nascimento=al_nascimento,pf_materia=pf_materia,pf_senha=al_senha)
                             user.save()
                 messages.success(request,"Conta criada com sucesso")           
-<<<<<<< HEAD
                 return redirect("/login")
             except ValueError:
                 messages.info(request, "Formato de data inválida. Insira no seguinte formato: ##/##/####")            
     return render(request, 'CadastroProfessor.html', {'form': form})
-=======
-                return redirect("/login")           
-            except (ValueError,ValidationError):
-                messages.info(request, "Data de nascimento inválida")  
-            except AttributeError:
-                messages.error(request,"Preencha os campos com dados válidos")
-            except (Aluno.MultipleObjectsReturned,Professor.MultipleObjectsReturned,IntegrityError):  
-                messages.error(request,"Preencha todos os campos")        
-    return render(request, 'cadastro.html')
->>>>>>> 4f6170309d58fd502618cc1413307dae676206bc
 
 def login_user(request):        
             if 'login' in request.POST:
@@ -246,13 +201,7 @@ def feedback(request):
             feedback.save() 
             messages.success(request,"Feedback enviado com sucesso")           
             return redirect("/feedback")
-<<<<<<< HEAD
-        except IntegrityError:
-            messages.error(request, "Preencha todos os campos")
-    return render(request, 'feedback.html',  {'form': form})
-=======
     return render(request, 'feedback.html')
->>>>>>> 4f6170309d58fd502618cc1413307dae676206bc
 
 @login_required(login_url='/login')
 def sair(request):
@@ -302,7 +251,6 @@ def enviar_arquivo(request,idProfessor):
         turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))         
     return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe_aux':classe_aux})
 
-<<<<<<< HEAD
 #@login_required(login_url='/login')
 def pagina_professor(request):
     form = ProfessorForm(request.POST)
@@ -467,7 +415,6 @@ def teste(request):
     return render(request, "graficosFeedback.html" , {"ruim" : ruim, "bom" : bom, "medio" : medio , "excelente": excelente, "ruim2" : ruim2, "bom2" : bom2, "medio2" : medio2 , "excelente2": excelente2, "ruim3" : ruim3, "bom3" : bom3, "medio3" : medio3 , "excelente3": excelente3, "ruim4" : ruim4, "bom4" : bom4, "medio4" : medio4 , "excelente4": excelente4, "ruim5" : ruim5, "bom5" : bom5, "medio5" : medio5 , "excelente5": excelente5, "ruim6" : ruim6, "bom6" : bom6, "medio6" : medio6 , "excelente6": excelente6, "ruim7" : ruim7, "bom7" : bom7, "medio7" : medio7 , "excelente7": excelente7, "ruim8" : ruim8, "bom8" : bom8, "medio8" : medio8 , "excelente8": excelente8, "ruim9" : ruim9, "bom9" : bom9, "medio9" : medio9 , "excelente9": excelente9})
                 
            
-=======
 @login_required(login_url='/login')
 def pagina_aluno(request):
     return render(request,"pagina_aluno.html")
@@ -573,4 +520,3 @@ def editar_classe(request,idProfessor):
             classe_aux = ""
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",[idProfessor])
         return render(request, "editar_classe.html",{'alunos':alunos,'turmas':turmas,'classe_aux':classe_aux})
->>>>>>> 4f6170309d58fd502618cc1413307dae676206bc
