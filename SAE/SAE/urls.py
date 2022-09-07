@@ -20,6 +20,7 @@ from django.urls import path
 from website import views
 from django.conf.urls import url
 from django.conf import settings
+from django.conf.urls import url
 from django.conf.urls.static import static
 
 urlpatterns = [
@@ -27,9 +28,9 @@ urlpatterns = [
     path('cadastro', views.cadastro),
     path('login',views.login_user),
     path('pagina_aluno',views.pagina_aluno),
-    path('pagina_professor',views.pagina_professor),
-    path('baixar_arquivo/<str:arquivo>',views.baixar_arquivo, name='baixar_arquivo'),
-    path('visualizar_arquivo/<str:arquivo>',views.visualizar_arquivo, name='visualizar_arquivo'),
+    path('telaProfessor/<int:idProfessor>',views.pagina_professor,name='telaProfessor'),
+    path('baixar/<str:arquivo>',views.baixar, name='baixar'),
+    path('visualizar/<str:arquivo>',views.visualizar, name='visualizar'),
     path('feedback',views.feedback),
     path('sair',views.sair),
     path('turmas/<int:idProfessor>',views.turmas),

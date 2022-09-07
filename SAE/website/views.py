@@ -101,31 +101,42 @@ def login_user(request):
                 try:
                     al_nome = request.POST.get("al_nome")
                     al_senha = request.POST.get("al_senha")
-                    user =Aluno.objects.get(al_nome=al_nome)
+                    professor = Professor()
+                    if (professor.esta_ativo == False):
+                        user = Aluno.objects.get(al_nome=al_nome)
+                    else:
+                        user = Professor.objects.get(pf_nome=al_nome)
+                    if not al_nome or not al_senha:
+                        messages.error(request, "Preencha todos os campos")
+                        return redirect('login')
                     if user:
-                        checar_senha=check_password(al_senha, user.al_senha)
+                        professor = Professor()
+                        if (professor.esta_ativo == False):
+                            checar_senha=check_password(al_senha, user.al_senha)
+                        else:
+                            checar_senha=check_password(al_senha, user.pf_senha)
                         if checar_senha:
-                            professor = Professor()
-                            if (professor.esta_ativo == False):
+                            if (professor.esta_ativo == False):        
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')                    
                                 login(request, autenticar_usuario)
-                                return redirect('/pagina_aluno')
+                                return redirect('telaAluno/'+str(user.ra)) 
                             else:                
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
                                 login(request, autenticar_usuario)
-                                return redirect('/pagina_professor')                            
+                                return redirect('telaProfessor/'+str(user.idProfessor))                            
                 except (Aluno.DoesNotExist, Professor.DoesNotExist):   
-                    messages.info(request, "Nome ou/e senha inválido(s)")
+                    messages.error(request, "Nome ou/e senha inválido(s)")
                 except (Aluno.MultipleObjectsReturned,Professor.DoesNotExist,User.MultipleObjectsReturned):
                     autenticar_usuario = User.objects.filter(username=al_nome).first()
                     if autenticar_usuario:
                         login(request, autenticar_usuario)
                         professor = Professor()
                         if (professor.esta_ativo == False):
-                            return redirect('/pagina_aluno')
+                            return redirect('telaAluno/'+str(user.ra)) 
                         else:
                             login(request, autenticar_usuario)
-                            return redirect('/pagina_professor')
+                            user = Professor.objects.get(pf_nome=al_nome)
+                            return redirect('telaProfessor/'+str(user.idProfessor))
             elif 'cadastro' in request.POST:
                 return redirect('/cadastro')  
             return render(request,"login.html")
@@ -162,7 +173,7 @@ def visualizar_arquivo(request,arquivo):
     else:
         diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
         os.system(diretorio_arquivo)    
-        os.chmod(diretorio_arquivo,stat.S_IRWXO)  
+        os.chmod(diretorio_arquivo,S_IREAD)  
         fk_alu = request.GET.get("alu",'')      
         return redirect('../atividades/'+str(fk_alu))
 
@@ -212,12 +223,14 @@ def sair(request):
 def turmas(request,idProfessor):
         if request.method == 'POST':
             classe = request.POST.get('classe')
-            alunos = Turmas.objects.raw("select idTurma, a.al_nome from turmas t join aluno a on t.alu_id = a.ra join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))
+            classe_aux = request.POST.get('classe')
+            alunos = Aluno.objects.raw("select a.ra, a.al_nome, a.al_email, al_nascimento from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome order by a.ra",(str(classe),str(idProfessor)))
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",[idProfessor])
         else:
             alunos = ""
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))         
-        return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos})
+            classe_aux = ""
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",[idProfessor])         
+        return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos,'classe_aux':classe_aux})
 
 def enviar_arquivo(request,idProfessor):
     if 'atualizar' in request.POST:
@@ -424,6 +437,9 @@ def pagina_professor(request,idProfessor):
     professor = idProfessor
     if 'turmas' in request.POST:
         return redirect("/turmas/"+str(idProfessor))
+    elif 'Log out' in request.POST:
+        sair(request)
+        return redirect("login")
     return render(request,"telaProfessor.html")
 
 def inserir_classe(request):
