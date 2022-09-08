@@ -38,6 +38,6 @@ urlpatterns = [
     path('telaProfessor/<int:idProfessor>',views.pagina_professor),
     path('atividades/<int:ra>',views.atividades,name='atividades'),
     path('inserir_classe',views.inserir_classe,name='inserir_classe'),
-    path('graficosFeedback', views.graficosFeedback),
+    path('graficosFeedback', views.teste),
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
