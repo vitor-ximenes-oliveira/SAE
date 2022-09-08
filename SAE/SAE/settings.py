@@ -134,4 +134,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 
 STATISCFILE_DIRS = (os.path.join(BASE_DIR, 'static'))
 
-SILENCED_SYSTEM_CHECKS = ["auth.W004"]
+ACCOUNT_USERNAME_REQUIRED = False
+SILENCED_SYSTEM_CHECKS = ['auth.E003', 'auth.W004']
+
+
