@@ -137,4 +137,4 @@ STATISCFILE_DIRS = (os.path.join(BASE_DIR, 'static'))
 ACCOUNT_USERNAME_REQUIRED = False
 SILENCED_SYSTEM_CHECKS = ['auth.E003', 'auth.W004']
 
-
+LANGUAGE_CODE = 'pt-br'
