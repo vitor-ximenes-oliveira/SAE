@@ -1,3 +1,7 @@
 from django.contrib import admin
+from website.models import Professor
+from django.contrib.auth.admin import UserAdmin
 
-# Register your models here.
+class UsuarioAdmin(admin.ModelAdmin):
+ pass
+admin.site.register(Professor,UsuarioAdmin)
