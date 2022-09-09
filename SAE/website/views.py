@@ -53,7 +53,7 @@ def cadastro(request):
                         autenticar_usuario.save()       
                         user = Aluno.objects.create(al_nome=al_nome, al_email=al_email,al_nascimento=al_nascimento,al_senha=al_senha)
                         user.save()  
-                else:       
+                else:                   
                     al_nome = request.POST.get("al_nome")
                     pf_materia = request.POST.get("pf_materia")
                     senha = request.POST.get("al_senha")            
@@ -84,30 +84,33 @@ def login_user(request):
                     al_senha = request.POST.get("al_senha")
                     professor = Professor()
                     if (professor.esta_ativo == False):
-                        user = Aluno.objects.get(al_nome=al_nome)
+                        usuario = Aluno.objects.get(al_nome=al_nome)
                     else:
-                        user = Professor.objects.get(pf_nome=al_nome)
+                        prof = User.objects.get(username=al_nome)
+                        usuario = User.objects.get(username=al_nome)
                     if not al_nome or not al_senha:
                         messages.error(request, "Preencha todos os campos")
-                        return redirect('login')
-                    if user:
-                        professor = Professor()
+                        return redirect('login')#Mudei
+                    if usuario:
+                        professor = Professor()                       
                         if (professor.esta_ativo == False):
                             checar_senha=check_password(al_senha, user.al_senha)
                         else:
-                            checar_senha=check_password(al_senha, user.pf_senha)
+                            usuario = User.objects.get(username=al_nome)
+                            checar_senha=check_password(al_senha, usuario.password)
                         if checar_senha:
                             if (professor.esta_ativo == False):        
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')                    
                                 login(request, autenticar_usuario)
                                 return redirect('telaAluno/'+str(user.ra)) 
-                            else:                
+                            else: 
+                                prof = Professor.objects.get(Usuario_id = usuario.id)          
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
                                 login(request, autenticar_usuario)
-                                return redirect('telaProfessor/'+str(user.idProfessor))                          
+                                return redirect('telaProfessor/'+str(prof.idProfessor))                          
                 except (Aluno.DoesNotExist, Professor.DoesNotExist):   
                     messages.error(request, "Nome de usuário ou/e senha inválido(s)")
-                except (Aluno.MultipleObjectsReturned,Professor.DoesNotExist,User.MultipleObjectsReturned):
+                except (Aluno.MultipleObjectsReturned,Professor.DoesNotExist,User.MultipleObjectsReturned,Professor.MultipleObjectsReturned):
                     autenticar_usuario = User.objects.filter(username=al_nome).first()
                     if autenticar_usuario:
                         login(request, autenticar_usuario)
@@ -116,7 +119,7 @@ def login_user(request):
                             return redirect('telaAluno/'+str(user.ra)) 
                         else:
                             login(request, autenticar_usuario)
-                            user = Professor.objects.get(pf_nome=al_nome)
+                            user = Professor.objects.get(pf_nome=al_nome).first()
                             return redirect('telaProfessor/'+str(user.idProfessor))
             elif 'cadastro' in request.POST:
                 return redirect('/cadastro')  
@@ -176,9 +179,8 @@ def baixar_arquivo(request, arquivo):
             messages.error(request,"Arquivo não encontrado")
             fk_alu = request.GET.get("alu",'')      
             return redirect('../atividades/'+str(fk_alu))
-    #return render(request ,'atividades.html')
     
-#@login_required(login_url='/login')
+@login_required(login_url='/login')
 def feedback(request):
     if request.method == 'POST':
             justificativa1 = request.POST.get("Justificativa1")
