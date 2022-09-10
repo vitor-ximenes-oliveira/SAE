@@ -14,7 +14,7 @@
         <p id="messages">{{message}}</p>
     {% endfor %}
 
-    <form method="POST" class="post-form" action="graficosFeedback">
+    <form method="POST" class="post-form" action="">
         {% csrf_token %}
     <div class="btn_logout">
         <button name="Log out" href=sair>Log out</button>
@@ -42,7 +42,7 @@
     </div>
     <hr />
     <div class="container_telaProfessor">
-        <button type="submit">
+        <button name="turmas" type="submit">
             <div class="card">
                 <img src="{% static 'imagens/icon_turmas.png'%}">
                 <p>Turma exemplo</p>

@@ -11,7 +11,8 @@
 </head>
 
 <body class="Cadastro">
-    <form method="POST" class="post-form" action="/cadastro">
+    <form method="POST" class="post-form" action="/Teladecadastroaluno">
+        {% csrf_token %}
     <div class="loginPage CadastroProfessor">
         <div class="container_textoHome">
             <div class="iconLogin">

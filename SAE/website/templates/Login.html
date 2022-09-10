@@ -6,11 +6,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'estilos/home.css' %}">
+    <link rel="stylesheet" href="{% static 'estilos/CadastroProfessor.css' %}">
     <title>Login</title>
 </head>
 
 <body>
+    <form method="POST" class="post-form" action="/login">
+    {% csrf_token %}
     <div class="loginPage">
         <div class="container_textoHome">
             <div class="iconLogin">
@@ -18,25 +20,29 @@
             </div>
             <h1 style="color: #5a9bd5 ;">
                 Bem vindo ao <span style="color: #000;">SAE</span>
+                
             </h1>
-
+            {% for message in messages %}
+                <p id="messages">{{message}}</p>
+            {% endfor %}
         </div>
         <div class="container_login">
             <div class="label-float">
-                <input type="text" placeholder=" " />
+                <input type="text" name="al_nome" placeholder=" " />
                 <label>Usuário</label>
             </div>
             <div class="label-float">
-                <input type="password" placeholder=" " />
+                <input type="password" name="al_senha" placeholder=" " />
                 <label>Senha</label>
             </div>
             <div class="botoes">
-                <button class="btn" type="submit" value="Entrar">Entrar</button>
-                <button class="btn" type="submit" value="CriaConta">Criar conta</button>
+                <button class="btn" name="login" type="submit" value="Entrar">Entrar</button>
+                <button class="btn" name="cadastro" type="submit" value="CriaConta">Criar conta</button>
             </div>
         </div>
 
     </div>
+</form>
 </body>
 
 </html>

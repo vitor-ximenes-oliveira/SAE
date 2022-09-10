@@ -21,9 +21,10 @@ import subprocess as sp
 from stat import S_IREAD
 
 def cadastro(request):
+    professor = Professor()
     if request.method == 'POST':
         try: 
-            professor = Professor()
+            
             if (professor.esta_ativo == False):
                 al_email = request.POST.get("al_email")
                 checar_email = Aluno.objects.get(al_email = al_email)
@@ -65,7 +66,7 @@ def cadastro(request):
                             al_senha = make_password(senha)
                             autenticar_usuario = User(username=al_nome, password=al_senha)
                             autenticar_usuario.save()       
-                            user = Professor.objects.create(pf_nome=al_nome, pf_email=al_email,pf_nascimento=al_nascimento,pf_materia=pf_materia,pf_senha=al_senha)
+                            user = Professor.objects.create(pf_email=al_email,pf_nascimento=al_nascimento,materia=pf_materia)
                             user.save()
                 messages.success(request,"Conta criada com sucesso")           
                 return redirect("/login")           
@@ -75,10 +76,14 @@ def cadastro(request):
                 messages.error(request,"Preencha os campos com dados válidos")
             except (Aluno.MultipleObjectsReturned,Professor.MultipleObjectsReturned,IntegrityError):  
                 messages.error(request,"Preencha todos os campos")        
-    return render(request, 'cadastro.html')
+    if (professor.esta_ativo==False):
+        return render(request, "Teladecadastroaluno.html")  
+    else:
+        return render(request, 'CadastroProfessor.html')
 
-def login_user(request):        
-            if 'login' in request.POST:
+def login_user(request):    
+            professor = Professor()    
+            if 'login' in request.POST:        
                 try:
                     al_nome = request.POST.get("al_nome")
                     al_senha = request.POST.get("al_senha")
@@ -86,7 +91,7 @@ def login_user(request):
                     if (professor.esta_ativo == False):
                         usuario = Aluno.objects.get(al_nome=al_nome)
                     else:
-                        prof = User.objects.get(username=al_nome)
+                        #prof = User.objects.get(username=al_nome)
                         usuario = User.objects.get(username=al_nome)
                     if not al_nome or not al_senha:
                         messages.error(request, "Preencha todos os campos")
@@ -94,7 +99,7 @@ def login_user(request):
                     if usuario:
                         professor = Professor()                       
                         if (professor.esta_ativo == False):
-                            checar_senha=check_password(al_senha, user.al_senha)
+                            checar_senha=check_password(al_senha, usuario.al_senha)
                         else:
                             usuario = User.objects.get(username=al_nome)
                             checar_senha=check_password(al_senha, usuario.password)
@@ -102,7 +107,7 @@ def login_user(request):
                             if (professor.esta_ativo == False):        
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')                    
                                 login(request, autenticar_usuario)
-                                return redirect('telaAluno/'+str(user.ra)) 
+                                return redirect('telaAluno/'+str(usuario.ra)) 
                             else: 
                                 prof = Professor.objects.get(Usuario_id = usuario.id)          
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
@@ -122,8 +127,11 @@ def login_user(request):
                             user = Professor.objects.get(pf_nome=al_nome).first()
                             return redirect('telaProfessor/'+str(user.idProfessor))
             elif 'cadastro' in request.POST:
-                return redirect('/cadastro')  
-            return render(request,"login.html")
+                if (professor.esta_ativo==False):
+                    return redirect('/Teladecadastroaluno')
+                else:
+                    return redirect('/CadastroProfessor')
+            return render(request,"Login.html")
 
 def atividades(request, ra):
     material_aluno = EnviarArquivo.objects.filter(alu=ra)
