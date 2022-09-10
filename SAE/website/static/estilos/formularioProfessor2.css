@@ -1,0 +1,42 @@
+body {
+  background-color: #aacdec;
+  color: #5d49cc;
+}
+
+textarea#txtQuestao {
+  border-radius: 10px;
+  margin-left: 1em;
+}
+
+.Alternativas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin-left: 1em;
+}
+
+.Alternativas textarea {
+  border-radius: 5px;
+}
+
+.button {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    height: 3em;
+}
+
+input#btn {
+    width: 90%;
+    text-align: center;
+    height: 3em;
+    border: solid 1px;
+    border-radius: 5px;
+}
+
+#btn:hover {
+    border: 2px solid #000;
+    color: black;
+    background-color: #acafb6;
+}

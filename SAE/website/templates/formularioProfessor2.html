@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/estilos/formularioProfessor2.css" />
+    <link rel="stylesheet" href="../static/estilos/geral.css" />
+    <title>Formulário professor</title>
+  </head>
+  <header class="headerProfessor">
+    <img src="../static/imagens/education.png" alt="SAE" >
+    <table class="tableHeaderProfessor">
+        <tr>
+            <td><a href="#">Home</a></td>
+            <td><a href="#">Tela Professor</a></td>
+        </tr>
+    </table>
+  </header>
+  <body>
+    <h1>Crie seu formulário</h1>
+    <br />
+    <h2>Insira a primeira questão</h2>
+    <textarea name="txtQuestao" id="txtQuestao" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAlt1" id="txtAlt1" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAlt2" id="txtAlt2" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAlt3" id="txtAlt3" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAlt4" id="txtAlt4" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+    <hr>
+    <div class="button">
+      <input type="button" id="btn" value="Criar" />
+    </div>
+  </body>
+</html>
