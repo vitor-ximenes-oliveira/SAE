@@ -24,9 +24,10 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('',views.login_user,name='login'),
     path('admin/', admin.site.urls),
     path('cadastro', views.cadastro),
-    path('login',views.login_user),
+    path('login',views.login_user,name='login'),
     path('pagina_aluno',views.pagina_aluno),
     path('telaProfessor/<int:idProfessor>',views.pagina_professor,name='telaProfessor'),
     path('baixar_arquivo/<str:arquivo>',views.baixar_arquivo, name='baixar_arquivo'),
