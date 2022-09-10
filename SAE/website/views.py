@@ -66,7 +66,7 @@ def cadastro(request):
                             autenticar_usuario = User(username=al_nome, password=al_senha)
                             autenticar_usuario.save()       
                             id_user = User.objects.get(username=al_nome) 
-                            user = Professor.objects.create(Usuario=id_user,pf_email=al_email,pf_nascimento=al_nascimento,materia=pf_materia)
+                            user = Professor.objects.create(Usuario=id_user,pf_nome = al_nome,pf_email=al_email,pf_nascimento=al_nascimento,materia=pf_materia)
                             user.save()
                 messages.success(request,"Conta criada com sucesso")           
                 return redirect("/login")           
@@ -243,7 +243,7 @@ def enviar_arquivo(request,idProfessor):
             classe_aux = request.POST.get('classe')            
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))   
             alunos = Aluno.objects.raw("select a.ra, a.al_nome from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
-            alunos_ra = request.POST.getlist('aluno_ra')
+            alunos_ra = request.POST.getlist('ra')
             if not alunos_ra:
                 messages.error(request,"Selecione um aluno")
                 return redirect('enviar_arquivo',idProfessor)
