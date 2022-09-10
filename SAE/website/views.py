@@ -108,7 +108,7 @@ def login_user(request):
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
                                 login(request, autenticar_usuario)
                                 return redirect('telaProfessor/'+str(prof.idProfessor))                          
-                except (Aluno.DoesNotExist, Professor.DoesNotExist):   
+                except (Aluno.DoesNotExist, Professor.DoesNotExist,User.DoesNotExist):   
                     messages.error(request, "Nome de usuário ou/e senha inválido(s)")
                 except (Aluno.MultipleObjectsReturned,Professor.DoesNotExist,User.MultipleObjectsReturned,Professor.MultipleObjectsReturned):
                     autenticar_usuario = User.objects.filter(username=al_nome).first()
