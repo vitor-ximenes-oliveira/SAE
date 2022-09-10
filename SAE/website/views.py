@@ -23,8 +23,7 @@ from stat import S_IREAD
 def cadastro(request):
     professor = Professor()
     if request.method == 'POST':
-        try: 
-            
+        try:  
             if (professor.esta_ativo == False):
                 al_email = request.POST.get("al_email")
                 checar_email = Aluno.objects.get(al_email = al_email)
@@ -47,7 +46,7 @@ def cadastro(request):
                     confir_senha = request.POST.get("confir_senha")
                     if senha != confir_senha:
                         messages.error(request,"As senhas inseridas são diferentes")
-                        return redirect("/cadastro")
+                        return redirect("/Teladecadastroaluno")
                     else:
                         al_senha = make_password(senha)
                         autenticar_usuario = User(username=al_nome, password=al_senha)
@@ -61,12 +60,13 @@ def cadastro(request):
                     confir_senha = request.POST.get("confir_senha")
                     if senha != confir_senha:
                         messages.error(request,"As senhas inseridas são diferentes")
-                        return redirect("/cadastro")
-                    else:              
+                        return redirect("/CadastroProfessor")
+                    else:                                       
                             al_senha = make_password(senha)
                             autenticar_usuario = User(username=al_nome, password=al_senha)
                             autenticar_usuario.save()       
-                            user = Professor.objects.create(pf_email=al_email,pf_nascimento=al_nascimento,materia=pf_materia)
+                            id_user = User.objects.get(username=al_nome) 
+                            user = Professor.objects.create(Usuario=id_user,pf_email=al_email,pf_nascimento=al_nascimento,materia=pf_materia)
                             user.save()
                 messages.success(request,"Conta criada com sucesso")           
                 return redirect("/login")           
@@ -91,11 +91,10 @@ def login_user(request):
                     if (professor.esta_ativo == False):
                         usuario = Aluno.objects.get(al_nome=al_nome)
                     else:
-                        #prof = User.objects.get(username=al_nome)
                         usuario = User.objects.get(username=al_nome)
                     if not al_nome or not al_senha:
                         messages.error(request, "Preencha todos os campos")
-                        return redirect('login')#Mudei
+                        return redirect('login')
                     if usuario:
                         professor = Professor()                       
                         if (professor.esta_ativo == False):
@@ -270,8 +269,6 @@ def pagina_aluno(request):
 
 
 def pagina_professor(request,idProfessor):
-    professor = idProfessor
-
     if 'turmas' in request.POST:
         return redirect("/turmas/"+str(idProfessor))
     elif 'Log out' in request.POST:
