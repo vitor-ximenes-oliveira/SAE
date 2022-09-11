@@ -32,7 +32,7 @@ def cadastro(request):
                     messages.error(request, "Já existe um aluno cadastrado com esse e-mail")   
             else:
                 al_email =  request.POST.get("al_email")
-                checar_email = Professor.objects.get(pf_email = al_email)
+                checar_email = Professor.objects.get(Email = al_email)
                 if checar_email:
                     messages.error(request, "Já existe um professor cadastrado com esse e-mail")                 
         except (Aluno.DoesNotExist, Professor.DoesNotExist):
@@ -56,7 +56,7 @@ def cadastro(request):
                         user.save()  
                 else:                   
                     al_nome = request.POST.get("al_nome")
-                    pf_materia = request.POST.get("pf_materia")
+                    materia = request.POST.get("pf_materia")
                     senha = request.POST.get("al_senha")            
                     confir_senha = request.POST.get("confir_senha")
                     if senha != confir_senha:
@@ -67,7 +67,7 @@ def cadastro(request):
                             autenticar_usuario = User(username=al_nome, password=al_senha)
                             autenticar_usuario.save()       
                             id_user = User.objects.get(username=al_nome) 
-                            user = Professor.objects.create(Usuario=id_user,pf_nome = al_nome,pf_email=al_email,pf_nascimento=al_nascimento,materia=pf_materia)
+                            user = Professor.objects.create(Usuario=id_user,Nome = al_nome,Email=al_email,Nascimento=al_nascimento,Materia=materia)
                             user.save()
                 messages.success(request,"Conta criada com sucesso")           
                 return redirect("/login")           
@@ -86,8 +86,8 @@ def login_user(request):
             professor = Professor()    
             if 'login' in request.POST:        
                 try:
-                    al_nome = request.POST.get("al_nome")
-                    al_senha = request.POST.get("al_senha")
+                    al_nome = request.POST.get("nome")
+                    al_senha = request.POST.get("senha")
                     professor = Professor()
                     if (professor.esta_ativo == False):
                         usuario = Aluno.objects.get(al_nome=al_nome)
@@ -112,6 +112,7 @@ def login_user(request):
                                 prof = Professor.objects.get(Usuario_id = usuario.id)          
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
                                 login(request, autenticar_usuario)
+                                mudar_campo_nome = Professor.objects.filter(Usuario=usuario).update(Nome=al_nome)
                                 return redirect('telaProfessor/'+str(prof.idProfessor))                          
                 except (Aluno.DoesNotExist, Professor.DoesNotExist,User.DoesNotExist):   
                     messages.error(request, "Nome de usuário ou/e senha inválido(s)")
@@ -124,7 +125,7 @@ def login_user(request):
                             return redirect('telaAluno/'+str(user.ra)) 
                         else:
                             login(request, autenticar_usuario)
-                            user = Professor.objects.get(pf_nome=al_nome).first()
+                            user = Professor.objects.get(Nome=al_nome).first()
                             return redirect('telaProfessor/'+str(user.idProfessor))
             elif 'cadastro' in request.POST:
                 if (professor.esta_ativo==False):
@@ -145,22 +146,10 @@ def visualizar_arquivo(request,arquivo):
             arquivo = open(diretorio_arquivo, 'rb') 
             abrir_Arquivo = FileResponse(arquivo)
             return abrir_Arquivo
-        elif arquivo.endswith('.xlsx'):
-            diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
-            os.system(diretorio_arquivo)    
-            os.chmod(diretorio_arquivo,stat.S_IRWXO)                   
-            fk_alu = request.GET.get("alu",'')      
-            return redirect('../atividades/'+str(fk_alu))
         elif arquivo.endswith('.docx'): 
             diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)        
             sp.Popen(["C:\Program Files\Windows NT\Accessories\WordPad.exe", diretorio_arquivo])
             os.chmod(diretorio_arquivo,stat.S_IWUSR and stat.S_IRUSR and stat.S_IRUSR)  
-            fk_alu = request.GET.get("alu",'')      
-            return redirect('../atividades/'+str(fk_alu))
-        elif arquivo.endswith('.pptx'):
-            diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
-            os.system(diretorio_arquivo)    
-            os.chmod(diretorio_arquivo,stat.S_IRWXO) 
             fk_alu = request.GET.get("alu",'')      
             return redirect('../atividades/'+str(fk_alu))
         else:
@@ -174,7 +163,6 @@ def visualizar_arquivo(request,arquivo):
             fk_alu = request.GET.get("alu",'') 
             return redirect('../atividades/'+str(fk_alu))
     
-
 def baixar_arquivo(request, arquivo):
     try:
         if arquivo != '':
@@ -188,7 +176,7 @@ def baixar_arquivo(request, arquivo):
             fk_alu = request.GET.get("alu",'')      
             return redirect('../atividades/'+str(fk_alu))
     
-@login_required(login_url='/login')
+#@login_required(login_url='/login')
 def feedback(request):
     if request.method == 'POST':
             justificativa1 = request.POST.get("Justificativa1")

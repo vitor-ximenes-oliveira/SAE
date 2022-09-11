@@ -2,6 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.core import validators
+from datetime import *
+from dateutil.relativedelta import relativedelta
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 import os
 
 class Aluno(models.Model):
@@ -176,4 +181,22 @@ def sobrescrever_arquivo(sender, **kwargs):
         print("Arquivo substituido com sucesso")
         os.remove(arquivo_igual)
 
-User._meta.get_field('username')._unique = False
+def data_valida(data):
+    if data > datetime.now().date() - relativedelta(years=18) or data < datetime.now().date() - relativedelta(years=100):
+        raise ValidationError("Insira uma data válida")
+
+class Professor(models.Model):
+    Usuario = models.OneToOneField(User, on_delete=models.CASCADE,default="")
+    idProfessor = models.AutoField(primary_key = True)
+    Nome = models.CharField(max_length=50, blank=True)
+    Email = models.EmailField()
+    Nascimento = models.DateField(default=date.today,blank=True,help_text=('Insira uma data que seja menor que 18 e maior que 100 anos atrás'),validators=[data_valida])
+    Materia = models.CharField(max_length=50,blank=False,default="",help_text=('Entrar no SAE como professor'))
+    isProf = models.BooleanField(default=1) 
+    @property
+    def esta_ativo(self):
+            return bool(self.isProf)  
+    class Meta:
+        db_table = "Professor"
+
+User._meta.get_field('username').validators=[validators.RegexValidator(r'^[\w.@+ ]+$', _('Digite um nome válido.'), 'Inválido')]
