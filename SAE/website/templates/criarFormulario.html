@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/estilos/formularioProfessor2.css" />
+    <link rel="stylesheet" href="../static/estilos/geral.css" />
+    <title>Formulário professor</title>
+  </head>
+  <header class="headerProfessor">
+    <img src="../static/imagens/education.png" alt="SAE" >
+    <table class="tableHeaderProfessor">
+        <tr>
+            <td><a href="#">Home</a></td>
+            <td><a href="#">Tela Professor</a></td>
+        </tr>
+    </table>
+  </header>
+  <body>
+    <form method="POST" class="post-form" action="criarFormulario">
+        {% csrf_token %}
+    <h1>Crie seu formulário</h1>
+    <br />
+    <h2>Insira a primeira questão</h2>
+    <textarea name="txtQuestao" id="txtQuestao" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA1" id="txtAltA1" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB1" id="txtAltB1" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC1" id="txtAltC1" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD1" id="txtAltD1" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+
+    <h2>Insira a segunda questão</h2>
+    <textarea name="txtQuestao2" id="txtQuestao2" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA2" id="txtAltA1" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB2" id="txtAltB2" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC2" id="txtAltC2" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD2" id="txtAltA2" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+
+    <h2>Insira a terceira questão</h2>
+    <textarea name="txtQuestao3" id="txtQuestao3" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA3" id="txtAltA3" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB3" id="txtAltB3" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC3" id="txtAltC3" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD3" id="txtAltD3" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+
+    <h2>Insira a quarta questão</h2>
+    <textarea name="txtQuestao4" id="txtQuestao4" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA4" id="txtAltA4" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB4" id="txtAltB4" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC4" id="txtAltC4" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD4" id="txtAltD4" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+
+    <h2>Insira a quinta questão</h2>
+    <textarea name="txtQuestao5" id="txtQuestao5" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA5" id="txtAltA5" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB5" id="txtAltB5" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC5" id="txtAltC5" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD5" id="txtAltD5" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+
+    <h2>Insira a sexta questão</h2>
+    <textarea name="txtQuestao6" id="txtQuestao6" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA6" id="txtAltA6" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB6" id="txtAltB6" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC6" id="txtAltC6" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD6" id="txtAltD6" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+
+    <h2>Insira a sétima questão</h2>
+    <textarea name="txtQuestao7" id="txtQuestao7" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA7" id="txtAltA7" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB7" id="txtAltB7" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC7" id="txtAltC7" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD7" id="txtAltD7" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+
+    <h2>Insira a oitava questão</h2>
+    <textarea name="txtQuestao8" id="txtQuestao8" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA8" id="txtAltA8" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB8" id="txtAltB8" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC8" id="txtAltC8" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD8" id="txtAltD8" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+
+    <h2>Insira a nona questão</h2>
+    <textarea name="txtQuestao9" id="txtQuestao9" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA9" id="txtAltA9" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB9" id="txtAltB9" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC9" id="txtAltC9" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD9" id="txtAltD9" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+
+    <h2>Insira a décima questão</h2>
+    <textarea name="txtQuestao10" id="txtQuestao10" cols="100" rows="5"></textarea>
+    <br />
+    <h2>Insira as alternativas para sua questão</h2>
+    <div class="Alternativas">
+      <div class="alts alt-A">
+        <p>A:</p>
+        <textarea name="txtAltA10" id="txtAltA10" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-B">
+        <p>B:</p>
+        <textarea name="txtAltB10" id="txtAltB10" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-C">
+        <p>C:</p>
+        <textarea name="txtAltC10" id="txtAltC10" cols="100" rows="3"></textarea>
+      </div>
+      <div class="alts alt-D">
+        <p>D:</p>
+        <textarea name="txtAltD10" id="txtAltD10" cols="100" rows="3"></textarea>
+      </div>
+    </div>
+    <hr>
+    <div class="button">
+      <input type="submit" id="btn" value="Criar" />
+    </div>
+  </body>
+</html>

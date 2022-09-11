@@ -1,10 +1,11 @@
 from audioop import reverse
+from operator import truediv
 from django.urls import NoReverseMatch
 import stat
 from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password, check_password
-from website.models import Aluno, EnviarArquivo, Feedback, Professor, Turmas
+from website.models import Aluno, EnviarArquivo, Feedback, Professor, Turmas, Formulario
 from django.contrib import messages
 import os
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
@@ -527,3 +528,141 @@ def teste(request):
         else:
             excelente9+=1        
     return render(request, "graficosFeedback.html" , {"ruim" : ruim, "bom" : bom, "medio" : medio , "excelente": excelente, "ruim2" : ruim2, "bom2" : bom2, "medio2" : medio2 , "excelente2": excelente2, "ruim3" : ruim3, "bom3" : bom3, "medio3" : medio3 , "excelente3": excelente3, "ruim4" : ruim4, "bom4" : bom4, "medio4" : medio4 , "excelente4": excelente4, "ruim5" : ruim5, "bom5" : bom5, "medio5" : medio5 , "excelente5": excelente5, "ruim6" : ruim6, "bom6" : bom6, "medio6" : medio6 , "excelente6": excelente6, "ruim7" : ruim7, "bom7" : bom7, "medio7" : medio7 , "excelente7": excelente7, "ruim8" : ruim8, "bom8" : bom8, "medio8" : medio8 , "excelente8": excelente8, "ruim9" : ruim9, "bom9" : bom9, "medio9" : medio9 , "excelente9": excelente9})
+
+def criarFormulario(request):
+    if request.method == 'POST':
+            questao1 = request.POST.get("txtQuestao")
+            alternativaAquestao1 =  request.POST.get("txtAltA1")
+            alternativaBquestao1 =  request.POST.get("txtAltB1")
+            alternativaCquestao1 =  request.POST.get("txtAltC1")
+            alternativaDquestao1 =  request.POST.get("txtAltD1")
+            questao2 = request.POST.get("txtQuestao2")
+            alternativaAquestao2 =  request.POST.get("txtAltA2")
+            alternativaBquestao2 =  request.POST.get("txtAltB2")
+            alternativaCquestao2 =  request.POST.get("txtAltC2")
+            alternativaDquestao2 =  request.POST.get("txtAltD2")
+            questao3 = request.POST.get("txtQuestao3")
+            alternativaAquestao3 =  request.POST.get("txtAltA3")
+            alternativaBquestao3 =  request.POST.get("txtAltB3")
+            alternativaCquestao3 =  request.POST.get("txtAltC3")
+            alternativaDquestao3 =  request.POST.get("txtAltD3")
+            questao4 = request.POST.get("txtQuestao4")
+            alternativaAquestao4 =  request.POST.get("txtAltA4")
+            alternativaBquestao4 =  request.POST.get("txtAltB4")
+            alternativaCquestao4 =  request.POST.get("txtAltC4")
+            alternativaDquestao4 =  request.POST.get("txtAltD4")
+            questao5 = request.POST.get("txtQuestao5")
+            alternativaAquestao5 =  request.POST.get("txtAltA5")
+            alternativaBquestao5 =  request.POST.get("txtAltB5")
+            alternativaCquestao5 =  request.POST.get("txtAltC5")
+            alternativaDquestao5 =  request.POST.get("txtAltD5")
+            questao6 = request.POST.get("txtQuestao6")
+            alternativaAquestao6 =  request.POST.get("txtAltA6")
+            alternativaBquestao6 =  request.POST.get("txtAltB6")
+            alternativaCquestao6 =  request.POST.get("txtAltC6")
+            alternativaDquestao6 =  request.POST.get("txtAltD6")
+            questao7 = request.POST.get("txtQuestao7")
+            alternativaAquestao7 =  request.POST.get("txtAltA7")
+            alternativaBquestao7 =  request.POST.get("txtAltB7")
+            alternativaCquestao7 =  request.POST.get("txtAltC7")
+            alternativaDquestao7 =  request.POST.get("txtAltD7")
+            questao8 = request.POST.get("txtQuestao8")
+            alternativaAquestao8 =  request.POST.get("txtAltA8")
+            alternativaBquestao8 =  request.POST.get("txtAltB8")
+            alternativaCquestao8 =  request.POST.get("txtAltC8")
+            alternativaDquestao8 =  request.POST.get("txtAltD8")
+            questao9 = request.POST.get("txtQuestao9")
+            alternativaAquestao9 =  request.POST.get("txtAltA9")
+            alternativaBquestao9 =  request.POST.get("txtAltB9")
+            alternativaCquestao9 =  request.POST.get("txtAltC9")
+            alternativaDquestao9 =  request.POST.get("txtAltD9")
+            questao10 = request.POST.get("txtQuestao10")
+            alternativaAquestao10 =  request.POST.get("txtAltA10")
+            alternativaBquestao10 =  request.POST.get("txtAltB10")
+            alternativaCquestao10 =  request.POST.get("txtAltC10")
+            alternativaDquestao10 =  request.POST.get("txtAltD10")
+            formulario = Formulario.objects.create(questao1=questao1, alternativaAquestao1=alternativaAquestao1,alternativaBquestao1=alternativaBquestao1,alternativaCquestao1=alternativaCquestao1,alternativaDquestao1=alternativaDquestao1,questao2=questao2, alternativaAquestao2=alternativaAquestao2,alternativaBquestao2=alternativaBquestao2,alternativaCquestao2=alternativaCquestao2,alternativaDquestao2=alternativaDquestao2,questao3=questao3, alternativaAquestao3=alternativaAquestao3,alternativaBquestao3=alternativaBquestao3,alternativaCquestao3=alternativaCquestao3,alternativaDquestao3=alternativaDquestao3,questao4=questao4, alternativaAquestao4=alternativaAquestao4,alternativaBquestao4=alternativaBquestao4,alternativaCquestao4=alternativaCquestao4,alternativaDquestao4=alternativaDquestao4,questao5=questao5, alternativaAquestao5=alternativaAquestao5,alternativaBquestao5=alternativaBquestao5,alternativaCquestao5=alternativaCquestao5,alternativaDquestao5=alternativaDquestao5,questao6=questao6, alternativaAquestao6=alternativaAquestao6,alternativaBquestao6=alternativaBquestao6,alternativaCquestao6=alternativaCquestao6,alternativaDquestao6=alternativaDquestao6,questao7=questao7, alternativaAquestao7=alternativaAquestao7,alternativaBquestao7=alternativaBquestao7,alternativaCquestao7=alternativaCquestao7,alternativaDquestao7=alternativaDquestao7,questao8=questao8, alternativaAquestao8=alternativaAquestao8,alternativaBquestao8=alternativaBquestao8,alternativaCquestao8=alternativaCquestao8,alternativaDquestao8=alternativaDquestao8,questao9=questao9, alternativaAquestao9=alternativaAquestao9,alternativaBquestao9=alternativaBquestao9,alternativaCquestao9=alternativaCquestao9,alternativaDquestao9=alternativaDquestao9,questao10=questao10, alternativaAquestao10=alternativaAquestao10,alternativaBquestao10=alternativaBquestao10,alternativaCquestao10=alternativaCquestao10,alternativaDquestao10=alternativaDquestao10)
+            formulario.save() 
+            messages.success(request,"Formulario criado co sucesso")           
+            return redirect("/criarFormulario")
+    return render(request, 'criarFormulario.html')
+
+def gabaritoFormulario(request):
+    questao1 = Formulario.objects.values_list("questao1",flat=True).first()
+    alternativaAquestao1 = Formulario.objects.values_list("alternativaAquestao1",flat=True).first()
+    alternativaBquestao1 = Formulario.objects.values_list("alternativaBquestao1",flat=True).first()
+    alternativaCquestao1 = Formulario.objects.values_list("alternativaCquestao1",flat=True).first()
+    alternativaDquestao1 = Formulario.objects.values_list("alternativaDquestao1",flat=True).first()
+    questao2 = Formulario.objects.values_list("questao2",flat=True).first()
+    alternativaAquestao2 = Formulario.objects.values_list("alternativaAquestao2",flat=True).first()
+    alternativaBquestao2 = Formulario.objects.values_list("alternativaBquestao2",flat=True).first()
+    alternativaCquestao2 = Formulario.objects.values_list("alternativaCquestao2",flat=True).first()
+    alternativaDquestao2 = Formulario.objects.values_list("alternativaDquestao2",flat=True).first()
+    questao3 = Formulario.objects.values_list("questao3",flat=True).first()
+    alternativaAquestao3 = Formulario.objects.values_list("alternativaAquestao3",flat=True).first()
+    alternativaBquestao3 = Formulario.objects.values_list("alternativaBquestao3",flat=True).first()
+    alternativaCquestao3 = Formulario.objects.values_list("alternativaCquestao3",flat=True).first()
+    alternativaDquestao3 = Formulario.objects.values_list("alternativaDquestao3",flat=True).first()
+    questao4 = Formulario.objects.values_list("questao4",flat=True).first()
+    alternativaAquestao4 = Formulario.objects.values_list("alternativaAquestao4",flat=True).first()
+    alternativaBquestao4 = Formulario.objects.values_list("alternativaBquestao4",flat=True).first()
+    alternativaCquestao4 = Formulario.objects.values_list("alternativaCquestao4",flat=True).first()
+    alternativaDquestao4 = Formulario.objects.values_list("alternativaDquestao4",flat=True).first()
+    questao5 = Formulario.objects.values_list("questao5",flat=True).first()
+    alternativaAquestao5 = Formulario.objects.values_list("alternativaAquestao5",flat=True).first()
+    alternativaBquestao5 = Formulario.objects.values_list("alternativaBquestao5",flat=True).first()
+    alternativaCquestao5 = Formulario.objects.values_list("alternativaCquestao5",flat=True).first()
+    alternativaDquestao5 = Formulario.objects.values_list("alternativaDquestao5",flat=True).first()
+    questao6 = Formulario.objects.values_list("questao6",flat=True).first()
+    alternativaAquestao6 = Formulario.objects.values_list("alternativaAquestao6",flat=True).first()
+    alternativaBquestao6 = Formulario.objects.values_list("alternativaBquestao6",flat=True).first()
+    alternativaCquestao6 = Formulario.objects.values_list("alternativaCquestao6",flat=True).first()
+    alternativaDquestao6 = Formulario.objects.values_list("alternativaDquestao6",flat=True).first()
+    questao7 = Formulario.objects.values_list("questao7",flat=True).first()
+    alternativaAquestao7 = Formulario.objects.values_list("alternativaAquestao7",flat=True).first()
+    alternativaBquestao7 = Formulario.objects.values_list("alternativaBquestao7",flat=True).first()
+    alternativaCquestao7 = Formulario.objects.values_list("alternativaCquestao7",flat=True).first()
+    alternativaDquestao7 = Formulario.objects.values_list("alternativaDquestao7",flat=True).first()
+    questao8 = Formulario.objects.values_list("questao8",flat=True).first()
+    alternativaAquestao8 = Formulario.objects.values_list("alternativaAquestao8",flat=True).first()
+    alternativaBquestao8 = Formulario.objects.values_list("alternativaBquestao8",flat=True).first()
+    alternativaCquestao8 = Formulario.objects.values_list("alternativaCquestao8",flat=True).first()
+    alternativaDquestao8 = Formulario.objects.values_list("alternativaDquestao8",flat=True).first()
+    questao9 = Formulario.objects.values_list("questao9",flat=True).first()
+    alternativaAquestao9 = Formulario.objects.values_list("alternativaAquestao9",flat=True).first()
+    alternativaBquestao9 = Formulario.objects.values_list("alternativaBquestao9",flat=True).first()
+    alternativaCquestao9 = Formulario.objects.values_list("alternativaCquestao9",flat=True).first()
+    alternativaDquestao9 = Formulario.objects.values_list("alternativaDquestao9",flat=True).first()
+    questao10 = Formulario.objects.values_list("questao10",flat=True).first()
+    alternativaAquestao10 = Formulario.objects.values_list("alternativaAquestao10",flat=True).first()
+    alternativaBquestao10 = Formulario.objects.values_list("alternativaBquestao10",flat=True).first()
+    alternativaCquestao10 = Formulario.objects.values_list("alternativaCquestao10",flat=True).first()
+    alternativaDquestao10 = Formulario.objects.values_list("alternativaDquestao10",flat=True).first()
+    
+    return render(request, "gabaritoFormulario.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
+
+def preencherGabarito(request):
+    if request.method == 'POST':
+        respostaQuestao1 = request.POST.get("btn-radio")
+        respostaQuestao2 = request.POST.get("btn-radio2")
+        respostaQuestao3 = request.POST.get("btn-radio3")
+        respostaQuestao4 = request.POST.get("btn-radio4")
+        respostaQuestao5 = request.POST.get("btn-radio5")
+        respostaQuestao6 = request.POST.get("btn-radio6")
+        respostaQuestao7 = request.POST.get("btn-radio7")
+        respostaQuestao8 = request.POST.get("btn-radio8")
+        respostaQuestao9 = request.POST.get("btn-radio9")
+        respostaQuestao10 = request.POST.get("btn-radio10")
+        gabarito = Formulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
+        gabarito.save()
+        feedback.save() 
+        messages.success(request,"Feedback enviado com sucesso")           
+        return redirect("/telaProfessor")
+    return render(request, 'gabaritoFormulario.html')
+        
+        
+
+
+
+
+

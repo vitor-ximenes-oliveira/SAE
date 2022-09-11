@@ -41,5 +41,7 @@ urlpatterns = [
     path('atividades/<int:ra>',views.atividades,name='atividades'),
     path('inserir_classe',views.inserir_classe,name='inserir_classe'),
     path('graficosFeedback', views.teste),
+    path('criarFormulario', views.criarFormulario),
+    path('gabaritoFormulario', views.gabaritoFormulario),
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

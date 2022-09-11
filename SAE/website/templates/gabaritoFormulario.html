@@ -7,13 +7,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet"  href="{% static 'estilos/formulario.css' %}">
-    <title>Formulario do Professor</title>
+    <title>Gabarito do Professor</title>
 </head>
 
 <body>
     <form method="POST" class="post-form" action="formularioProfessor">
         {% csrf_token %}
     
+    <h4>Preencha as respostas do gabarito de seu formulario</h4>
+
 
     <div class="container_form"> 
         <label class="txt_Questao">{{questao1}}<label class="txt_Questao" >
@@ -170,7 +172,7 @@
     </div>
 
     <div class="button">
-      <input type="submit" id="btn" value="Responder Formulario" />
+      <input type="submit" id="btn" value="Enviar Gabarito" />
     </div>
 
 </body>
