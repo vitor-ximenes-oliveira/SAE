@@ -111,6 +111,7 @@ def login_user(request):
                                 prof = Professor.objects.get(Usuario_id = usuario.id)          
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
                                 login(request, autenticar_usuario)
+                                mudar_campo_nome = Professor.objects.filter(Usuario=usuario).update(pf_nome=al_nome)
                                 return redirect('telaProfessor/'+str(prof.idProfessor))                          
                 except (Aluno.DoesNotExist, Professor.DoesNotExist,User.DoesNotExist):   
                     messages.error(request, "Nome de usuário ou/e senha inválido(s)")
