@@ -136,17 +136,7 @@ class Formulario(models.Model):
     respostaQuestao8 = models.CharField(max_length=100,blank=True)
     respostaQuestao9 = models.CharField(max_length=100,blank=True)
     respostaQuestao10 = models.CharField(max_length=100,blank=True)
-    nivelQuestao1 = models.CharField(max_length=100,blank=True)
-    nivelQuestao2 = models.CharField(max_length=100,blank=True)
-    nivelQuestao3 = models.CharField(max_length=100,blank=True)
-    nivelQuestao4 = models.CharField(max_length=100,blank=True)
-    nivelQuestao5 = models.CharField(max_length=100,blank=True)
-    nivelQuestao6 = models.CharField(max_length=100,blank=True)
-    nivelQuestao7 = models.CharField(max_length=100,blank=True)
-    nivelQuestao8 = models.CharField(max_length=100,blank=True)
-    nivelQuestao9 = models.CharField(max_length=100,blank=True)
-    nivelQuestao10 = models.CharField(max_length=100,blank=True)
-    
+
     class Meta:
         db_table = "formulario"
 
@@ -199,7 +189,10 @@ class Professor(models.Model):
     Nascimento = models.DateField(default=date.today,blank=True,help_text=('Insira uma data que seja menor que 18 e maior que 100 anos atrás'),validators=[data_valida])
     Materia = models.CharField(max_length=50,blank=False,default="",help_text=('Entrar no SAE como professor'))
     isProf = models.BooleanField(default=1) 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6e3c131889f1385eb9f175a021e16ee23daefb10
     @property
     def esta_ativo(self):
             return bool(self.isProf)  
