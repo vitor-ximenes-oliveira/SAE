@@ -1,11 +1,22 @@
+<<<<<<< HEAD
+=======
 
+>>>>>>> ab3c5b7403d5a3361ec4f6ea24dae26b23d79d5c
 <title>Lista de arquivos</title>
+<body>
+<form action="" method="post" enctype="multipart/form-data" >
+    <h1>Arquivos</h1>
+   <hr/>
 {%for m in material_aluno%}
 {{m.arquivo}}
-<a href="/baixar/{{m.arquivo}}">Baixar</a>
-&nbsp; &nbsp; &nbsp;<a href="/visualizar/{{m.arquivo}}?alu={{m.alu}}">Visualizar</a><br>
 
+<a href="/baixar_arquivo/{{m.arquivo}}">Baixar</a>
+&nbsp; &nbsp; &nbsp;<a href="/visualizar_arquivo/{{m.arquivo}}?alu={{ra}}">Visualizar</a><br>
 <input type="hidden" value="next" value="{{m.alu}}">
-
 {% endfor %}
+<<<<<<< HEAD
+</form>
+</body>
+=======
 
+>>>>>>> ab3c5b7403d5a3361ec4f6ea24dae26b23d79d5c

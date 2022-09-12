@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,AbstractUser
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.core import validators
@@ -14,7 +14,11 @@ class Aluno(models.Model):
     al_nome = models.CharField(max_length=100)
     al_email = models.EmailField()
     al_senha = models.CharField(max_length=100)
-    al_nascimento = models.DateField()  
+    al_nascimento = models.DateField()
+    isProf = models.BooleanField(default=0) 
+    @property
+    def esta_ativo(self):
+            return bool(self.isProf)   
     class Meta:
         db_table = "Aluno"
 
@@ -173,6 +177,10 @@ def data_valida(data):
     if data > datetime.now().date() - relativedelta(years=18) or data < datetime.now().date() - relativedelta(years=100):
         raise ValidationError("Insira uma data válida")
 
+identity = (("students", "students"),
+            ("teachers", "teachers"),
+            ("Admin", "Admin"))
+
 class Professor(models.Model):
     Usuario = models.OneToOneField(User, on_delete=models.CASCADE,default="")
     idProfessor = models.AutoField(primary_key = True)
@@ -180,11 +188,18 @@ class Professor(models.Model):
     Email = models.EmailField()
     Nascimento = models.DateField(default=date.today,blank=True,help_text=('Insira uma data que seja menor que 18 e maior que 100 anos atrás'),validators=[data_valida])
     Materia = models.CharField(max_length=50,blank=False,default="",help_text=('Entrar no SAE como professor'))
-    isProf = models.BooleanField(default=0) 
+    isProf = models.BooleanField(default=1) 
     @property
     def esta_ativo(self):
             return bool(self.isProf)  
     class Meta:
         db_table = "Professor"
+
+
+identity = (("students", "students"),
+            ("teachers", "teachers"),
+            ("Admin", "Admin"))
+class CustomUser(User):
+    identity = models.CharField(max_length=20, choices=identity)
 
 User._meta.get_field('username').validators=[validators.RegexValidator(r'^[\w.@+ ]+$', _('Digite um nome válido.'), 'Inválido')]

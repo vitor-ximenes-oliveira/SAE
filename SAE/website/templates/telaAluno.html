@@ -48,7 +48,7 @@
 
     
     <div class="btn_logout">
-        <button name="Log out" href=sair>Log out</button>
+        <button name="Log out"tipe="submit" href=sair>Log out</button>
     </div>
 
     <div class="charts" id="donutchart" style="width: 900px; height: 500px;">
@@ -66,13 +66,16 @@
                     <p>enviar Feedback</p>
             </div>
         </button>
-        <button type="submit" name="responderFormulario">
+        <form method="POST" class="post-form" action="formularioAluno">
+          {% csrf_token %}
+
+        <button type="submit" name="formularioAluno">
             <div class="card" id="card_feedback">
                     <img src="{% static 'imagens/formulario_aluno.png'%}">
                     <p>Responder Questionário</p>
             </div>
         </button>
-        <button type="button">
+        <button type="submit" name="atividades">
             <div class="card" id="card_perfil">
                 <img src="{% static 'imagens/arquivo.png'%}">
                <p>Baixar Arquivos</p>

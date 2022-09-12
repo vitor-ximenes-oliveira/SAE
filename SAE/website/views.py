@@ -1,4 +1,5 @@
 from audioop import reverse
+from multiprocessing.sharedctypes import Value
 from operator import truediv
 from django.urls import NoReverseMatch
 import stat
@@ -22,75 +23,94 @@ import os
 import subprocess as sp
 from stat import S_IREAD
 
-def cadastro(request):
-    professor = Professor()
-    if request.method == 'POST':
-        try:  
-            if (professor.esta_ativo == False):
-                al_email = request.POST.get("al_email")
-                checar_email = Aluno.objects.get(al_email = al_email)
-                if checar_email:
-                    messages.error(request, "Já existe um aluno cadastrado com esse e-mail")   
-            else:
-                al_email =  request.POST.get("al_email")
-                checar_email = Professor.objects.get(Email = al_email)
-                if checar_email:
-                    messages.error(request, "Já existe um professor cadastrado com esse e-mail")                 
-        except (Aluno.DoesNotExist, Professor.DoesNotExist):
-            al_nome = request.POST.get("al_nome")
-            al_email = request.POST.get("al_email")
-            al_nascimento = request.POST.get("al_nascimento")
+def cadastro_professor(request):
+    try:
+        if request.method == 'POST':
+            pf_email =  request.POST.get("al_email")
+            checar_email = Professor.objects.get(Email = pf_email)
+            if checar_email:
+                messages.error(request, "Já existe um professor cadastrado com esse e-mail")
+    except (Professor.DoesNotExist):
+            pf_nome = request.POST.get("al_nome")
+            pf_email = request.POST.get("al_email")
+            pf_nascimento = request.POST.get("al_nascimento")
+            materia = request.POST.get("pf_materia")
             try:
-                professor = Professor()
-                if (professor.esta_ativo == False):
-                    al_nome = request.POST.get("al_nome")
-                    senha = request.POST.get("al_senha")            
-                    confir_senha = request.POST.get("confir_senha")
-                    if senha != confir_senha:
-                        messages.error(request,"As senhas inseridas são diferentes")
-                        return redirect("/Teladecadastroaluno")
-                    else:
-                        al_senha = make_password(senha)
-                        autenticar_usuario = User(username=al_nome, password=al_senha)
-                        autenticar_usuario.save()       
-                        user = Aluno.objects.create(al_nome=al_nome, al_email=al_email,al_nascimento=al_nascimento,al_senha=al_senha)
-                        user.save()  
-                else:                   
-                    al_nome = request.POST.get("al_nome")
-                    materia = request.POST.get("pf_materia")
-                    senha = request.POST.get("al_senha")            
-                    confir_senha = request.POST.get("confir_senha")
-                    if senha != confir_senha:
+                senha = request.POST.get("al_senha")            
+                confir_senha = request.POST.get("confir_senha")
+                if senha != confir_senha:
                         messages.error(request,"As senhas inseridas são diferentes")
                         return redirect("/CadastroProfessor")
-                    else:                                       
-                            al_senha = make_password(senha)
-                            autenticar_usuario = User(username=al_nome, password=al_senha)
-                            autenticar_usuario.save()       
-                            id_user = User.objects.get(username=al_nome) 
-                            user = Professor.objects.create(Usuario=id_user,Nome = al_nome,Email=al_email,Nascimento=al_nascimento,Materia=materia)
-                            user.save()
-                messages.success(request,"Conta criada com sucesso")           
-                return redirect("/login")           
+                else:                                       
+                                pf_senha = make_password(senha)
+                                autenticar_usuario = User(username=pf_nome, password=pf_senha)
+                                autenticar_usuario.save()       
+                                id_user = User.objects.get(username=pf_nome) 
+                                user = Professor.objects.create(Usuario=id_user,Nome = pf_nome,Email=pf_email,Nascimento=pf_nascimento,Materia=materia)
+                                user.isProf = True
+                                sim = Aluno.objects.update(isProf=0)   
+                                user.save()
+                                return redirect('login')
             except (ValueError,ValidationError):
                 messages.error(request, "Data de nascimento inválida")  
             except AttributeError:
                 messages.error(request,"Preencha os campos com dados válidos")
-            except (Aluno.MultipleObjectsReturned,Professor.MultipleObjectsReturned,IntegrityError):  
-                messages.error(request,"Preencha todos os campos")        
-    if (professor.esta_ativo==False):
-        return render(request, "Teladecadastroaluno.html")  
-    else:
-        return render(request, 'CadastroProfessor.html')
+            except (Professor.MultipleObjectsReturned):  
+                messages.error(request,"Preencha todos os campos")
+            except (IntegrityError):
+                messages.error(request,"Já existe um usuário cadastrado com esse nome") 
+    return render(request,'CadastroProfessor.html')
 
-def login_user(request):    
-            professor = Professor()    
+def cadastro_aluno(request):
+    if request.method == 'POST':
+        try:
+                al_email = request.POST.get("al_email")
+                checar_email = Aluno.objects.get(al_email = al_email)
+                if checar_email:
+                    messages.error(request, "Já existe um aluno cadastrado com esse e-mail")          
+        except (Aluno.DoesNotExist):
+                    al_email = request.POST.get("al_email")
+                    al_nascimento = request.POST.get("al_nascimento") 
+                    al_nome = request.POST.get("al_nome")
+                    senha = request.POST.get("al_senha")            
+                    confir_senha = request.POST.get("confir_senha")
+                    try:
+                        if senha != confir_senha:
+                            messages.error(request,"As senhas inseridas são diferentes")
+                            return redirect("/Teladecadastroaluno")
+                        else:
+                            al_senha = make_password(senha)
+                            autenticar_usuario = User(username=al_nome, password=al_senha)
+                            
+                            autenticar_usuario.save()       
+                            user = Aluno.objects.create(al_nome=al_nome, al_email=al_email,al_nascimento=al_nascimento,al_senha=al_senha)
+                            user.isProf = True
+                            user.save()
+                            sim = Professor.objects.update(isProf=0)                  
+                            messages.success(request,"Conta criada com sucesso")  
+                            
+                            
+                            return redirect('login')
+                    except (ValueError,ValidationError):
+                        messages.error(request, "Data de nascimento inválida")  
+                    except AttributeError:
+                        messages.error(request,"Preencha os campos com dados válidos")
+                    except (Aluno.MultipleObjectsReturned):  
+                        messages.error(request,"Preencha todos os campos") 
+                    except (IntegrityError):
+                        messages.error(request,"Já existe um usuário cadastrado com esse nome")
+    return render(request,'Teladecadastroaluno.html')
+
+def login_user(request):
+            
+            professor = Professor()
             if 'login' in request.POST:        
                 try:
                     al_nome = request.POST.get("nome")
                     al_senha = request.POST.get("senha")
                     professor = Professor()
-                    if (professor.esta_ativo == False):
+                    teste = Professor.objects.filter(isProf=1).last()
+                    if (teste is None):
                         usuario = Aluno.objects.get(al_nome=al_nome)
                     else:
                         usuario = User.objects.get(username=al_nome)
@@ -99,13 +119,15 @@ def login_user(request):
                         return redirect('login')
                     if usuario:
                         professor = Professor()                       
-                        if (professor.esta_ativo == False):
+                        teste = Professor.objects.filter(isProf=1).last()
+                        if (teste is None):
                             checar_senha=check_password(al_senha, usuario.al_senha)
                         else:
                             usuario = User.objects.get(username=al_nome)
                             checar_senha=check_password(al_senha, usuario.password)
                         if checar_senha:
-                            if (professor.esta_ativo == False):        
+                            teste = Professor.objects.filter(isProf=1).last()
+                            if (teste is None):       
                                 autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')                    
                                 login(request, autenticar_usuario)
                                 return redirect('telaAluno/'+str(usuario.ra)) 
@@ -115,54 +137,90 @@ def login_user(request):
                                 login(request, autenticar_usuario)
                                 mudar_campo_nome = Professor.objects.filter(Usuario=usuario).update(Nome=al_nome)
                                 return redirect('telaProfessor/'+str(prof.idProfessor))                          
-                except (Aluno.DoesNotExist, Professor.DoesNotExist,User.DoesNotExist):   
-                    messages.error(request, "Nome de usuário ou/e senha inválido(s)")
-                except (Aluno.MultipleObjectsReturned,Professor.DoesNotExist,User.MultipleObjectsReturned,Professor.MultipleObjectsReturned):
+                
+                except (Aluno.DoesNotExist):
+                    try:
+                        usuario = User.objects.get(username=al_nome)
+                        if not al_nome or not al_senha:
+                            messages.error(request, "Preencha todos os campos")
+                            return redirect('login')
+                        if usuario:
+                            professor = Professor()                       
+                            teste = Professor.objects.filter(isProf=1).last()
+                            usuario = User.objects.get(username=al_nome)
+                            checar_senha=check_password(al_senha, usuario.password)
+                            if checar_senha:
+                                    prof = Professor.objects.get(Usuario_id = usuario.id)          
+                                    autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
+                                    login(request, autenticar_usuario)
+                                    mudar_campo_nome = Professor.objects.filter(Usuario=usuario).update(Nome=al_nome)
+                                    return redirect('telaProfessor/'+str(prof.idProfessor))   
+                    except(Professor.DoesNotExist,User.DoesNotExist):   
+                        messages.error(request, "Nome de usuário ou/e senha inválido(s)")
+                                        
+                except (Aluno.MultipleObjectsReturned,User.MultipleObjectsReturned,Professor.MultipleObjectsReturned):
                     autenticar_usuario = User.objects.filter(username=al_nome).first()
                     if autenticar_usuario:
                         login(request, autenticar_usuario)
                         professor = Professor()
-                        if (professor.esta_ativo == False):
+                        teste = Professor.objects.filter(isProf=1).last()
+                        if (teste is None):
                             return redirect('telaAluno/'+str(user.ra)) 
                         else:
                             login(request, autenticar_usuario)
                             user = Professor.objects.get(Nome=al_nome).first()
                             return redirect('telaProfessor/'+str(user.idProfessor))
+                except(Professor.DoesNotExist,User.DoesNotExist):   
+                        messages.error(request, "Nome de usuário ou/e senha inválido(s)")
             elif 'cadastro' in request.POST:
-                if (professor.esta_ativo==False):
-                    return redirect('/Teladecadastroaluno')
+                teste = Professor.objects.filter(isProf=1).last()
+                alu= Aluno.objects.filter(isProf=1).last()
+                print("ALU: ",alu)
+                if professor.esta_ativo == True:
+                        return redirect('/Teladecadastroaluno')
                 else:
-                    return redirect('/CadastroProfessor')
+                        return redirect('/CadastroProfessor')
             return render(request,"Login.html")
 
 def atividades(request, ra):
     material_aluno = EnviarArquivo.objects.filter(alu=ra)
-    return render(request,'atividades.html',{'material_aluno':material_aluno})
+    return render(request,'atividades.html',{'material_aluno':material_aluno,'ra':ra})
 
 def visualizar_arquivo(request,arquivo):
-    try:
-        extensoes = [".pdf", ".txt", ".png", ".jpg", ".gif", ".bmp",".mp3",".mp4",'.JPG']
-        if arquivo.endswith(tuple(extensoes)):
-            diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
-            arquivo = open(diretorio_arquivo, 'rb') 
-            abrir_Arquivo = FileResponse(arquivo)
-            return abrir_Arquivo
-        elif arquivo.endswith('.docx'): 
-            diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)        
-            sp.Popen(["C:\Program Files\Windows NT\Accessories\WordPad.exe", diretorio_arquivo])
-            os.chmod(diretorio_arquivo,stat.S_IWUSR and stat.S_IRUSR and stat.S_IRUSR)  
-            fk_alu = request.GET.get("alu",'')      
-            return redirect('../atividades/'+str(fk_alu))
-        else:
-            diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
-            os.system(diretorio_arquivo)    
-            os.chmod(diretorio_arquivo,S_IREAD)  
-            fk_alu = request.GET.get("alu",'')      
-            return redirect('../atividades/'+str(fk_alu))
-    except(FileNotFoundError,ValueError):
-            messages.error(request,"Arquivo não encontrado")
-            fk_alu = request.GET.get("alu",'') 
-            return redirect('../atividades/'+str(fk_alu))
+    extensoes = [".pdf", ".txt", ".png", ".jpg", ".gif", ".bmp",".mp3",".mp4",'.JPG']
+    if arquivo.endswith(tuple(extensoes)):
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+        arquivo = open(diretorio_arquivo, 'rb') 
+        abrir_Arquivo = FileResponse(arquivo)
+        return abrir_Arquivo
+    elif arquivo.endswith('.xlsx'):
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+        os.system(diretorio_arquivo)    
+        os.chmod(diretorio_arquivo,stat.S_IRWXO)                   
+        fk_alu = request.GET.get("alu",'')      
+        return redirect('../atividades/'+str(fk_alu))
+    elif arquivo.endswith('.docx'): 
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)        
+        sp.Popen(["C:\Program Files\Windows NT\Accessories\WordPad.exe", diretorio_arquivo])
+        os.chmod(diretorio_arquivo,stat.S_IWUSR and stat.S_IRUSR and stat.S_IRUSR)  
+        fk_alu = request.GET.get("alu",'')      
+        return redirect('../atividades/'+str(fk_alu))
+    elif arquivo.endswith('.pptx'):
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+        os.system(diretorio_arquivo)    
+        os.chmod(diretorio_arquivo,stat.S_IRWXO) 
+        fk_alu = request.GET.get("alu",'')      
+        return redirect('../atividades/'+str(fk_alu))
+    else:
+        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+        os.system(diretorio_arquivo)    
+        os.chmod(diretorio_arquivo,S_IREAD)  
+        fk_alu = request.GET.get("alu",'')      
+        return redirect('../atividades/'+str(fk_alu))
+    #except(FileNotFoundError,ValueError):
+    #        messages.error(request,"Arquivo não encontrado")
+    #        fk_alu = request.GET.get("alu",'') 
+    #        return redirect('../atividades/'+str(fk_alu))
     
 def baixar_arquivo(request, arquivo):
     try:
@@ -257,11 +315,11 @@ def enviar_arquivo(request,idProfessor):
 def telaAluno(request,ra):
     if 'feedback' in request.POST:
         return redirect("feedback")
-    elif 'responderFormulario' in request.POST:
-        return redirect("responderFormulario")
     elif 'Log out' in request.POST:
         sair(request)
         return redirect("login")
+    elif 'atividades' in request.POST:
+        atividades(request,ra)
     return render(request,"telaAluno.html")
 
 
@@ -274,7 +332,7 @@ def pagina_professor(request,idProfessor):
     elif 'criarFormulario' in request.POST:
         return redirect("criarFormulario")
     elif 'graficosFeedback' in request.POST:
-        return redirect("graficosFeedback")
+        return redirect("graficosFeedback",idProfessor)
     elif 'inserir_classe' in request.POST:
         return redirect("inserir_classe")
     elif 'enviar_arquivo' in request.POST:
@@ -377,151 +435,165 @@ def editar_classe(request,idProfessor):
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",[idProfessor])
         return render(request, "editar_classe.html",{'alunos':alunos,'turmas':turmas,'classe_aux':classe_aux})
 
-def graficosFeedback(request):
-    ruim = 0
-    bom = 0
-    medio = 0
-    excelente = 0
+def graficosFeedback(request,idProfessor):
+    if 'voltar' in request.POST:
+        return redirect("../telaProfessor/"+str(idProfessor))
+    else:  
+        ruim = 0
+        bom = 0
+        medio = 0
+        excelente = 0
 
-    ruim2 = 0
-    bom2 = 0
-    medio2 = 0
-    excelente2 = 0
+        ruim2 = 0
+        bom2 = 0
+        medio2 = 0
+        excelente2 = 0
 
-    ruim3 = 0
-    bom3 = 0
-    medio3 = 0
-    excelente3 = 0
+        ruim3 = 0
+        bom3 = 0
+        medio3 = 0
+        excelente3 = 0
 
-    ruim4 = 0
-    bom4 = 0
-    medio4 = 0
-    excelente4 = 0
+        ruim4 = 0
+        bom4 = 0
+        medio4 = 0
+        excelente4 = 0
 
-    ruim5 = 0
-    bom5 = 0
-    medio5 = 0
-    excelente5 = 0
+        ruim5 = 0
+        bom5 = 0
+        medio5 = 0
+        excelente5 = 0
 
-    ruim6 = 0
-    bom6 = 0
-    medio6 = 0
-    excelente6 = 0
+        ruim6 = 0
+        bom6 = 0
+        medio6 = 0
+        excelente6 = 0
 
-    ruim7 = 0
-    bom7 = 0
-    medio7 = 0
-    excelente7 = 0
+        ruim7 = 0
+        bom7 = 0
+        medio7 = 0
+        excelente7 = 0
 
-    ruim8 = 0
-    bom8 = 0
-    medio8 = 0
-    excelente8 = 0
+        ruim8 = 0
+        bom8 = 0
+        medio8 = 0
+        excelente8 = 0
 
-    ruim9 = 0
-    bom9 = 0
-    medio9 = 0
-    excelente9 = 0
+        ruim9 = 0
+        bom9 = 0
+        medio9 = 0
+        excelente9 = 0
 
-    pergunta1 = Feedback.objects.values_list("pergunta1", flat=True)
+        pergunta1 = Feedback.objects.values_list("pergunta1", flat=True)
 
-    for x in pergunta1:
-        if(x == 'Ruim'):
-            ruim+=1
-        elif(x == 'Bom'):
-            bom+=1
-        elif(x == 'Ótimo'):
-            medio+=1
-        else:
-            excelente+=1
+        for x in pergunta1:
+            if(x == 'Ruim'):
+                ruim+=1
+            elif(x == 'Bom'):
+                bom+=1
+            elif(x == 'Ótimo'):
+                medio+=1
+            else:
+                excelente+=1
 
 
-    pergunta2 = Feedback.objects.values_list("pergunta2", flat=True)
+        pergunta2 = Feedback.objects.values_list("pergunta2", flat=True)
 
-    for x in pergunta2:
-        if(x == 'Ruim'):
-            ruim2+=1
-        elif(x == 'Bom'):
-            bom2+=1
-        elif(x == 'Ótimo'):
-            medio2+=1
-        else:
-            excelente2+=1
+        for x in pergunta2:
+            if(x == 'Ruim'):
+                ruim2+=1
+            elif(x == 'Bom'):
+                bom2+=1
+            elif(x == 'Ótimo'):
+                medio2+=1
+            else:
+                excelente2+=1
 
-    pergunta3 = Feedback.objects.values_list("pergunta3", flat=True)
+        pergunta3 = Feedback.objects.values_list("pergunta3", flat=True)
 
-    for x in pergunta3:
-        if(x == 'Ruim'):
-            ruim3+=1
-        elif(x == 'Bom'):
-            bom3+=1
-        elif(x == 'Ótimo'):
-            medio3+=1
-        else:
-            excelente3+=1
+        for x in pergunta3:
+            if(x == 'Ruim'):
+                ruim3+=1
+            elif(x == 'Bom'):
+                bom3+=1
+            elif(x == 'Ótimo'):
+                medio3+=1
+            else:
+                excelente3+=1
 
-    pergunta4 = Feedback.objects.values_list("pergunta4", flat=True)
+        pergunta4 = Feedback.objects.values_list("pergunta4", flat=True)
 
-    for x in pergunta4:
-        if(x == 'Ruim'):
-            ruim4+=1
-        elif(x == 'Bom'):
-            bom4+=1
-        elif(x == 'Ótimo'):
-            medio4+=1
-        else:
-            excelente4+=1
+        for x in pergunta4:
+            if(x == 'Ruim'):
+                ruim4+=1
+            elif(x == 'Bom'):
+                bom4+=1
+            elif(x == 'Ótimo'):
+                medio4+=1
+            else:
+                excelente4+=1
 
-    pergunta5 = Feedback.objects.values_list("pergunta5", flat=True)
+        pergunta5 = Feedback.objects.values_list("pergunta5", flat=True)
 
-    for x in pergunta5:
-        if(x == 'Ruim'):
-            ruim5+=1
-        elif(x == 'Bom'):
-            bom5+=1
-        elif(x == 'Ótimo'):
-            medio5+=1
-        else:
-            excelente5+=1
+        for x in pergunta5:
+            if(x == 'Ruim'):
+                ruim5+=1
+            elif(x == 'Bom'):
+                bom5+=1
+            elif(x == 'Ótimo'):
+                medio5+=1
+            else:
+                excelente5+=1
 
-    pergunta6 = Feedback.objects.values_list("pergunta6", flat=True)
+        pergunta6 = Feedback.objects.values_list("pergunta6", flat=True)
 
-    for x in pergunta6:
-        if(x == 'Ruim'):
-            ruim6+=1
-        elif(x == 'Bom'):
-            bom6+=1
-        elif(x == 'Ótimo'):
-            medio6+=1
-        else:
-            excelente6+=1
+        for x in pergunta6:
+            if(x == 'Ruim'):
+                ruim6+=1
+            elif(x == 'Bom'):
+                bom6+=1
+            elif(x == 'Ótimo'):
+                medio6+=1
+            else:
+                excelente6+=1
 
-    pergunta7 = Feedback.objects.values_list("pergunta7", flat=True)
+        pergunta7 = Feedback.objects.values_list("pergunta7", flat=True)
 
-    for x in pergunta7:
-        if(x == 'Ruim'):
-            ruim7+=1
-        elif(x == 'Bom'):
-            bom7+=1
-        elif(x == 'Ótimo'):
-            medio7+=1
-        else:
-            excelente7+=1
+        for x in pergunta7:
+            if(x == 'Ruim'):
+                ruim7+=1
+            elif(x == 'Bom'):
+                bom7+=1
+            elif(x == 'Ótimo'):
+                medio7+=1
+            else:
+                excelente7+=1
 
-    pergunta8 = Feedback.objects.values_list("pergunta8", flat=True)
+        pergunta8 = Feedback.objects.values_list("pergunta8", flat=True)
 
-    for x in pergunta8:
-        if(x == 'Ruim'):
-            ruim8+=1
-        elif(x == 'Bom'):
-            bom8+=1
-        elif(x == 'Ótimo'):
-            medio8+=1
-        else:
-            excelente8+=1
+        for x in pergunta8:
+            if(x == 'Ruim'):
+                ruim8+=1
+            elif(x == 'Bom'):
+                bom8+=1
+            elif(x == 'Ótimo'):
+                medio8+=1
+            else:
+                excelente8+=1
 
-    pergunta9 = Feedback.objects.values_list("pergunta9", flat=True)
+        pergunta9 = Feedback.objects.values_list("pergunta9", flat=True)
 
+        for x in pergunta9:
+            if(x == 'Ruim'):
+                ruim9+=1
+            elif(x == 'Bom'):
+                bom9+=1
+            elif(x == 'Ótimo'):
+                medio9+=1
+            else:
+                excelente9+=1
+
+         
     for x in pergunta9:
         if(x == 'Ruim'):
             ruim9+=1
@@ -749,6 +821,60 @@ def graficoAluno(request):
 
     return render(request, {"acertos":acertos, "erros": erros, "nivelDoAluno": nivelDoAluno})
 
+
+def formularioAluno(request):
+    questao1 = Formulario.objects.values_list("questao1",flat=True).first()
+    alternativaAquestao1 = Formulario.objects.values_list("alternativaAquestao1",flat=True).first()
+    alternativaBquestao1 = Formulario.objects.values_list("alternativaBquestao1",flat=True).first()
+    alternativaCquestao1 = Formulario.objects.values_list("alternativaCquestao1",flat=True).first()
+    alternativaDquestao1 = Formulario.objects.values_list("alternativaDquestao1",flat=True).first()
+    questao2 = Formulario.objects.values_list("questao2",flat=True).first()
+    alternativaAquestao2 = Formulario.objects.values_list("alternativaAquestao2",flat=True).first()
+    alternativaBquestao2 = Formulario.objects.values_list("alternativaBquestao2",flat=True).first()
+    alternativaCquestao2 = Formulario.objects.values_list("alternativaCquestao2",flat=True).first()
+    alternativaDquestao2 = Formulario.objects.values_list("alternativaDquestao2",flat=True).first()
+    questao3 = Formulario.objects.values_list("questao3",flat=True).first()
+    alternativaAquestao3 = Formulario.objects.values_list("alternativaAquestao3",flat=True).first()
+    alternativaBquestao3 = Formulario.objects.values_list("alternativaBquestao3",flat=True).first()
+    alternativaCquestao3 = Formulario.objects.values_list("alternativaCquestao3",flat=True).first()
+    alternativaDquestao3 = Formulario.objects.values_list("alternativaDquestao3",flat=True).first()
+    questao4 = Formulario.objects.values_list("questao4",flat=True).first()
+    alternativaAquestao4 = Formulario.objects.values_list("alternativaAquestao4",flat=True).first()
+    alternativaBquestao4 = Formulario.objects.values_list("alternativaBquestao4",flat=True).first()
+    alternativaCquestao4 = Formulario.objects.values_list("alternativaCquestao4",flat=True).first()
+    alternativaDquestao4 = Formulario.objects.values_list("alternativaDquestao4",flat=True).first()
+    questao5 = Formulario.objects.values_list("questao5",flat=True).first()
+    alternativaAquestao5 = Formulario.objects.values_list("alternativaAquestao5",flat=True).first()
+    alternativaBquestao5 = Formulario.objects.values_list("alternativaBquestao5",flat=True).first()
+    alternativaCquestao5 = Formulario.objects.values_list("alternativaCquestao5",flat=True).first()
+    alternativaDquestao5 = Formulario.objects.values_list("alternativaDquestao5",flat=True).first()
+    questao6 = Formulario.objects.values_list("questao6",flat=True).first()
+    alternativaAquestao6 = Formulario.objects.values_list("alternativaAquestao6",flat=True).first()
+    alternativaBquestao6 = Formulario.objects.values_list("alternativaBquestao6",flat=True).first()
+    alternativaCquestao6 = Formulario.objects.values_list("alternativaCquestao6",flat=True).first()
+    alternativaDquestao6 = Formulario.objects.values_list("alternativaDquestao6",flat=True).first()
+    questao7 = Formulario.objects.values_list("questao7",flat=True).first()
+    alternativaAquestao7 = Formulario.objects.values_list("alternativaAquestao7",flat=True).first()
+    alternativaBquestao7 = Formulario.objects.values_list("alternativaBquestao7",flat=True).first()
+    alternativaCquestao7 = Formulario.objects.values_list("alternativaCquestao7",flat=True).first()
+    alternativaDquestao7 = Formulario.objects.values_list("alternativaDquestao7",flat=True).first()
+    questao8 = Formulario.objects.values_list("questao8",flat=True).first()
+    alternativaAquestao8 = Formulario.objects.values_list("alternativaAquestao8",flat=True).first()
+    alternativaBquestao8 = Formulario.objects.values_list("alternativaBquestao8",flat=True).first()
+    alternativaCquestao8 = Formulario.objects.values_list("alternativaCquestao8",flat=True).first()
+    alternativaDquestao8 = Formulario.objects.values_list("alternativaDquestao8",flat=True).first()
+    questao9 = Formulario.objects.values_list("questao9",flat=True).first()
+    alternativaAquestao9 = Formulario.objects.values_list("alternativaAquestao9",flat=True).first()
+    alternativaBquestao9 = Formulario.objects.values_list("alternativaBquestao9",flat=True).first()
+    alternativaCquestao9 = Formulario.objects.values_list("alternativaCquestao9",flat=True).first()
+    alternativaDquestao9 = Formulario.objects.values_list("alternativaDquestao9",flat=True).first()
+    questao10 = Formulario.objects.values_list("questao10",flat=True).first()
+    alternativaAquestao10 = Formulario.objects.values_list("alternativaAquestao10",flat=True).first()
+    alternativaBquestao10 = Formulario.objects.values_list("alternativaBquestao10",flat=True).first()
+    alternativaCquestao10 = Formulario.objects.values_list("alternativaCquestao10",flat=True).first()
+    alternativaDquestao10 = Formulario.objects.values_list("alternativaDquestao10",flat=True).first()
+    
+    return render(request, "formularioAluno.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
 
 
     
