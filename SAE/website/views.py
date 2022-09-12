@@ -269,6 +269,10 @@ def pagina_professor(request,idProfessor):
         return redirect("criarFormulario")
     elif 'graficosFeedback' in request.POST:
         return redirect("graficosFeedback")
+    elif 'inserir_classe' in request.POST:
+        return redirect("inserir_classe")
+    elif 'enviar_arquivo' in request.POST:
+        return redirect("/enviar_arquivo/"+str(idProfessor))
 
     return render(request,"telaProfessor.html")
 
@@ -650,7 +654,17 @@ def preencherGabarito(request,idProfessor):
         respostaQuestao8 = request.POST.get("btn-radio8")
         respostaQuestao9 = request.POST.get("btn-radio9")
         respostaQuestao10 = request.POST.get("btn-radio10")
-        gabarito = Formulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
+        nivelQuestao1 = request.POST.get("text1")
+        nivelQuestao2 = request.POST.get("text2")
+        nivelQuestao3 = request.POST.get("text3")
+        nivelQuestao4 = request.POST.get("text4")
+        nivelQuestao5 = request.POST.get("text5")
+        nivelQuestao6 = request.POST.get("text6")
+        nivelQuestao7 = request.POST.get("text7")
+        nivelQuestao8 = request.POST.get("text8")
+        nivelQuestao9 = request.POST.get("text9")
+        nivelQuestao10 = request.POST.get("text10")
+        gabarito = Formulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10,nivelQuestao1=nivelQuestao1,nivelQuestao2=nivelQuestao2,nivelQuestao3=nivelQuestao3,nivelQuestao4=nivelQuestao4,nivelQuestao5=nivelQuestao5,nivelQuestao6=nivelQuestao6,nivelQuestao7=nivelQuestao7,nivelQuestao8=nivelQuestao8,nivelQuestao9=nivelQuestao9,nivelQuestao10=nivelQuestao10)
         gabarito.save()
         feedback.save() 
         messages.success(request,"Gabarito enviado com sucesso")         

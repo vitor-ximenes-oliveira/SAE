@@ -132,6 +132,16 @@ class Formulario(models.Model):
     respostaQuestao8 = models.CharField(max_length=100,blank=True)
     respostaQuestao9 = models.CharField(max_length=100,blank=True)
     respostaQuestao10 = models.CharField(max_length=100,blank=True)
+    nivelQuestao1 = models.CharField(max_length=100,blank=True)
+    nivelQuestao2 = models.CharField(max_length=100,blank=True)
+    nivelQuestao3 = models.CharField(max_length=100,blank=True)
+    nivelQuestao4 = models.CharField(max_length=100,blank=True)
+    nivelQuestao5 = models.CharField(max_length=100,blank=True)
+    nivelQuestao6 = models.CharField(max_length=100,blank=True)
+    nivelQuestao7 = models.CharField(max_length=100,blank=True)
+    nivelQuestao8 = models.CharField(max_length=100,blank=True)
+    nivelQuestao9 = models.CharField(max_length=100,blank=True)
+    nivelQuestao10 = models.CharField(max_length=100,blank=True)
     
     class Meta:
         db_table = "formulario"
@@ -159,11 +169,15 @@ class RespostasFormulario(models.Model):
 @receiver(pre_save, sender=EnviarArquivo)
 def sobrescrever_arquivo(sender, **kwargs):
     verificar_pasta = kwargs['instance']
-    print("verificar_pasta: ",verificar_pasta)
-    if verificar_pasta.arquivo:
-        arquivo_igual = verificar_pasta.arquivo.path
-        print("Arquivo substituido com sucesso")
-        os.remove(arquivo_igual)
+    try:
+
+        print("verificar_pasta: ",verificar_pasta)
+        if verificar_pasta.arquivo:
+            arquivo_igual = verificar_pasta.arquivo.path
+            print("Arquivo substituido com sucesso")
+            os.remove(arquivo_igual)
+    except FileNotFoundError:
+        print("")
 
 def data_valida(data):
     if data > datetime.now().date() - relativedelta(years=18) or data < datetime.now().date() - relativedelta(years=100):
