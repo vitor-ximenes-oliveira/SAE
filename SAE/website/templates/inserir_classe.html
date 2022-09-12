@@ -18,7 +18,7 @@
   <select id="prof" name="professor" class="custom-select custom-select-sm input-small">
     <option disabled="true" selected>---Selecione um Professor---</option>
     {%for prof in professores%}
-    <option value="{{prof.idProfessor}}">{{prof.pf_nome}}</option>
+    <option value="{{prof.idProfessor}}">{{prof.Nome}}</option>
     {% endfor %}   
     </select>
     {% csrf_token %}
@@ -43,7 +43,7 @@
 <pre class="tab"></pre><label>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp; Lista de Turmas</label></pre><br>
 <label>&emsp;&ensp; Classe &emsp;&emsp;&emsp; Ano Letivo &emsp;&emsp;&emsp; Professor</label><br>
 {% for turma in turmas %}
-<label>&emsp;&ensp;{{turma.classe}}&emsp;&emsp;&emsp;&emsp;&ensp; {{turma.ano_letivo}}&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{turma.pf_nome}}</label><br>
+<label>&emsp;&ensp;{{turma.classe}}&emsp;&emsp;&emsp;&emsp;&ensp; {{turma.ano_letivo}}&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{turma.Nome}}</label><br>
 {% endfor %}
 {% for message in messages %}
 <p id="messages">{{message}}</p>
