@@ -320,7 +320,9 @@ def telaAluno(request,ra):
         sair(request)
         return redirect("login")
     elif 'atividades' in request.POST:
-        atividades(request,ra)
+        return redirect('atividades',ra)
+    elif 'formularioAluno' in request.POST:
+        return redirect('formularioAluno')
     return render(request,"telaAluno.html")
 
 
@@ -594,11 +596,7 @@ def graficosFeedback(request,idProfessor):
             else:
                 excelente9+=1
 
-<<<<<<< HEAD
-        
-=======
-         
->>>>>>> 6e3c131889f1385eb9f175a021e16ee23daefb10
+
     for x in pergunta9:
         if(x == 'Ruim'):
             ruim9+=1
@@ -889,19 +887,11 @@ def formularioAluno(request):
     return render(request, "formularioAluno.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
 
 
-<<<<<<< HEAD
-
 def pagina_feedback(request):
     if 'Log out' in request.POST:
         return redirect("telaProfessor")
     return render(request, "graficosFeedback.html")
         
-
-
-
-=======
-    
->>>>>>> 6e3c131889f1385eb9f175a021e16ee23daefb10
 
 
 

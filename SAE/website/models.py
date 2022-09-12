@@ -142,8 +142,6 @@ class Formulario(models.Model):
 
 class RespostasFormulario(models.Model):
     id = models.AutoField(primary_key=True)
-    #fk_aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE,blank=False)
-    #nome_aluno = models.CharField(max_length=100,blank=True)
     respostaQuestao1 = models.CharField(max_length=100,blank=True)
     respostaQuestao2 = models.CharField(max_length=100,blank=True)
     respostaQuestao3 = models.CharField(max_length=100,blank=True)
@@ -189,10 +187,6 @@ class Professor(models.Model):
     Nascimento = models.DateField(default=date.today,blank=True,help_text=('Insira uma data que seja menor que 18 e maior que 100 anos atrás'),validators=[data_valida])
     Materia = models.CharField(max_length=50,blank=False,default="",help_text=('Entrar no SAE como professor'))
     isProf = models.BooleanField(default=1) 
-<<<<<<< HEAD
-
-=======
->>>>>>> 6e3c131889f1385eb9f175a021e16ee23daefb10
     @property
     def esta_ativo(self):
             return bool(self.isProf)  
