@@ -32,7 +32,7 @@ urlpatterns = [
     path('telaProfessor/<int:idProfessor>',views.pagina_professor,name='telaProfessor'),
     path('baixar_arquivo/<str:arquivo>',views.baixar_arquivo, name='baixar_arquivo'),
     path('visualizar_arquivo/<str:arquivo>',views.visualizar_arquivo, name='visualizar_arquivo'),
-    path('feedback',views.feedback, name="feedback"),
+    path('feedback/<int:ra>',views.feedback, name="feedback"),
     path('sair',views.sair),
     path('turmas/<int:idProfessor>',views.turmas),
     path('enviar_arquivo/<int:idProfessor>',views.enviar_arquivo,name='enviar_arquivo'),
@@ -42,6 +42,6 @@ urlpatterns = [
     path('criarFormulario', views.criarFormulario, name='criarFormulario'),
     path('gabaritoFormulario', views.gabaritoFormulario),
     path('telaAluno/<int:ra>', views.telaAluno, name='telaAluno'),
-    path('preencherGabarito/<int:idProfessor', views.preencherGabarito, name='telaProfessor'),
+    path('preencherGabarito/<int:idProfessor', views.preencherGabarito),
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
