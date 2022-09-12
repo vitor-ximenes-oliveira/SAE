@@ -132,17 +132,7 @@ class Formulario(models.Model):
     respostaQuestao8 = models.CharField(max_length=100,blank=True)
     respostaQuestao9 = models.CharField(max_length=100,blank=True)
     respostaQuestao10 = models.CharField(max_length=100,blank=True)
-    nivelQuestao1 = models.CharField(max_length=100,blank=True)
-    nivelQuestao2 = models.CharField(max_length=100,blank=True)
-    nivelQuestao3 = models.CharField(max_length=100,blank=True)
-    nivelQuestao4 = models.CharField(max_length=100,blank=True)
-    nivelQuestao5 = models.CharField(max_length=100,blank=True)
-    nivelQuestao6 = models.CharField(max_length=100,blank=True)
-    nivelQuestao7 = models.CharField(max_length=100,blank=True)
-    nivelQuestao8 = models.CharField(max_length=100,blank=True)
-    nivelQuestao9 = models.CharField(max_length=100,blank=True)
-    nivelQuestao10 = models.CharField(max_length=100,blank=True)
-    
+
     class Meta:
         db_table = "formulario"
 

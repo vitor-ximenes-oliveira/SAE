@@ -259,6 +259,9 @@ def telaAluno(request,ra):
         return redirect("feedback")
     elif 'responderFormulario' in request.POST:
         return redirect("responderFormulario")
+    elif 'Log out' in request.POST:
+        sair(request)
+        return redirect("login")
     return render(request,"telaAluno.html")
 
 
@@ -684,16 +687,6 @@ def graficoAluno(request):
     resposta8 = Formulario.objects.values_list("respostaQuestao8",flat=True).first()
     resposta9 = Formulario.objects.values_list("respostaQuestao9",flat=True).first()
     resposta10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
-    nivelQuestao1 = Formulario.objects.values_list("nivelQuestao1",flat=True).first()
-    nivelQuestao2 = Formulario.objects.values_list("nivelQuestao2",flat=True).first()
-    nivelQuestao3 = Formulario.objects.values_list("nivelQuestao3",flat=True).first()
-    nivelQuestao4 = Formulario.objects.values_list("nivelQuestao4",flat=True).first()
-    nivelQuestao5 = Formulario.objects.values_list("nivelQuestao5",flat=True).first()
-    nivelQuestao6 = Formulario.objects.values_list("nivelQuestao6",flat=True).first()
-    nivelQuestao7 = Formulario.objects.values_list("nivelQuestao7",flat=True).first()
-    nivelQuestao8 = Formulario.objects.values_list("nivelQuestao8",flat=True).first()
-    nivelQuestao9 = Formulario.objects.values_list("nivelQuestao9",flat=True).first()
-    nivelQuestao10 = Formulario.objects.values_list("nivelQuestao10",flat=True).first()
     
     if(questao1 == resposta1):
         acertos+=1

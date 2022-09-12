@@ -43,5 +43,6 @@ urlpatterns = [
     path('gabaritoFormulario', views.gabaritoFormulario),
     path('telaAluno/<int:ra>', views.telaAluno, name='telaAluno'),
     path('preencherGabarito/<int:idProfessor', views.preencherGabarito),
+    path('telaAluno', views.telaAluno, name="telaAluno"),
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
