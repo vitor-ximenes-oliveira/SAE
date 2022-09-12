@@ -42,12 +42,7 @@ urlpatterns = [
     path('criarFormulario/<int:idProfessor>', views.criarFormulario, name='criarFormulario'),
     path('gabaritoFormulario/<int:idProfessor>', views.gabaritoFormulario,name='gabaritoFormulario'),
     path('telaAluno/<int:ra>', views.telaAluno, name='telaAluno'),
-<<<<<<< HEAD
-    path('preencherGabarito', views.preencherGabarito,name='preencherGabarito'),
-=======
-    path('preencherGabarito/<int:idProfessor', views.preencherGabarito),
     path('telaAluno', views.telaAluno, name="telaAluno"),
     path('formularioAluno', views.formularioAluno),
->>>>>>> 6e3c131889f1385eb9f175a021e16ee23daefb10
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
