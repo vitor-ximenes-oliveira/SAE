@@ -13,7 +13,7 @@
     <p id="messages">{{message}}</p>
     {% endfor %}
 
-    <form method="POST" class="post-form">
+    <form method="POST" class="post-form" action="feedback">
         {% csrf_token %}
     <div class="container_form">
         <label class="txt_Questao">1. Qual o nível de satisfação com a didática do(a) professor(a) durante as aulas? Justifique.</label>

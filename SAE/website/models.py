@@ -18,22 +18,6 @@ class Aluno(models.Model):
     class Meta:
         db_table = "Aluno"
 
-class Professor(models.Model):
-    idProfessor = models.AutoField(primary_key = True)
-    pf_nome = models.CharField(max_length=100)
-    pf_email = models.EmailField()
-    pf_senha = models.CharField(max_length=100)
-    pf_nascimento = models.DateField()
-    pf_materia = models.CharField(max_length=50,blank=False)
-    isProf = models.BooleanField(default=1)
-    pf_materia = models.CharField(max_length=100)
-
-    @property
-    def esta_ativo(self):
-            return bool(self.isProf)
-    class Meta:
-        db_table = "Professor"
-        
 class Turmas(models.Model):
     idTurma = models.AutoField(primary_key=True)
     ano_letivo = models.CharField(max_length=10,blank = False)

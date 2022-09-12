@@ -1,7 +1,10 @@
 body {
     color: #5d49cc;
+    background-color: #5d49cc;
 }
 
-div {
-    color: #5d49cc;
+.container_charts{
+    align-items: center;
+    text-align: center;
+    align-content: center;
 }

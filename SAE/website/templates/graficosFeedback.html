@@ -10,6 +10,9 @@
 </head>
 
 <body>
+    <div class="btn_logout">
+        <button name="Log out" type="submit">Voltar a tela do professor</button>
+    </div>
 
     {% block grafico %}
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -43,8 +46,6 @@
           chart.draw(view, options);
       }
       </script>
-
-    <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
 
     {% endblock%}
 
@@ -81,8 +82,6 @@
       }
       </script>
 
-    <div id="columnchart_values2" style="width: 900px; height: 300px;"></div>
-
     {% endblock%}
 
     {% block grafico3 %}
@@ -117,8 +116,6 @@
           chart.draw(view, options);
       }
       </script>
-
-    <div id="columnchart_values3" style="width: 900px; height: 300px;"></div>
 
     {% endblock%}
 
@@ -156,8 +153,6 @@
       }
       </script>
 
-    <div id="columnchart_values4" style="width: 900px; height: 300px;"></div>
-
     {% endblock%}
 
     {% block grafico5 %}
@@ -192,8 +187,6 @@
           chart.draw(view, options);
       }
       </script>
-
-    <div id="columnchart_values5" style="width: 900px; height: 300px;"></div>
 
     {% endblock%}
 
@@ -230,8 +223,6 @@
       }
       </script>
 
-    <div id="columnchart_values6" style="width: 900px; height: 300px;"></div>
-
     {% endblock%}
 
     {% block grafico7 %}
@@ -266,8 +257,6 @@
           chart.draw(view, options);
       }
       </script>
-
-    <div id="columnchart_values7" style="width: 900px; height: 300px;"></div>
 
     {% endblock%}
 
@@ -304,8 +293,6 @@
       }
       </script>
 
-    <div id="columnchart_values8" style="width: 900px; height: 300px;"></div>
-
     {% endblock%}
 
     {% block grafico9 %}
@@ -341,52 +328,26 @@
       }
       </script>
 
-    <div id="columnchart_values9" style="width: 900px; height: 300px;"></div>
-
     {% endblock%}
 
+    <div class="container_charts">
+      <div id="columnchart_values"></div>
 
+      <div id="columnchart_values2"></div>
 
-    {% block content %}
+      <div id="columnchart_values3"></div>
 
-    <div id="columnchart_values">
+      <div id="columnchart_values4"></div>
 
+      <div id="columnchart_values5"></div>
+
+      <div id="columnchart_values6"></div>
+
+      <div id="columnchart_values7"></div>
+
+      <div id="columnchart_values8"></div>
+
+      <div id="columnchart_values9"></div>
     </div>
-
-    <div id = "columnchart_values2">
-
-    </div>
-
-    <div id = "columnchart_values3">
-
-    </div>
-
-    <div id = "columnchart_values4">
-
-    </div>
-
-    <div id = "columnchart_values5">
-
-    </div>
-
-    <div id = "columnchart_values6">
-
-    </div>
-
-    <div id = "columnchart_values7">
-
-    </div>
-
-    <div id = "columnchart_values8">
-
-    </div>
-
-    <div id = "columnchart_values9">
-
-    </div>
-
-    {% endblock %}
-
-
 
 </body>

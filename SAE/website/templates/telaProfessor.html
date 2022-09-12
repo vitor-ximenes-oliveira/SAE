@@ -6,8 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'estilos/Professor.css' %}">
+    <link rel="stylesheet" href="../static/estilos/geral.css" />
     <title>Professor</title>
 </head>
+<header class="headerAluno">
+    <img src="{% static 'imagens/teacher.png' %}">
+</header>
 
 <body>
     {% for message in messages %}
@@ -15,19 +19,20 @@
     {% endfor %}
 
     <form method="POST" class="post-form" action="">
-        {% csrf_token %}
+          {% csrf_token %}
+
+    
     <div class="btn_logout">
         <button name="Log out" href=sair>Log out</button>
     </div>
     <div class="container_telaProfessor">
-
-        <button type="button">
+        <button type="submit" name="criarFormulario">
             <div class="card" id="card_form">
                     <img src="{% static 'imagens/icon_Formulario.png' %}">
                     <p>Criar Formulario</p>
             </div>
         </button>
-        <button type="submit">
+        <button type="submit" name="graficosFeedback">
             <div class="card" id="card_feedback">
                     <img src="{% static 'imagens/icon_feedback.png'%}">
                     <p>Exibir Feedback</p>
@@ -49,6 +54,7 @@
             </div>
         </button>
     </div>
+    </form>
 </body>
 
 <script>

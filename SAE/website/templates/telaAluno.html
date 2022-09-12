@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'estilos/Aluno.css' %}">
+    <link rel="stylesheet" href="../static/estilos/geral.css" />
+    <title>Aluno</title>
+</head>
+<header class="headerAluno">
+    <img src="{% static 'imagens/aluno.png' %}">
+</header>
+
+<body>
+    {% for message in messages %}
+        <p id="messages">{{message}}</p>
+    {% endfor %}
+
+    {% block grafico%}
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['Questões Simples',     11],
+          ['Questões Intermdiárias',      2],
+          ['Questões Avançadas',  2]
+        ]);
+
+        var options = {
+          title: 'Questionário de Nivelamento',
+          pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);
+      }
+    </script>
+
+
+    {% endblock%}
+
+    <form method="POST" class="post-form" action="">
+          {% csrf_token %}
+
+    
+    <div class="btn_logout">
+        <button name="Log out" href=sair>Log out</button>
+    </div>
+
+    <div class="charts" id="donutchart" style="width: 900px; height: 500px;">
+    </div>
+
+    <div class="container_telaProfessor">
+        <button type="submit" name="feedback">
+            <div class="card" id="card_form">
+                    <img src="{% static 'imagens/feedback.png' %}">
+                    <p>enviar Feedback</p>
+            </div>
+        </button>
+        <button type="submit">
+            <div class="card" id="card_feedback">
+                    <img src="{% static 'imagens/formulario_aluno.png'%}">
+                    <p>Responder Questionário</p>
+            </div>
+        </button>
+        <button type="button">
+            <div class="card" id="card_perfil">
+                <img src="{% static 'imagens/arquivo.png'%}">
+               <p>Baixar Arquivos</p>
+            </div>
+        </button>
+    </div>
+    <hr />
+    </form>
+</body>
+
+<script>
+    document.getElementById("card_form").onclicked = function(){
+
+    }
+
+
+</script>
+
+</html>
