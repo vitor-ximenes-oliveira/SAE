@@ -19,7 +19,11 @@
                 <img src="{% static 'imagens/education.png' %}">
             </div>
             <h1 style="color: #5a9bd5 ;">Cadastro de Professor</h1>
+            {% for message in messages %}
+            <p id="messages">{{message}}</p>
+        {% endfor %}
         </div>
+        
         <div class="container_CadastroProfessor">
             <div class="campos_flex">
                 <div class="label-float">
@@ -59,9 +63,7 @@
 
 </form>
 
-{% for message in messages %}
-    <p id="messages">{{message}}</p>
-{% endfor %}
+
 </body>
 
 </html>

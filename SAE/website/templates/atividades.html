@@ -1,12 +1,14 @@
-npm install docx-pdf
 <title>Lista de arquivos</title>
+<body>
+<form action="" method="post" enctype="multipart/form-data" >
+    <h1>Arquivos</h1>
+   <hr/>
 {%for m in material_aluno%}
 {{m.arquivo}}
-<a href="/baixar/{{m.arquivo}}">Baixar</a>
-&nbsp; &nbsp; &nbsp;<a href="/visualizar/{{m.arquivo}}?alu={{m.alu}}">Visualizar</a><br>
 
+<a href="/baixar_arquivo/{{m.arquivo}}">Baixar</a>
+&nbsp; &nbsp; &nbsp;<a href="/visualizar_arquivo/{{m.arquivo}}?alu={{ra}}">Visualizar</a><br>
 <input type="hidden" value="next" value="{{m.alu}}">
-
 {% endfor %}
-
-<a href="../{{m.arquivo}}">Clique em mim</a>
+</form>
+</body>

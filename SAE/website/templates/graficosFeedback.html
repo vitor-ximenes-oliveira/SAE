@@ -10,8 +10,11 @@
 </head>
 
 <body>
+
+<form action="" method="POST">
+  {% csrf_token %}
     <div class="btn_logout">
-        <button name="Log out" type="submit">Voltar a tela do professor</button>
+        <button name="voltar" type="submit">Voltar a tela do professor</button>
     </div>
 
     {% block grafico %}
@@ -349,5 +352,5 @@
 
       <div id="columnchart_values9"></div>
     </div>
-
+  </form>
 </body>
