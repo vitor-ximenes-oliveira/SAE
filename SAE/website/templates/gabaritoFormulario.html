@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <form method="POST" class="post-form" action="formularioProfessor">
+    <form method="POST" class="post-form" action="preencherGabarito">
         {% csrf_token %}
     
     <h4>Preencha as respostas do gabarito de seu formulario</h4>
@@ -177,7 +177,8 @@
 
 
     <div class="button">
-      <input type="submit" name="enviar gabarito" id="btn" value="Enviar Gabarito" />
+      <button type="submit">Enviar gabarito</button>
     </div>
+    </form>
 
 </body>

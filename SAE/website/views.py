@@ -6,6 +6,7 @@ import stat
 from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password, check_password
+from website.models import RespostasFormulario
 from website.models import Aluno, EnviarArquivo, Feedback, Professor, Turmas, Formulario
 from django.contrib import messages
 import os
@@ -234,8 +235,8 @@ def baixar_arquivo(request, arquivo):
             fk_alu = request.GET.get("alu",'')      
             return redirect('../atividades/'+str(fk_alu))
     
-#@login_required(login_url='/login')
-def feedback(request):
+@login_required(login_url='/login')
+def feedback(request,ra):
     if request.method == 'POST':
             justificativa1 = request.POST.get("Justificativa1")
             justificativa2 = request.POST.get("Justificativa2")
@@ -258,7 +259,7 @@ def feedback(request):
             feedback = Feedback.objects.create(pergunta1=pergunta1,justificativa1=justificativa1,pergunta2=pergunta2,justificativa2=justificativa2,pergunta3=pergunta3,justificativa3=justificativa3,pergunta4=pergunta4,justificativa4=justificativa4,pergunta5=pergunta5,justificativa5=justificativa5,pergunta6=pergunta6,justificativa6=justificativa6,pergunta7=pergunta7,justificativa7=justificativa7,pergunta8=pergunta8,justificativa8=justificativa8,pergunta9=pergunta9,justificativa9=justificativa9)
             feedback.save() 
             messages.success(request,"Feedback enviado com sucesso")           
-            return redirect("/telaAluno")
+            return redirect("/telaAluno/"+str(ra))
     return render(request, 'feedback.html')
 
 def sair(request):
@@ -314,6 +315,8 @@ def enviar_arquivo(request,idProfessor):
 def telaAluno(request,ra):
     if 'feedback' in request.POST:
         return redirect("feedback")
+    elif 'responderFormulario' in request.POST:
+        return redirect("responderFormulario")
     return render(request,"telaAluno.html")
 
 
@@ -577,6 +580,7 @@ def graficosFeedback(request,idProfessor):
 
         pergunta9 = Feedback.objects.values_list("pergunta9", flat=True)
 
+<<<<<<< HEAD
         for x in pergunta9:
             if(x == 'Ruim'):
                 ruim9+=1
@@ -588,6 +592,17 @@ def graficosFeedback(request,idProfessor):
                 excelente9+=1
 
          
+=======
+    for x in pergunta9:
+        if(x == 'Ruim'):
+            ruim9+=1
+        elif(x == 'Bom'):
+            bom9+=1
+        elif(x == 'Ótimo'):
+            medio9+=1
+        else:
+            excelente9+=1       
+>>>>>>> ab3c5b7403d5a3361ec4f6ea24dae26b23d79d5c
     return render(request, "graficosFeedback.html" , {"ruim" : ruim, "bom" : bom, "medio" : medio , "excelente": excelente, "ruim2" : ruim2, "bom2" : bom2, "medio2" : medio2 , "excelente2": excelente2, "ruim3" : ruim3, "bom3" : bom3, "medio3" : medio3 , "excelente3": excelente3, "ruim4" : ruim4, "bom4" : bom4, "medio4" : medio4 , "excelente4": excelente4, "ruim5" : ruim5, "bom5" : bom5, "medio5" : medio5 , "excelente5": excelente5, "ruim6" : ruim6, "bom6" : bom6, "medio6" : medio6 , "excelente6": excelente6, "ruim7" : ruim7, "bom7" : bom7, "medio7" : medio7 , "excelente7": excelente7, "ruim8" : ruim8, "bom8" : bom8, "medio8" : medio8 , "excelente8": excelente8, "ruim9" : ruim9, "bom9" : bom9, "medio9" : medio9 , "excelente9": excelente9})
 
 def criarFormulario(request):
@@ -702,34 +717,124 @@ def gabaritoFormulario(request):
     
     return render(request, "gabaritoFormulario.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
 
-def preencherGabarito(request,idProfessor):
-    if 'enviar gabarito' in request.POST:          
-        respostaQuestao1 = request.POST.get("btn-radio")
-        respostaQuestao2 = request.POST.get("btn-radio2")
-        respostaQuestao3 = request.POST.get("btn-radio3")
-        respostaQuestao4 = request.POST.get("btn-radio4")
-        respostaQuestao5 = request.POST.get("btn-radio5")
-        respostaQuestao6 = request.POST.get("btn-radio6")
-        respostaQuestao7 = request.POST.get("btn-radio7")
-        respostaQuestao8 = request.POST.get("btn-radio8")
-        respostaQuestao9 = request.POST.get("btn-radio9")
-        respostaQuestao10 = request.POST.get("btn-radio10")
-        nivelQuestao1 = request.POST.get("text1")
-        nivelQuestao2 = request.POST.get("text2")
-        nivelQuestao3 = request.POST.get("text3")
-        nivelQuestao4 = request.POST.get("text4")
-        nivelQuestao5 = request.POST.get("text5")
-        nivelQuestao6 = request.POST.get("text6")
-        nivelQuestao7 = request.POST.get("text7")
-        nivelQuestao8 = request.POST.get("text8")
-        nivelQuestao9 = request.POST.get("text9")
-        nivelQuestao10 = request.POST.get("text10")
-        gabarito = Formulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10,nivelQuestao1=nivelQuestao1,nivelQuestao2=nivelQuestao2,nivelQuestao3=nivelQuestao3,nivelQuestao4=nivelQuestao4,nivelQuestao5=nivelQuestao5,nivelQuestao6=nivelQuestao6,nivelQuestao7=nivelQuestao7,nivelQuestao8=nivelQuestao8,nivelQuestao9=nivelQuestao9,nivelQuestao10=nivelQuestao10)
-        gabarito.save()
-        feedback.save() 
-        messages.success(request,"Gabarito enviado com sucesso")         
-        return redirect("telaProfessor"+str(idProfessor))
+def preencherGabarito(request,idProfessor): 
+    respostaQuestao1 = request.POST.get("btn-radio")
+    respostaQuestao2 = request.POST.get("btn-radio2")
+    respostaQuestao3 = request.POST.get("btn-radio3")
+    respostaQuestao4 = request.POST.get("btn-radio4")
+    respostaQuestao5 = request.POST.get("btn-radio5")
+    respostaQuestao6 = request.POST.get("btn-radio6")
+    respostaQuestao7 = request.POST.get("btn-radio7")
+    respostaQuestao8 = request.POST.get("btn-radio8")
+    respostaQuestao9 = request.POST.get("btn-radio9")
+    respostaQuestao10 = request.POST.get("btn-radio10")
+    gabarito = Formulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
+    gabarito.save() 
+    messages.success(request,"Gabarito enviado com sucesso")         
+    return redirect("/telaProfessor/"+str(idProfessor))
     
+def graficoAluno(request):
+    acertos = 0
+    erros = 0
+
+    nivelDoAluno = ""
+    
+    questao1 = RespostasFormulario.objects.values_list("respostaQuestao1",flat=True).first()
+    questao2 = RespostasFormulario.objects.values_list("respostaQuestao2",flat=True).first()
+    questao3 = RespostasFormulario.objects.values_list("respostaQuestao3",flat=True).first()
+    questao4 = RespostasFormulario.objects.values_list("respostaQuestao4",flat=True).first()
+    questao5 = RespostasFormulario.objects.values_list("respostaQuestao5",flat=True).first()
+    questao6 = RespostasFormulario.objects.values_list("respostaQuestao6",flat=True).first()
+    questao7 = RespostasFormulario.objects.values_list("respostaQuestao7",flat=True).first()
+    questao8 = RespostasFormulario.objects.values_list("respostaQuestao8",flat=True).first()
+    questao9 = RespostasFormulario.objects.values_list("respostaQuestao9",flat=True).first()
+    questao10 = RespostasFormulario.objects.values_list("respostaQuestao10",flat=True).first()
+    resposta1 = Formulario.objects.values_list("respostaQuestao1",flat=True).first()
+    resposta2 = Formulario.objects.values_list("respostaQuestao2",flat=True).first()
+    resposta3 = Formulario.objects.values_list("respostaQuestao3",flat=True).first()
+    resposta4 = Formulario.objects.values_list("respostaQuestao4",flat=True).first()
+    resposta5 = Formulario.objects.values_list("respostaQuestao5",flat=True).first()
+    resposta6 = Formulario.objects.values_list("respostaQuestao6",flat=True).first()
+    resposta7 = Formulario.objects.values_list("respostaQuestao7",flat=True).first()
+    resposta8 = Formulario.objects.values_list("respostaQuestao8",flat=True).first()
+    resposta9 = Formulario.objects.values_list("respostaQuestao9",flat=True).first()
+    resposta10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
+    nivelQuestao1 = Formulario.objects.values_list("nivelQuestao1",flat=True).first()
+    nivelQuestao2 = Formulario.objects.values_list("nivelQuestao2",flat=True).first()
+    nivelQuestao3 = Formulario.objects.values_list("nivelQuestao3",flat=True).first()
+    nivelQuestao4 = Formulario.objects.values_list("nivelQuestao4",flat=True).first()
+    nivelQuestao5 = Formulario.objects.values_list("nivelQuestao5",flat=True).first()
+    nivelQuestao6 = Formulario.objects.values_list("nivelQuestao6",flat=True).first()
+    nivelQuestao7 = Formulario.objects.values_list("nivelQuestao7",flat=True).first()
+    nivelQuestao8 = Formulario.objects.values_list("nivelQuestao8",flat=True).first()
+    nivelQuestao9 = Formulario.objects.values_list("nivelQuestao9",flat=True).first()
+    nivelQuestao10 = Formulario.objects.values_list("nivelQuestao10",flat=True).first()
+    
+    if(questao1 == resposta1):
+        acertos+=1
+    else:
+        erros+=1
+
+    if(questao2 == resposta2):
+        acertos+=1
+    else:
+        erros+=1
+
+    if(questao3 == resposta3):
+        acertos+=1
+    else:
+        erros+=1
+
+    if(questao4 == resposta4):
+        acertos+=1
+    else:
+        erros+=1
+
+    if(questao5 == resposta5):
+        acertos+=1
+    else:
+        erros+=1
+
+    if(questao6 == resposta6):
+        acertos+=1
+    else:
+        erros+=1
+
+    if(questao7 == resposta7):
+        acertos+=1
+    else:
+        erros+=1
+
+    if(questao8 == resposta8):
+        acertos+=1
+    else:
+        erros+=1
+
+    if(questao9 == resposta9):
+        acertos+=1
+    else:
+        erros+=1
+
+    if(questao10 == resposta10):
+        acertos+=1
+    else:
+        erros+=1
+
+    if( acertos <=5 ):
+        nivelDoAluno = "Insuficiente"
+    elif(acertos == 5 ):
+        nivelDoAluno = "Básico"
+    elif(acertos > 5 and acertos <= 8 ):
+        nivelDoAluno = "Proficiente"
+    elif(acertos > 8):
+        nivelDoAluno = "Avançado"
+
+    return render(request, {"acertos":acertos, "erros": erros, "nivelDoAluno": nivelDoAluno})
+
+
+
+    
+<<<<<<< HEAD
 def pagina_feedback(request):
     if 'Log out' in request.POST:
         return redirect("telaProfessor")
@@ -737,6 +842,8 @@ def pagina_feedback(request):
         
 
 
+=======
+>>>>>>> ab3c5b7403d5a3361ec4f6ea24dae26b23d79d5c
 
 
 
