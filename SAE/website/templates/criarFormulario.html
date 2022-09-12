@@ -18,7 +18,7 @@
     </table>
   </header>
   <body>
-    <form method="POST" class="post-form" action="criarFormulario">
+    <form method="POST" class="post-form" action="">
         {% csrf_token %}
     <h1>Crie seu formulário</h1>
     <br />
@@ -253,7 +253,7 @@
     </div>
     <hr>
     <div class="button">
-      <input type="submit" id="btn" value="Criar Formulario e gerar gabarito" />
+      <input type="submit" name="formulario" id="btn" value="Criar Formulario e gerar gabarito" />
     </div>
     </form>
   </body>

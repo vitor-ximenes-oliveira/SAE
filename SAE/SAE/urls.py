@@ -39,9 +39,9 @@ urlpatterns = [
     path('atividades/<int:ra>',views.atividades,name='atividades'),
     path('inserir_classe',views.inserir_classe,name='inserir_classe'),
     path('graficosFeedback/<int:idProfessor>', views.graficosFeedback, name="graficosFeedback"),
-    path('criarFormulario', views.criarFormulario, name='criarFormulario'),
-    path('gabaritoFormulario', views.gabaritoFormulario),
+    path('criarFormulario/<int:idProfessor>', views.criarFormulario, name='criarFormulario'),
+    path('gabaritoFormulario/<int:idProfessor>', views.gabaritoFormulario,name='gabaritoFormulario'),
     path('telaAluno/<int:ra>', views.telaAluno, name='telaAluno'),
-    path('preencherGabarito/<int:idProfessor', views.preencherGabarito),
+    path('preencherGabarito', views.preencherGabarito,name='preencherGabarito'),
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
