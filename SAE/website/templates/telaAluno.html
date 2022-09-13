@@ -27,7 +27,7 @@
         var data = google.visualization.arrayToDataTable([
           ['Task', 'Hours per Day'],
           ['Acertos',     8],
-          ['Erros',      2],
+          ['Erros',2],
         ]);
 
         var options = {
@@ -65,11 +65,9 @@
                     <img src="{% static 'imagens/feedback.png' %}">
                     <p>enviar Feedback</p>
             </div>
-        </button>
-        <form method="POST" class="post-form" action="formularioAluno">
+        <button  name="formularioAluno" type="submit">
+        <form method="POST" class="post-form" action="">
           {% csrf_token %}
-
-        <button type="submit" name="formularioAluno">
             <div class="card" id="card_feedback">
                     <img src="{% static 'imagens/formulario_aluno.png'%}">
                     <p>Responder Questionário</p>

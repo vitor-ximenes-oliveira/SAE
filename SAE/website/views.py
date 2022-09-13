@@ -236,7 +236,7 @@ def baixar_arquivo(request, arquivo):
             fk_alu = request.GET.get("alu",'')      
             return redirect('../atividades/'+str(fk_alu))
     
-@login_required(login_url='/login')
+#@login_required(login_url='/login')
 def feedback(request,ra):
     if request.method == 'POST':
             justificativa1 = request.POST.get("Justificativa1")
@@ -260,7 +260,7 @@ def feedback(request,ra):
             feedback = Feedback.objects.create(pergunta1=pergunta1,justificativa1=justificativa1,pergunta2=pergunta2,justificativa2=justificativa2,pergunta3=pergunta3,justificativa3=justificativa3,pergunta4=pergunta4,justificativa4=justificativa4,pergunta5=pergunta5,justificativa5=justificativa5,pergunta6=pergunta6,justificativa6=justificativa6,pergunta7=pergunta7,justificativa7=justificativa7,pergunta8=pergunta8,justificativa8=justificativa8,pergunta9=pergunta9,justificativa9=justificativa9)
             feedback.save() 
             messages.success(request,"Feedback enviado com sucesso")           
-            return redirect("/telaAluno/"+str(ra))
+            return redirect("../telaAluno/"+str(ra))
     return render(request, 'feedback.html')
 
 def sair(request):
@@ -315,14 +315,14 @@ def enviar_arquivo(request,idProfessor):
 
 def telaAluno(request,ra):
     if 'feedback' in request.POST:
-        return redirect("feedback")
+        return redirect("/feedback/"+str(ra))
     elif 'Log out' in request.POST:
         sair(request)
         return redirect("login")
     elif 'atividades' in request.POST:
         return redirect('atividades',ra)
     elif 'formularioAluno' in request.POST:
-        return redirect('formularioAluno')
+        return redirect('/formularioAluno/'+str(ra))
     return render(request,"telaAluno.html")
 
 
@@ -743,96 +743,97 @@ def gabaritoFormulario(request,idProfessor):
         
         return render(request, "gabaritoFormulario.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
     
-def graficoAluno(request):
-    acertos = 0
-    erros = 0
+def graficoAluno(request,ra):
+    if 'graficoAluno' in request.POST:
+        acertos = 0
+        erros = 0
 
-    nivelDoAluno = ""
-    
-    questao1 = RespostasFormulario.objects.values_list("respostaQuestao1",flat=True).first()
-    questao2 = RespostasFormulario.objects.values_list("respostaQuestao2",flat=True).first()
-    questao3 = RespostasFormulario.objects.values_list("respostaQuestao3",flat=True).first()
-    questao4 = RespostasFormulario.objects.values_list("respostaQuestao4",flat=True).first()
-    questao5 = RespostasFormulario.objects.values_list("respostaQuestao5",flat=True).first()
-    questao6 = RespostasFormulario.objects.values_list("respostaQuestao6",flat=True).first()
-    questao7 = RespostasFormulario.objects.values_list("respostaQuestao7",flat=True).first()
-    questao8 = RespostasFormulario.objects.values_list("respostaQuestao8",flat=True).first()
-    questao9 = RespostasFormulario.objects.values_list("respostaQuestao9",flat=True).first()
-    questao10 = RespostasFormulario.objects.values_list("respostaQuestao10",flat=True).first()
-    resposta1 = Formulario.objects.values_list("respostaQuestao1",flat=True).first()
-    resposta2 = Formulario.objects.values_list("respostaQuestao2",flat=True).first()
-    resposta3 = Formulario.objects.values_list("respostaQuestao3",flat=True).first()
-    resposta4 = Formulario.objects.values_list("respostaQuestao4",flat=True).first()
-    resposta5 = Formulario.objects.values_list("respostaQuestao5",flat=True).first()
-    resposta6 = Formulario.objects.values_list("respostaQuestao6",flat=True).first()
-    resposta7 = Formulario.objects.values_list("respostaQuestao7",flat=True).first()
-    resposta8 = Formulario.objects.values_list("respostaQuestao8",flat=True).first()
-    resposta9 = Formulario.objects.values_list("respostaQuestao9",flat=True).first()
-    resposta10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
-    
-    if(questao1 == resposta1):
-        acertos+=1
-    else:
-        erros+=1
+        nivelDoAluno = ""
 
-    if(questao2 == resposta2):
-        acertos+=1
-    else:
-        erros+=1
+        questao1 = RespostasFormulario.objects.values_list("respostaQuestao1",flat=True).first()
+        questao2 = RespostasFormulario.objects.values_list("respostaQuestao2",flat=True).first()
+        questao3 = RespostasFormulario.objects.values_list("respostaQuestao3",flat=True).first()
+        questao4 = RespostasFormulario.objects.values_list("respostaQuestao4",flat=True).first()
+        questao5 = RespostasFormulario.objects.values_list("respostaQuestao5",flat=True).first()
+        questao6 = RespostasFormulario.objects.values_list("respostaQuestao6",flat=True).first()
+        questao7 = RespostasFormulario.objects.values_list("respostaQuestao7",flat=True).first()
+        questao8 = RespostasFormulario.objects.values_list("respostaQuestao8",flat=True).first()
+        questao9 = RespostasFormulario.objects.values_list("respostaQuestao9",flat=True).first()
+        questao10 = RespostasFormulario.objects.values_list("respostaQuestao10",flat=True).first()
+        resposta1 = Formulario.objects.values_list("respostaQuestao1",flat=True).first()
+        resposta2 = Formulario.objects.values_list("respostaQuestao2",flat=True).first()
+        resposta3 = Formulario.objects.values_list("respostaQuestao3",flat=True).first()
+        resposta4 = Formulario.objects.values_list("respostaQuestao4",flat=True).first()
+        resposta5 = Formulario.objects.values_list("respostaQuestao5",flat=True).first()
+        resposta6 = Formulario.objects.values_list("respostaQuestao6",flat=True).first()
+        resposta7 = Formulario.objects.values_list("respostaQuestao7",flat=True).first()
+        resposta8 = Formulario.objects.values_list("respostaQuestao8",flat=True).first()
+        resposta9 = Formulario.objects.values_list("respostaQuestao9",flat=True).first()
+        resposta10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
 
-    if(questao3 == resposta3):
-        acertos+=1
-    else:
-        erros+=1
+        if(questao1 == resposta1):
+            acertos+=1
+        else:
+            erros+=1
 
-    if(questao4 == resposta4):
-        acertos+=1
-    else:
-        erros+=1
+        if(questao2 == resposta2):
+            acertos+=1
+        else:
+            erros+=1
 
-    if(questao5 == resposta5):
-        acertos+=1
-    else:
-        erros+=1
+        if(questao3 == resposta3):
+            acertos+=1
+        else:
+            erros+=1
 
-    if(questao6 == resposta6):
-        acertos+=1
-    else:
-        erros+=1
+        if(questao4 == resposta4):
+            acertos+=1
+        else:
+            erros+=1
 
-    if(questao7 == resposta7):
-        acertos+=1
-    else:
-        erros+=1
+        if(questao5 == resposta5):
+            acertos+=1
+        else:
+            erros+=1
 
-    if(questao8 == resposta8):
-        acertos+=1
-    else:
-        erros+=1
+        if(questao6 == resposta6):
+            acertos+=1
+        else:
+            erros+=1
 
-    if(questao9 == resposta9):
-        acertos+=1
-    else:
-        erros+=1
+        if(questao7 == resposta7):
+            acertos+=1
+        else:
+            erros+=1
 
-    if(questao10 == resposta10):
-        acertos+=1
-    else:
-        erros+=1
+        if(questao8 == resposta8):
+            acertos+=1
+        else:
+            erros+=1
 
-    if( acertos <=5 ):
-        nivelDoAluno = "Insuficiente"
-    elif(acertos == 5 ):
-        nivelDoAluno = "Básico"
-    elif(acertos > 5 and acertos <= 8 ):
-        nivelDoAluno = "Proficiente"
-    elif(acertos > 8):
-        nivelDoAluno = "Avançado"
+        if(questao9 == resposta9):
+            acertos+=1
+        else:
+            erros+=1
 
-    return render(request, {"acertos":acertos, "erros": erros, "nivelDoAluno": nivelDoAluno})
+        if(questao10 == resposta10):
+            acertos+=1
+        else:
+            erros+=1
 
+        if( acertos <=5 ):
+            nivelDoAluno = "Insuficiente"
+        elif(acertos == 5 ):
+            nivelDoAluno = "Básico"
+        elif(acertos > 5 and acertos <= 8 ):
+            nivelDoAluno = "Proficiente"
+        elif(acertos > 8):
+            nivelDoAluno = "Avançado"
 
-def formularioAluno(request):
+        #return redirect(request, "/telaAluno/"+str(ra) {"acertos":acertos, "erros": erros, "nivelDoAluno": nivelDoAluno})
+    return render(request, "formularioAluno.html")
+
+def formularioAluno(request,ra):
     questao1 = Formulario.objects.values_list("questao1",flat=True).first()
     alternativaAquestao1 = Formulario.objects.values_list("alternativaAquestao1",flat=True).first()
     alternativaBquestao1 = Formulario.objects.values_list("alternativaBquestao1",flat=True).first()
@@ -883,7 +884,10 @@ def formularioAluno(request):
     alternativaBquestao10 = Formulario.objects.values_list("alternativaBquestao10",flat=True).first()
     alternativaCquestao10 = Formulario.objects.values_list("alternativaCquestao10",flat=True).first()
     alternativaDquestao10 = Formulario.objects.values_list("alternativaDquestao10",flat=True).first()
-    
+    if request.method == 'POST':
+
+
+        return redirect("../telaAluno/"+str(ra))
     return render(request, "formularioAluno.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
 
 
