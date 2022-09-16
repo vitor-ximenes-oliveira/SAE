@@ -1,0 +1,31 @@
+body {
+  background-color: #aacdec;
+  display: flex;
+  justify-content: center;
+  height: 97vh;
+  align-items: center;
+}
+
+.box {
+  width: 80%;
+  background: azure;
+  height: 80vh;
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.campos_flex {
+  display: flex;
+  gap: 2em;
+}
+
+.container_txt {
+  display: flex;
+  flex-direction: column;
+}
+
+.container_txt input {
+  width: 23.9em;
+}

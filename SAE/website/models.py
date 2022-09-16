@@ -186,7 +186,7 @@ class Professor(models.Model):
     Email = models.EmailField()
     Nascimento = models.DateField(default=date.today,blank=True,help_text=('Insira uma data que seja menor que 18 e maior que 100 anos atrás'),validators=[data_valida])
     Materia = models.CharField(max_length=50,blank=False,default="",help_text=('Entrar no SAE como professor'))
-    isProf = models.BooleanField(default=0) 
+    isProf = models.BooleanField(default=1) 
     @property
     def esta_ativo(self):
             return bool(self.isProf)  
