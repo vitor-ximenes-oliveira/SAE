@@ -4,26 +4,19 @@ body {
     color: #5d49cc;
 }
 
-.btn_logout {
+.semiHeader {
     display: flex;
-    align-items: end;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+
+.btn_logout {
     padding: 1em;
 }
 
 .btn_logout button {
     height: 2em;
-}
-
-div#donutchart {
-    width: 100% !important;
-    display: flex;
-    justify-content: center;
-}
-
-#donutchart svg {
-    width: 48em !important;
-    height: 26em !important;
 }
 
 .card {
