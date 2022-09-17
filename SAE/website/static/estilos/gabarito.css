@@ -4,11 +4,12 @@ body {
     color: #5d49cc;
 }
 
-div .btn{
+div .btn {
     background-color: transparent;
     border-radius: 10px;
     text-align: center;
     padding: 1em 3em;
+    border: solid 1px #000;
 }
 
 .container_form {
@@ -37,6 +38,7 @@ div .btn{
     border-radius: 10px;
     text-align: center;
     padding: 1em 3em;
+    border: solid 1px #000;
 }
 
 .btn-check {
@@ -66,4 +68,22 @@ textarea {
     width: 80%;
     border-radius: 10px;
     height: 5em;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.button button {
+    height: 2em;
+    width: 20em;
+    border-radius: 7px;
+}
+
+.button button:hover {
+    border: 2px solid #000;
+    color: black;
+    background-color: #acafb6;
 }
