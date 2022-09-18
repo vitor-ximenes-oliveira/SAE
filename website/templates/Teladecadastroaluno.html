@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/estilos/CadastroAluno.css" />
+    <link rel="stylesheet" href="../static/estilos/geral.css" />
+    <title>Cadastro de aluno</title>
+</head>
+
+<body class="Cadastro">
+    <form method="POST" class="post-form" action="/Teladecadastroaluno">
+        {% csrf_token %}
+    <div class="loginPage CadastroProfessor">
+        <div class="container_textoHome">
+            <div class="iconLogin">
+                <img src="../static/imagens/education.png">
+            </div>
+            <h1 style="color: #5a9bd5 ;">Cadastro do Aluno</h1>
+            {% for message in messages %}
+            <p id="messages">{{message}}</p>
+        {% endfor %}
+        </div>
+        <div class="container_CadastroProfessor">
+            <div class="campos_flex">
+                <div class="label-float">
+                    <input type="text" name="al_nome" pattern="[a-zA-Z ]*" placeholder=" " minlength="4" required/>
+                    <label>Nome Completo</label>
+                </div>
+                <div class="label-float">
+                    <input type="email" name="al_email" placeholder=" " pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.com">
+                    <label>E-mail</label>
+                </div>
+            </div>
+            <div class="campos_flex">
+                <div class="label-float">
+                    <input type="date" name="al_nascimento" placeholder=" " max="2020-12-31" min="1900-12-31"/>
+                    <label>Data de Nascimento</label>
+                </div>
+            </div>
+            <div class="campos_flex">
+                <div class="label-float">
+                    <input type="password" name="al_senha" placeholder=" " minlength="1" required/>
+                    <label>Senha</label>
+                </div>
+                <div class="label-float">
+                    <input type="password" name="confir_senha" placeholder=" " minlength="1" required/>
+                    <label>Confirme a Senha</label>
+                </div>
+            </div>
+
+            <button class="btn" type="submit" value="CriaConta">Criar</button>
+        </div>
+
+    </div>
+
+</form>
+</body>
+
+
+
+
+</script>
+
+</html>
