@@ -175,10 +175,6 @@ def data_valida(data):
     if data > datetime.now().date() - relativedelta(years=18) or data < datetime.now().date() - relativedelta(years=100):
         raise ValidationError("Insira uma data válida")
 
-identity = (("students", "students"),
-            ("teachers", "teachers"),
-            ("Admin", "Admin"))
-
 class Professor(models.Model):
     Usuario = models.OneToOneField(User, on_delete=models.CASCADE,default="")
     idProfessor = models.AutoField(primary_key = True)

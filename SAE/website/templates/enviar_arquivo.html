@@ -21,7 +21,7 @@
       >
         <option disabled="true" selected>---Selecione uma classe---</option>
         {%for turma in turmas%}
-        <option value="{{turma.classe}}">{{turma.classe}}</option>
+        <option value="{{turma.classe}}">{{turma.classe}} Ano Letivo: {{turma.ano_letivo}}</option>
         {% endfor %}
       </select>
       {% csrf_token %}
@@ -30,16 +30,21 @@
       ><br />
 
       <input type="file" id="myFile" name="arquivo" />
-
+         
       <div class="TurmalTotal">
+        <div>
+        <span class="inf_ra">RA</span> 
+        <span class="inf_nome">Nome</span>
+        </div> 
         {% for aluno in alunos %}
         <div class="aluno">
-          {{aluno.ra}}
-          <input type="checkbox" id="s" name="ra" value="{{aluno.pk}}" />
+          
+          <input type="checkbox" id="s" name="ra" value="{{aluno.pk}}"/>
           <label class="btn btn-secondary" for="s" value="{{aluno.pk}}"
-            >{{aluno.al_nome}}</label
-          >
-        </div>
+            >{{aluno.ra}} 
+            <div class="nome_aluno">
+              {{aluno.al_nome}}</div></label>
+          </div>
 
         {% endfor %}
       </div>

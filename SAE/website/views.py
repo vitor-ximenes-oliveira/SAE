@@ -194,22 +194,10 @@ def visualizar_arquivo(request,arquivo):
         arquivo = open(diretorio_arquivo, 'rb') 
         abrir_Arquivo = FileResponse(arquivo)
         return abrir_Arquivo
-    elif arquivo.endswith('.xlsx'):
-        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
-        os.system(diretorio_arquivo)    
-        os.chmod(diretorio_arquivo,stat.S_IRWXO)                   
-        fk_alu = request.GET.get("alu",'')      
-        return redirect('../atividades/'+str(fk_alu))
     elif arquivo.endswith('.docx'): 
         diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)        
         sp.Popen(["C:\Program Files\Windows NT\Accessories\WordPad.exe", diretorio_arquivo])
         os.chmod(diretorio_arquivo,stat.S_IWUSR and stat.S_IRUSR and stat.S_IRUSR)  
-        fk_alu = request.GET.get("alu",'')      
-        return redirect('../atividades/'+str(fk_alu))
-    elif arquivo.endswith('.pptx'):
-        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
-        os.system(diretorio_arquivo)    
-        os.chmod(diretorio_arquivo,stat.S_IRWXO) 
         fk_alu = request.GET.get("alu",'')      
         return redirect('../atividades/'+str(fk_alu))
     else:
@@ -218,10 +206,6 @@ def visualizar_arquivo(request,arquivo):
         os.chmod(diretorio_arquivo,S_IREAD)  
         fk_alu = request.GET.get("alu",'')      
         return redirect('../atividades/'+str(fk_alu))
-    #except(FileNotFoundError,ValueError):
-    #        messages.error(request,"Arquivo não encontrado")
-    #        fk_alu = request.GET.get("alu",'') 
-    #        return redirect('../atividades/'+str(fk_alu))
     
 def baixar_arquivo(request, arquivo):
     try:
@@ -273,11 +257,11 @@ def turmas(request,idProfessor):
             classe = request.POST.get('classe')
             classe_aux = request.POST.get('classe')
             alunos = Aluno.objects.raw("select a.ra, a.al_nome, a.al_email, al_nascimento from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome order by a.ra",(str(classe),str(idProfessor)))
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",[idProfessor])#Mudei
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])
         else:
             alunos = ""
             classe_aux = ""
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",[idProfessor])#Mudei     
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])     
         return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos,'classe_aux':classe_aux})
 
 def enviar_arquivo(request,idProfessor):
@@ -285,12 +269,12 @@ def enviar_arquivo(request,idProfessor):
         classe = request.POST.get('classe')
         classe_aux = request.POST.get('classe')
         alunos = Aluno.objects.raw("select a.ra, a.al_nome from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
-        turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))        
+        turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))        
     elif 'enviar' in request.POST:
         try:
             classe = request.POST.get('classe')
             classe_aux = request.POST.get('classe')            
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))   
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))   
             alunos = Aluno.objects.raw("select a.ra, a.al_nome from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
             alunos_ra = request.POST.getlist('ra')
             if not alunos_ra:
@@ -309,7 +293,7 @@ def enviar_arquivo(request,idProfessor):
     else:
         alunos = ""
         classe_aux = ""
-        turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))         
+        turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))         
     return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe_aux':classe_aux})
 
 
@@ -379,11 +363,11 @@ def inserir_classe(request):
             else:
                 messages.error(request,"Preencha todos os campos da opção que deseja executar")
                 return redirect("/inserir_classe")  
-        turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id")  
+        turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id,ano_letivo")  
     elif 'classe_existente' in request.POST:
         alunos = Aluno.objects.all()
         professores = Professor.objects.all()
-        turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id")  
+        turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id,ano_letivo")  
         try:   
             if request.POST.get("idProfessor"):
                 idProfessor = request.POST.get("idProfessor")   
@@ -391,8 +375,10 @@ def inserir_classe(request):
                     if str(prof_id) == str(idProfessor):    
                         return redirect(reverse('editar_classe',args=[idProfessor]))  
                 messages.error(request,"ID inválido")
+                return redirect("/inserir_classe")
             else:    
-                    messages.error(request,"Insira o ID do professor")
+                messages.error(request,"Insira o ID do professor")
+                return redirect("/inserir_classe")
         except ValueError:
                     messages.error(request,"Não existe um professor com esse ID")
                     return redirect("/inserir_classe")
@@ -402,7 +388,7 @@ def inserir_classe(request):
     else:     
         professores = Professor.objects.all()
         alunos = Aluno.objects.all()
-        turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id")  
+        turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id,ano_letivo")  
     return render(request, "inserir_classe.html",{'alunos':alunos,'professores':professores,'turmas':turmas})
 
 def editar_classe(request,idProfessor):              
@@ -425,17 +411,17 @@ def editar_classe(request,idProfessor):
                     turmas.save()
                     messages.success(request,"Turma atualizada com sucesso")
             alunos = Aluno.objects.raw("select a.ra,t.prof_id,classe,alu_id from aluno a left outer join turmas t on t.alu_id = a.ra where alu_id not in (select alu_id from turmas where classe = %s and prof_id=%s or prof_id<>NULL) group by alu_id",[classe,idProfessor])
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",str(idProfessor))
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))
         elif 'atualizar' in request.POST:
             classe = request.POST.get('classe')
             classe_aux = request.POST.get('classe')
             ano_letivo = Turmas.objects.filter(classe=classe).values_list('ano_letivo',flat=True).first()
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",[idProfessor])  
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])  
             alunos = Aluno.objects.raw("select a.ra,t.prof_id,classe,alu_id from aluno a left outer join turmas t on t.alu_id = a.ra where alu_id not in (select alu_id from turmas where classe = %s and prof_id=%s or prof_id<>NULL) group by alu_id",[classe,idProfessor])
         else:
             alunos = ""
             classe_aux = ""
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe",[idProfessor])
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])
         return render(request, "editar_classe.html",{'alunos':alunos,'turmas':turmas,'classe_aux':classe_aux})
 
 def graficosFeedback(request,idProfessor):

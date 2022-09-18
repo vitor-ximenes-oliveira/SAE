@@ -7,7 +7,7 @@
       {%for turma in turmas%}
       <option value="{{turma.classe}}" 
       {% if turma.classe == classe2 %} selected {% endif %}>
-      {{turma.classe}}</option>
+      {{turma.classe}} Ano Letivo: {{turma.ano_letivo}}</option>
       {% endfor %}
       
     </select>  
@@ -24,7 +24,7 @@
           <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">{{aluno.al_nome}}</label>
         {% endfor %}
         <br>
-        <button type="submit" name="editar" value="editar">Atualizar classe existente</button><br>
+        <button type="submit" name="editar" value="editar">Atualizar Classe</button><br>
     </form>
     </form>
 {% for message in messages %}

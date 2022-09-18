@@ -20,7 +20,7 @@
       {%for turma in turmas%}
       <option value="{{turma.classe}}"
         {% if turma.classe == classe_aux %} selected {% endif %}>  
-        {{turma.classe}}</option>
+        {{turma.classe}} Ano Letino: {{turma.ano_letivo}}</option>
       {% endfor %}
       
     </select>  
