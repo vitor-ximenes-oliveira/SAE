@@ -1,34 +1,56 @@
-<title>Editar Classe</title>
+<!DOCTYPE html>
+<html lang="pt-br">
+  {% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet"  href="{% static 'estilos/geral.css' %}">
+  <link rel="stylesheet"  href="{% static 'estilos/editar_classe.css' %}">
 
+  <title>Editar turmas</title>
+</head>
 <body> 
-<form action="" method="POST" enctype="multipart/form-data" >
-    <select id="classe" name="classe" class="custom-select custom-select-sm input-small">
-      <option disabled="true" selected="selected" a>---Selecione uma classe---</option>
-      {%for turma in turmas%}
-      <option value="{{turma.classe}}" 
-      {% if turma.classe == classe2 %} selected {% endif %}>
-      {{turma.classe}} Ano Letivo: {{turma.ano_letivo}}</option>
-      {% endfor %}
+  <div class="box">
+    <h1>Editar Turmas</h1>
+    <form action="" method="POST" enctype="multipart/form-data" >
+      <section class="campoSelecioneClasse">  
+        <select id="classe" name="classe" class="custom-select custom-select-sm input-small">
+          <option disabled="true" selected="selected" a>---Selecione uma classe---</option>
+          {%for turma in turmas%}
+          <option value="{{turma.classe}}" 
+          {% if turma.classe == classe2 %} selected {% endif %}>
+          {{turma.classe}} Ano Letivo: {{turma.ano_letivo}}</option>
+          {% endfor %}
+          
+        </select>  
       
-    </select>  
 
-        {% csrf_token %}
+            {% csrf_token %}
+            
+        <button id="id_atualizar" type="submit" name="atualizar" value="atualizar">Atualizar</button>
+      </section>  
+
+      <form method="POST" class="post-form" action="">
+          {% for aluno in alunos %}
+          <div class="itemAluno">
+          {{aluno.ra}}
+            <input type="checkbox" id="s" name="aluno_ra" value="{{aluno.pk}}">
+            <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">{{aluno.al_nome}}</label>
+          </div>  
+          {% endfor %}
         
-      <button id="id_atualizar" type="submit" name="atualizar" value="atualizar">Atualizar</button><br>
-         
-    <form method="POST" class="post-form" action="">
-        {% for aluno in alunos %}
-        <br>
-        {{aluno.ra}}
-          <input type="checkbox" id="s" name="aluno_ra" value="{{aluno.pk}}">
-          <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">{{aluno.al_nome}}</label>
-        {% endfor %}
-        <br>
-        <button type="submit" name="editar" value="editar">Atualizar Classe</button><br>
+          <button id="btnAtualizarClasse" type="submit" name="editar" value="editar">Atualizar Classe</button>
+      </form>
+        
     </form>
-    </form>
-{% for message in messages %}
-<p id="messages">{{message}}</p>
-{% endfor %}
-  </body>
+    <div class="mensagem">
+    {% for message in messages %}
+    <p id="messages">{{message}}</p>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
+
   

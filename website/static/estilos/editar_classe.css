@@ -1,0 +1,46 @@
+body {
+  background-color: #aacdec;
+  display: flex;
+  justify-content: center;
+  height: 97vh;
+  align-items: center;
+}
+.box {
+  width: 80%;
+  background: azure;
+  height: 90vh;
+  border-radius: 24px;
+  display: flex;
+  /* justify-content: space-around; */
+  align-items: center;
+  box-shadow: 11px 9px 16px;
+  flex-direction: column;
+}
+
+.box h1 {
+  margin: 60px 0;
+}
+
+section.campoSelecioneClasse {
+  margin-bottom: 1em;
+}
+
+select#classe {
+  width: 30em;
+  height: 1.5em;
+}
+
+button#btnAtualizarClasse {
+  margin-top: 10px;
+  border: solid 1px;
+  border-radius: 5px;
+}
+
+button#btnAtualizarClasse:hover {
+  color: black;
+  background-color: #acafb6;
+}
+
+.mensagem {
+  margin: 15px 0;
+}
