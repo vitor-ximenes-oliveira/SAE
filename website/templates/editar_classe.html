@@ -12,20 +12,21 @@
 </head>
 <body> 
   <div class="box">
-    <h1>Editar Turmas</h1>
-    <form action="" method="POST" enctype="multipart/form-data" >
+    <h1>Adicionar Aluno na Turma</h1>
+    <form action="" method="POST" enctype="multipart/form-data">
       <section class="campoSelecioneClasse">  
-        <select id="classe" name="classe" class="custom-select custom-select-sm input-small">
-          <option disabled="true" selected="selected" a>---Selecione uma classe---</option>
+        <select id="classe" name="ano_letivo_classe" class="custom-select custom-select-sm input-small">
+         
+          <option disabled="true" value="ano_letivo" selected="selected" a>---Selecione uma classe---</option>
           {%for turma in turmas%}
-          <option value="{{turma.classe}}" 
-          {% if turma.classe == classe2 %} selected {% endif %}>
+          <option  value="{{turma.ano_letivo}}|{{turma.classe}}"
+          {% if turma.classe == classe and turma.ano_letivo == ano_letivo %} selected {% endif %}>
+
           {{turma.classe}} Ano Letivo: {{turma.ano_letivo}}</option>
+          
           {% endfor %}
           
         </select>  
-      
-
             {% csrf_token %}
             
         <button id="id_atualizar" type="submit" name="atualizar" value="atualizar">Atualizar</button>

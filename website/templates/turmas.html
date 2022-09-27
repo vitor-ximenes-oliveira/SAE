@@ -15,11 +15,11 @@
        <h1>Turmas</h1>
       <hr/>
 
-    <select id="ra" name="classe" class="custom-select custom-select-sm input-small">
+    <select id="ra" name="ano_letivo_classe" class="custom-select custom-select-sm input-small">
       <option disabled="true" selected="selected">---Selecione uma classe---</option>
       {%for turma in turmas%}
-      <option value="{{turma.classe}}"
-        {% if turma.classe == classe_aux %} selected {% endif %}>  
+      <option value="{{turma.ano_letivo}}|{{turma.classe}}"
+        {% if turma.ano_letivo == ano_letivo and turma.classe == classe %} selected {% endif %}>  
         {{turma.classe}} Ano Letino: {{turma.ano_letivo}}</option>
       {% endfor %}
       

@@ -209,28 +209,32 @@ def sair(request):
 
 def turmas(request,idProfessor):
         if request.method == 'POST':
-            classe = request.POST.get('classe')
-            classe_aux = request.POST.get('classe')
-            alunos = Aluno.objects.raw("select a.ra, a.al_nome, a.al_email, al_nascimento from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome order by a.ra",(str(classe),str(idProfessor)))
+            classe_ano_letivo = request.POST.get('ano_letivo_classe')
+            ano_letivo = classe_ano_letivo.split("|")[-2]
+            classe = classe_ano_letivo.split("|")[-1]
+            alunos = Aluno.objects.raw("select a.ra, a.al_nome, a.al_email, al_nascimento from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.ano_letivo=%s and t.prof_id = %s group by a.al_nome order by a.ra",[classe,ano_letivo,idProfessor])
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])
         else:
             alunos = ""
-            classe_aux = ""
+            ano_letivo = ""
+            classe = ""
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])     
-        return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos,'classe_aux':classe_aux})
+        return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo})
 
 def enviar_arquivo(request,idProfessor):
     if 'atualizar' in request.POST:
-        classe = request.POST.get('classe')
-        classe_aux = request.POST.get('classe')
-        alunos = Aluno.objects.raw("select a.ra, a.al_nome from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
+        classe_ano_letivo = request.POST.get('ano_letivo_classe')
+        ano_letivo = classe_ano_letivo.split("|")[-2]
+        classe = classe_ano_letivo.split("|")[-1]
+        alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a join turmas t on t.alu_id = a.ra where classe = %s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
         turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))        
     elif 'enviar' in request.POST:
         try:
-            classe = request.POST.get('classe')
-            classe_aux = request.POST.get('classe')            
+            classe_ano_letivo = request.POST.get('ano_letivo_classe')
+            ano_letivo = classe_ano_letivo.split("|")[-2]
+            classe = classe_ano_letivo.split("|")[-1]          
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))   
-            alunos = Aluno.objects.raw("select a.ra, a.al_nome from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.prof_id = %s group by a.al_nome",(str(classe),str(idProfessor)))
+            alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a join turmas t on t.alu_id = a.ra where classe = %s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
             alunos_ra = request.POST.getlist('ra')
             if not alunos_ra:
                 messages.error(request,"Selecione um aluno")
@@ -247,9 +251,10 @@ def enviar_arquivo(request,idProfessor):
             messages.error(request,"Selecione um arquivo")
     else:
         alunos = ""
-        classe_aux = ""
+        classe = ""
+        ano_letivo = ""
         turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))         
-    return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe_aux':classe_aux})
+    return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo})
 
 
 def telaAluno(request,ra):
@@ -338,7 +343,7 @@ def inserir_classe(request):
                     messages.error(request,"Não existe um professor com esse ID")
                     return redirect("/inserir_classe")
         except NoReverseMatch:
-            messages.error(request,"Insira um ID do professor que seja válido")
+            messages.error(request,"Insira um ID que seja válido")
             return redirect("/inserir_classe")
     else:     
         professores = Professor.objects.all()
@@ -347,10 +352,15 @@ def inserir_classe(request):
     return render(request, "inserir_classe.html",{'alunos':alunos,'professores':professores,'turmas':turmas})
 
 def editar_classe(request,idProfessor):              
-        if 'editar' in request.POST:          
-            classe = request.POST.get("classe")
-            classe_aux = request.POST.get('classe')
-            alunos = request.POST.getlist('aluno_ra')
+        if 'editar' in request.POST:
+            try:
+                classe_ano_letivo = request.POST.get('ano_letivo_classe')
+                ano_letivo = classe_ano_letivo.split("|")[-2]
+                classe = classe_ano_letivo.split("|")[-1]
+                alunos = request.POST.getlist('aluno_ra')
+            except UnboundLocalError:
+                messages.error("Selecione um aluno")
+                return redirect('editar_classe',idProfessor)
             if not alunos:
                 messages.error(request,"Selecione um aluno")
                 return redirect('editar_classe',idProfessor)
@@ -361,23 +371,25 @@ def editar_classe(request,idProfessor):
                     id_aluno = Aluno.objects.get(pk=aluno)                
                     turmas.alu = id_aluno
                     turmas.classe = classe
-                    ano_letivo = Turmas.objects.filter(classe=classe).values_list('ano_letivo',flat=True).first()
                     turmas.ano_letivo = ano_letivo                    
                     turmas.save()
-                    messages.success(request,"Turma atualizada com sucesso")
-            alunos = Aluno.objects.raw("select a.ra,t.prof_id,classe,alu_id from aluno a left outer join turmas t on t.alu_id = a.ra where alu_id not in (select alu_id from turmas where classe = %s and prof_id=%s or prof_id<>NULL) group by alu_id",[classe,idProfessor])
+            messages.success(request,"Turma atualizada com sucesso")            
+            alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id from aluno a left outer join turmas t on t.alu_id = a.ra where alu_id not in (select alu_id from turmas where classe = %s and ano_letivo=%s and prof_id=%s or prof_id<>NULL) group by alu_id",[classe,ano_letivo,idProfessor])
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))
+            return redirect("../editar_classe/"+str(idProfessor))
         elif 'atualizar' in request.POST:
-            classe = request.POST.get('classe')
-            classe_aux = request.POST.get('classe')
-            ano_letivo = Turmas.objects.filter(classe=classe).values_list('ano_letivo',flat=True).first()
+            classe_ano_letivo = request.POST.get('ano_letivo_classe')
+            ano_letivo = classe_ano_letivo.split("|")[-2]
+            classe = classe_ano_letivo.split("|")[-1]
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])  
-            alunos = Aluno.objects.raw("select a.ra,t.prof_id,classe,alu_id from aluno a left outer join turmas t on t.alu_id = a.ra where alu_id not in (select alu_id from turmas where classe = %s and prof_id=%s or prof_id<>NULL) group by alu_id",[classe,idProfessor])
+
+            alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a left outer join turmas t on t.alu_id = a.ra where alu_id not in (select alu_id from turmas where classe = %s and ano_letivo=%s and prof_id=%s or t.prof_id<>NULL) group by alu_id",[classe,ano_letivo,idProfessor])
         else:
             alunos = ""
-            classe_aux = ""
+            classe=""
+            ano_letivo = ""
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])
-        return render(request, "editar_classe.html",{'alunos':alunos,'turmas':turmas,'classe_aux':classe_aux})
+        return render(request, "editar_classe.html",{'alunos':alunos,'turmas':turmas,'ano_letivo':ano_letivo,'classe':classe})
 
 def graficosFeedback(request,idProfessor):
     if 'voltar' in request.POST:
