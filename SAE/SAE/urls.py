@@ -42,6 +42,7 @@ urlpatterns = [
     path('criarFormulario/<int:idProfessor>', views.criarFormulario, name='criarFormulario'),
     path('gabaritoFormulario/<int:idProfessor>', views.gabaritoFormulario,name='gabaritoFormulario'),
     path('telaAluno/<int:ra>', views.telaAluno, name='telaAluno'),
+    path('preencherGabarito/<int:idProfessor', views.preencherGabarito),
     path('telaAluno', views.telaAluno, name="telaAluno"),
     path('formularioAluno', views.formularioAluno),
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),

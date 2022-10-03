@@ -320,7 +320,9 @@ def telaAluno(request,ra):
         sair(request)
         return redirect("login")
     elif 'atividades' in request.POST:
-        atividades(request,ra)
+        return redirect('atividades',ra)
+    elif 'formularioAluno' in request.POST:
+        return redirect('formularioAluno')
     return render(request,"telaAluno.html")
 
 
