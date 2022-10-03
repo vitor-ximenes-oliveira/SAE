@@ -1,0 +1,77 @@
+body {
+  background-color: #aacdec;
+  display: flex;
+  justify-content: center;
+  height: 97vh;
+  align-items: center;
+}
+
+.box {
+  width: 80%;
+  background: azure;
+  height: 90vh;
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 11px 9px 16px;
+}
+
+.campos_flex {
+  display: flex;
+  gap: 2em;
+}
+
+.container_txt {
+  display: flex;
+  flex-direction: column;
+}
+
+.container_txt input {
+  width: 23.9em;
+}
+
+select#prof {
+  margin-top: 15px;
+  border-radius: 5px;
+  height: 2em;
+  width: 24.6em;
+}
+
+.Checkbox_Alunos {
+  margin-top: 10px;
+}
+
+button.link-button {
+  margin-top: 10px;
+  border: solid 1px;
+  border-radius: 5px;
+}
+
+button.link-button:hover {
+  border: 2px solid #000;
+  color: black;
+  background-color: #acafb6;
+}
+
+.txtIdProfessor {
+  margin-top: 10px;
+}
+
+.TituloTabela {
+  text-align: center;
+  font-weight: bold;
+  background: aqua;
+}
+
+table.tabelaTurmas {
+  text-align: center;
+  border: solid 1px;
+  margin-top: 5px;
+  width: 100%;
+}
+
+.tabelaTurmas th,
+.tabelaTurmas td {
+  border-bottom: solid 1px;
+}

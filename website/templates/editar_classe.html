@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  {% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet"  href="{% static 'estilos/geral.css' %}">
+  <link rel="stylesheet"  href="{% static 'estilos/editar_classe.css' %}">
+
+  <title>Editar turmas</title>
+</head>
+<body> 
+  <div class="box">
+    <h1>Adicionar Aluno na Turma</h1>
+    <form action="" method="POST" enctype="multipart/form-data">
+      <section class="campoSelecioneClasse">  
+        <select id="classe" name="ano_letivo_classe" class="custom-select custom-select-sm input-small">
+         
+          <option disabled="true" value="ano_letivo" selected="selected" a>---Selecione uma classe---</option>
+          {%for turma in turmas%}
+          <option  value="{{turma.ano_letivo}}|{{turma.classe}}"
+          {% if turma.classe == classe and turma.ano_letivo == ano_letivo %} selected {% endif %}>
+
+          {{turma.classe}} Ano Letivo: {{turma.ano_letivo}}</option>
+          
+          {% endfor %}
+          
+        </select>  
+            {% csrf_token %}
+            
+        <button id="id_atualizar" type="submit" name="atualizar" value="atualizar">Atualizar</button>
+      </section>  
+
+      <form method="POST" class="post-form" action="">
+          {% for aluno in alunos %}
+          <div class="itemAluno">
+          {{aluno.ra}}
+            <input type="checkbox" id="s" name="aluno_ra" value="{{aluno.pk}}">
+            <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">{{aluno.al_nome}}</label>
+          </div>  
+          {% endfor %}
+        
+          <button id="btnAtualizarClasse" type="submit" name="editar" value="editar">Atualizar Classe</button>
+      </form>
+        
+    </form>
+    <div class="mensagem">
+    {% for message in messages %}
+    <p id="messages">{{message}}</p>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
+
+  

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  {% load static %}
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet"  href="{% static 'estilos/geral.css' %}">
+  <link rel="stylesheet"  href="{% static 'estilos/inserir_classe.css' %}">
+
+  <title>Criar Turmas</title>
+</head>
+<body>
+  <div class="box">
+    <section class="campos">
+  <form action="" method="post" enctype="multipart/form-data" >
+    <div class="campos_flex">
+    <div class="container_txt">
+        <label>Nome da classe: </label>     
+        <input type="text" name="classe" pattern="[a-zA-Z0-9 ]*" />
+    </div>
+    
+    <div class="container_txt">
+      <label>Ano letivo: </label>
+      <input type="text" name="ano_letivo" pattern="[a-zA-Z0-9 ]*" />
+      
+    </div>
+  </div>
+   
+  <form action="" method="post" enctype="multipart/form-data" >
+    <select id="prof" name="professor" class="custom-select custom-select-sm input-small">
+      <option disabled="true" selected>---Selecione um Professor---</option>
+      {%for prof in professores%}
+      <option value="{{prof.idProfessor}}">{{prof.Nome}}</option>
+      {% endfor %}   
+      </select>
+      {% csrf_token %}
+    
+  <form method="POST" class="post-form" action="">
+    <div class="Checkbox_Alunos">
+      {% for aluno in alunos %}
+      <div class="itemAluno">
+      {{aluno.ra}}
+        <input type="checkbox" id="s" name="aluno_ra" value="{{aluno.pk}}">
+        <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">{{aluno.al_nome}}</label>
+      </div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" name="enviar" class="link-button" value="enviar">Inserir nova classe</button>
+    
+    <div class="txtIdProfessor">
+    <label>Insira o ID do professor para inserir alunos em uma classe já existente: </label>   
+  
+        <input type="text" name="idProfessor" pattern="[a-zA-Z0-9-]+" />
+      </div>
+    <a href="{% url 'editar_classe' idProfessor=idProfessor %}"><button type="submit" name="classe_existente" class="link-button" value="classe_existente" >Inserir em uma já existente</button></a>
+    </form>
+  </form>
+  </form>
+  <pre class="tab"></pre>
+  <div class="TituloTabela">
+  <label>Lista de Turmas</label>
+  </div>
+  <table class="tabelaTurmas">
+    <thead>
+      <tr>
+        <th>Classe</th>
+        <th>Ano letivo</th>
+        <th>Professor</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for turma in turmas %}
+        <tr>
+        <td>{{turma.classe}}</td>
+        <td>{{turma.ano_letivo}}</td>
+        <td>{{turma.Nome}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- <label>&emsp;&ensp; Classe &emsp;&emsp;&emsp; Ano Letivo &emsp;&emsp;&emsp; Professor</label><br>
+  {% for turma in turmas %}
+  <label>&emsp;&ensp;{{turma.classe}}&emsp;&emsp;&emsp;&emsp;&ensp; {{turma.ano_letivo}}&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{turma.Nome}}</label><br>
+  {% endfor %} -->
+  {% for message in messages %}
+  <p id="messages">{{message}}</p>
+  {% endfor %}
+    </section>
+  </div>
+  </body>
+</html>
+
+

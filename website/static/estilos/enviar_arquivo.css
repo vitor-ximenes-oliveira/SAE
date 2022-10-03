@@ -1,0 +1,88 @@
+body {
+  background-color: #aacdec;
+}
+
+select#ra {
+  width: 25em;
+}
+
+select#ra {
+  width: 35em;
+  height: 3em;
+  border-radius: 5px;
+  border: solid 1px;
+  margin: 2em 0em;
+  margin-left: 1em;
+}
+
+select#ra:hover {
+  border: solid 3px;
+  background: #acafb6;
+}
+
+button.btnAtualizar {
+  padding: 0.7em;
+  margin-left: 2%;
+  width: 8em;
+  border-radius: 10px;
+}
+
+button.btnAtualizar:hover {
+  border: solid 3px;
+  background: #acafb6;
+}
+
+input#myFile {
+    margin-bottom: 2em;
+    margin-left: 1em;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.TurmalTotal {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  font-size: 23px;
+  margin-left: 1em;
+}
+
+.aluno input {
+  width: 2em;
+  height: 1.5em;
+  margin-left: 20px;
+  margin-top: -4em;
+}
+
+.inf_ra{
+  margin-left: 50px;
+}
+.inf_nome{
+  margin-left: 50px;
+}
+.nome_aluno{
+  margin-left: 138px;
+  margin-top: -29px;
+}
+
+.button {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    height: 3em;
+}
+
+#btn {
+    width: 90%;
+    text-align: center;
+    height: 3em;
+    border: solid 1px;
+    border-radius: 5px;
+}
+
+#btn:hover {
+    border: 2px solid #000;
+    color: black;
+    background-color: #acafb6;
+}

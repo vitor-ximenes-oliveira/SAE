@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"  href="{% static 'estilos/feedback.css' %}">
+    <link rel="stylesheet"  href="{% static 'estilos/geral.css' %}">
+    <title>Feedback</title>
+</head>
+<body>
+    {% for message in messages %}
+    <p id="messages">{{message}}</p>
+    {% endfor %}
+
+    <form method="POST" class="post-form" action="">
+        {% csrf_token %}
+    <div class="container_form">
+        <label class="txt_Questao">1. Qual o nível de satisfação com a didática do(a) professor(a) durante as aulas? Justifique.</label>
+        <div class="botoes">
+            <input type="radio" class="btn btn-check" id="radio1" name="btn-radio" value="Ruim" minlength="1" required /> 
+            <label class="btn" for="radio1">Ruim</label>
+            <input type="radio" class="btn btn-check" id="radio2" name="btn-radio" value="Bom" minlength="1" required/> 
+            <label class="btn" for="radio2">Bom</label>
+            <input type="radio" class="btn btn-check" id="radio3" name="btn-radio" value="Médio" minlength="1" required/> 
+            <label class="btn" for="radio3">Médio</label>
+            <input type="radio" class="btn btn-check" id="radio4" name="btn-radio" value="Ótimo" minlength="1" required/> 
+            <label class="btn" for="radio4">Excelente</label>
+
+        </div>
+        
+        <textarea type="Justificativa1" name="Justificativa1" id="Justificativa1" cols="30" rows="10" maxlength="255"></textarea>
+    </div>
+
+    <div class="container_form">
+        <label class="txt_Questao">2. Qual o nível de satisfação com o material usado em aula? Justifique.</label>
+        <div class="botoes">
+            <input type="radio" class="btn btn-check" id="radio5" name="btn-radio2" value="Ruim" minlength="1" required/> 
+            <label class="btn" for="radio5">Ruim</label>
+            <input type="radio" class="btn btn-check" id="radio6" name="btn-radio2" value="Bom" minlength="1" required/> 
+            <label class="btn" for="radio6">Bom</label>
+            <input type="radio" class="btn btn-check" id="radio7" name="btn-radio2" value="Médio" minlength="1" required/> 
+            <label class="btn" for="radio7">Médio</label>
+            <input type="radio" class="btn btn-check" id="radio8" name="btn-radio2" value="Ótimo" minlength="1" required/> 
+            <label class="btn" for="radio8">Excelente</label>
+
+        </div>
+        
+        <textarea name="Justificativa2" id="Justificativa2" cols="30" rows="10" maxlength="255"></textarea>
+    </div>
+
+    <div class="container_form">
+        <label class="txt_Questao">3. Qual o nível de satisfação com o material enviado pelo(a) professor(a)? Justifique.</label>
+        <div class="botoes">
+            <input type="radio" class="btn btn-check" id="radio9" name="btn-radio3" value="Ruim" minlength="1" required/> 
+            <label class="btn" for="radio9">Ruim</label>
+            <input type="radio" class="btn btn-check" id="radio10" name="btn-radio3" value="Bom" minlength="1" required/> 
+            <label class="btn" for="radio10">Bom</label>
+            <input type="radio" class="btn btn-check" id="radio11" name="btn-radio3" value="Médio" minlength="1" required/> 
+            <label class="btn" for="radio11">Médio</label>
+            <input type="radio" class="btn btn-check" id="radio12" name="btn-radio3" value="Ótimo" minlength="1" required/> 
+            <label class="btn" for="radio12">Excelente</label>
+
+        </div>
+        
+        <textarea name="Justificativa3" id="Justificativa3" cols="30" rows="10" maxlength="255"></textarea>
+    </div>
+
+    <div class="container_form">
+        <label class="txt_Questao">4. Qual o nível de satisfação com a solução de dúvidas do professor(a)? Justifique.</label>
+        <div class="botoes">
+            <input type="radio" class="btn btn-check" id="radio13" name="btn-radio4" value="Ruim" minlength="1" required/> 
+            <label class="btn" for="radio13">Ruim</label>
+            <input type="radio" class="btn btn-check" id="radio14" name="btn-radio4" value="Bom" minlength="1" required/> 
+            <label class="btn" for="radio14">Bom</label>
+            <input type="radio" class="btn btn-check" id="radio15" name="btn-radio4" value="Médio" minlength="1" required/> 
+            <label class="btn" for="radio15">Médio</label>
+            <input type="radio" class="btn btn-check" id="radio16" name="btn-radio4" value="Ótimo" minlength="1" required/> 
+            <label class="btn" for="radio16">Excelente</label>
+
+        </div>
+        
+        <textarea name="Justificativa4" id="Justificativa4" cols="30" rows="10" maxlength="255"></textarea>
+    </div>
+
+    <div class="container_form">
+        <label class="txt_Questao">5. Qual o nível de satisfação com o cumprimento do conteúdo proposto? Justifique.</label>
+        <div class="botoes">
+            <input type="radio" class="btn btn-check" id="radio17" name="btn-radio5" value="Ruim" minlength="1" required/> 
+            <label class="btn" for="radio17">Ruim</label>
+            <input type="radio" class="btn btn-check" id="radio18" name="btn-radio5" value="Bom" minlength="1" required/> 
+            <label class="btn" for="radio18">Bom</label>
+            <input type="radio" class="btn btn-check" id="radio19" name="btn-radio5" value="Médio" minlength="1" required/> 
+            <label class="btn" for="radio19">Médio</label>
+            <input type="radio" class="btn btn-check" id="radio20" name="btn-radio5" value="Ótimo" minlength="1" required/> 
+            <label class="btn" for="radio20">Excelente</label>
+
+        </div>
+        
+        <textarea name="Justificativa5" id="Justificativa5" cols="30" rows="10" maxlength="255"></textarea>
+    </div>
+
+    <div class="container_form">
+        <label class="txt_Questao">6. Qual o nível de motivação com as aulas do(a) professor(a)? Justifique.</label>
+        <div class="botoes">
+            <input type="radio" class="btn btn-check" id="radio21" name="btn-radio6" value="Ruim" minlength="1" required/> 
+            <label class="btn" for="radio21">Ruim</label>
+            <input type="radio" class="btn btn-check" id="radio22" name="btn-radio6" value="Bom" minlength="1" required/> 
+            <label class="btn" for="radio22">Bom</label>
+            <input type="radio" class="btn btn-check" id="radio23" name="btn-radio6" value="Médio" minlength="1" required/> 
+            <label class="btn" for="radio23">Médio</label>
+            <input type="radio" class="btn btn-check" id="radio24" name="btn-radio6" value="Ótimo" minlength="1" required/> 
+            <label class="btn" for="radio24">Excelente</label>
+
+        </div>
+        
+        <textarea name="Justificativa6" id="Justificativa6" cols="30" rows="10" maxlength="255"></textarea>
+    </div>
+
+    <div class="container_form">
+        <label class="txt_Questao">7. Qual o nível de satisfação com a correção de provas e atividades? Justifique.</label>
+        <div class="botoes">
+            <input type="radio" class="btn btn-check" id="radio25" name="btn-radio7" value="Ruim" minlength="1" required/> 
+            <label class="btn" for="radio25">Ruim</label>
+            <input type="radio" class="btn btn-check" id="radio26" name="btn-radio7" value="Bom" minlength="1" required/> 
+            <label class="btn" for="radio26">Bom</label>
+            <input type="radio" class="btn btn-check" id="radio27" name="btn-radio7" value="Médio" minlength="1" required/> 
+            <label class="btn" for="radio27">Médio</label>
+            <input type="radio" class="btn btn-check" id="radio28" name="btn-radio7" value="Ótimo" minlength="1" required/> 
+            <label class="btn" for="radio28">Excelente</label>
+
+        </div>
+        
+        <textarea name="Justificativa7" id="Justificativa7" cols="30" rows="10" maxlength="255"></textarea>
+    </div>
+
+    <div class="container_form">
+        <label class="txt_Questao">8. Qual o nível de conforto para tirar dúvidas com o(a) professor(a)? Justifique.</label>
+        <div class="botoes">
+            <input type="radio" class="btn btn-check" id="radio29" name="btn-radio8" value="Ruim" minlength="1" required/> 
+            <label class="btn" for="radio29">Ruim</label>
+            <input type="radio" class="btn btn-check" id="radio30" name="btn-radio8" value="Bom" minlength="1" required/> 
+            <label class="btn" for="radio30">Bom</label>
+            <input type="radio" class="btn btn-check" id="radio31" name="btn-radio8" value="Médio" minlength="1" required/> 
+            <label class="btn" for="radio31">Médio</label>
+            <input type="radio" class="btn btn-check" id="radio32" name="btn-radio8" value="Ótimo" minlength="1" required/> 
+            <label class="btn" for="radio32">Excelente</label>
+
+        </div>
+        
+        <textarea type= "Justificativa8" name="Justificativa8" id="Justificativa8" cols="30" rows="10" maxlength="255"></textarea>
+    </div>
+
+
+    <div class="container_form">
+        <label class="txt_Questao" for="Justificativa9">9. Qual sua satisfação com as aulas no geral? Justifique.</label>
+        <div class="botoes">
+            <input type="radio" class="btn btn-check" id="radio33" name="btn-radio9" value="Ruim" minlength="1" required/> 
+            <label class="btn" for="radio33">Ruim</label>
+            <input type="radio" class="btn btn-check" id="radio34" name="btn-radio9" value="Bom" minlength="1" required/> 
+            <label class="btn" for="radio34">Bom</label>
+            <input type="radio" class="btn btn-check" id="radio35" name="btn-radio9" value="Médio" minlength="1" required/> 
+            <label class="btn" for="radio35">Médio</label>
+            <input type="radio" class="btn btn-check" id="radio36" name="btn-radio9" value="Ótimo" minlength="1" required/> 
+            <label class="btn" for="radio36">Excelente</label>
+
+        </div>
+        
+        <textarea type= "Justicativa9" name="Justificativa9" id="Justicativa9" cols="30" rows="10" class="form-control" maxlength="255"></textarea>
+    </div>
+    <div class="button">
+        <label class="col-sm=1 col-form-label"></label>    
+        <div class="col-sm-4">
+        <button class="btnEnv btnEnviar" type="submit">Enviar</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>

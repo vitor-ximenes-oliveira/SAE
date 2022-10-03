@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'estilos/Aluno.css' %}">
+    <link rel="stylesheet" href="../static/estilos/geral.css" />
+    <title>Aluno</title>
+</head>
+<style>
+  .charts {
+    width: 100% !important;
+    text-align: center;
+}
+
+.charts svg {
+    width: 48em !important;
+    height: 28em !important;
+    border-radius: 80px;
+}
+
+.semiHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+
+.badge {
+    width: 14em;
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background: red;
+    border-radius: 10px;
+    gap: 0.3em;
+    margin-left: 3em;
+}
+
+</style>
+<header class="headerAluno">
+    <img src="{% static 'imagens/aluno.png' %}">
+</header>
+
+<body>
+    {% for message in messages %}
+        <p id="messages">{{message}}</p>
+    {% endfor %}
+
+    {% block grafico%}
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          ['Acertos',     8],
+          ['Erros',2],
+        ]);
+
+        var options = {
+          title: 'Desempenho no questionario de nivelamento',
+          pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);
+      }
+    </script>
+
+
+    {% endblock%}
+
+    <form method="POST" class="post-form" action="">
+          {% csrf_token %}
+
+    <div class="semiHeader">
+    <div class="btn_logout">
+        <button name="Log out"tipe="submit" href=sair>Log out</button>
+    </div>
+    <div class="classificacao badge">
+      <label class="txt">Seu nivel é:</label>
+      <label class="txt">Proficiente</label>
+    </div>
+    </div>
+    <div class="charts" id="donutchart" style="width: 900px; height: 500px; "> 
+
+    </div>
+
+    <div class="container_telaProfessor">
+        <button type="submit" name="feedback">
+            <div class="card" id="card_form">
+                    <img src="{% static 'imagens/feedback.png' %}">
+                    <p>enviar Feedback</p>
+            </div>
+        <button  name="formularioAluno" type="submit">
+        <form method="POST" class="post-form" action="">
+          {% csrf_token %}
+            <div class="card" id="card_feedback">
+                    <img src="{% static 'imagens/formulario_aluno.png'%}">
+                    <p>Responder Questionário</p>
+            </div>
+        </button>
+        <button type="submit" name="atividades">
+            <div class="card" id="card_perfil">
+                <img src="{% static 'imagens/arquivo.png'%}">
+               <p>Baixar Arquivos</p>
+            </div>
+        </button>
+    </div>
+    <hr />
+    </form>
+</body>
+
+<script>
+    document.getElementById("card_form").onclicked = function(){
+
+    }
+
+
+</script>
+
+</html>

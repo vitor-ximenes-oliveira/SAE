@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'estilos/Professor.css' %}">
+    <link rel="stylesheet" href="../static/estilos/geral.css" />
+    <title>Professor</title>
+</head>
+<header class="headerAluno">
+    <img src="{% static 'imagens/teacher.png' %}">
+</header>
+
+<body>
+    {% for message in messages %}
+        <p id="messages">{{message}}</p>
+    {% endfor %}
+
+    <form method="POST" class="post-form" action="">
+          {% csrf_token %}
+
+    
+    <div class="btn_logout">
+        <button name="Log out" href=sair>Log out</button>
+    </div>
+    <div class="container_telaProfessor">
+        <button type="submit" name="criarFormulario">
+            <div class="card" id="card_form">
+                    <img src="{% static 'imagens/icon_Formulario.png' %}">
+                    <p>Criar Formulario</p>
+            </div>
+        </button>
+        <button type="submit" name="graficosFeedback">
+            <div class="card" id="card_feedback">
+                    <img src="{% static 'imagens/icon_feedback.png'%}">
+                    <p>Exibir Feedback</p>
+            </div>
+        </button>
+        <button type="button">
+            <div class="card" id="card_perfil">
+                <img src="{% static 'imagens/icon_Perfil.png'%}">
+               <p>Perfil</p>
+            </div>
+        </button>
+    </div>
+    <hr />
+    <div class="container_telaProfessor">
+        <button name="enviar_arquivo" type="submit">
+            <div class="card">
+                <img src="{% static 'imagens/EnviarArquivos.png'%}">
+                <p>Enviar Arquivos</p>
+            </div>
+        </button>
+        <button name="turmas" type="submit">
+            <div class="card">
+                <img src="{% static 'imagens/icon_turmas.png'%}">
+                <p>Acessar Turmas</p>
+            </div>
+        </button>
+        <button  type="submit" name="inserir_classe">
+            <div class="card">
+                <img src="{% static 'imagens/CriarTurmas.png'%}">
+                <p>Criar Turmas</p>
+            </div>
+        </button>
+    </div>
+    </form>
+</body>
+
+<script>
+    document.getElementById("card_form").onclicked = function(){
+
+    }
+
+
+</script>
+
+</html>

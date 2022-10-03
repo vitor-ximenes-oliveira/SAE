@@ -1,0 +1,61 @@
+body {
+    font-family: roboto;
+    background-color: #aacdec;
+    color: #5d49cc;
+}
+
+.semiHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+
+.btn_logout {
+    padding: 1em;
+}
+
+.btn_logout button {
+    height: 2em;
+}
+
+.card {
+    background: #fff;
+    width: 7em;
+    height: 7em;
+    display: flex;
+    flex-flow: column;
+    align-content: center;
+    align-items: center;
+    padding: 2em;
+    border-radius: 15px;
+    box-shadow: 5px 4px lightgray;
+}
+
+.card img {
+    width: 5em;
+}
+
+.container_telaProfessor {
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+    align-items: center;
+    height: 16em;
+}
+
+.container_telaProfessor button {
+    border: none;
+    background: transparent;
+    border-radius: 15px;
+}
+
+hr {
+    opacity: 0.4;
+}
+
+div .chart{
+    align-content: center;
+    align-items: center;
+}
+
