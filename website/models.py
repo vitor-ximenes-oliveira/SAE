@@ -8,6 +8,8 @@ from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 import os
+from datetime import datetime as dt 
+
 
 class Aluno(models.Model):
     ra = models.AutoField(primary_key = True)
@@ -170,16 +172,27 @@ def data_valida(data):
         raise ValidationError("Insira uma data válida")
 
 class Professor(models.Model):
+    now = dt.now() 
     Usuario = models.OneToOneField(User, on_delete=models.CASCADE,default="")
     idProfessor = models.AutoField(primary_key = True)
-    Nome = models.CharField(max_length=50, blank=True)
+    models.CharField(max_length=50, blank=True)
     Email = models.EmailField()
     Nascimento = models.DateField(default=date.today,blank=True,help_text=('Insira uma data que seja menor que 18 e maior que 100 anos atrás'),validators=[data_valida])
     Materia = models.CharField(max_length=50,blank=False,default="")
     isProf = models.BooleanField(default=1) 
+    
+    @property
+    def data_formato(self):
+        now = dt.now() 
+        return "%s" %(self.Nascimento.strftime('%d/%m/%Y'))
+        
+
+
     @property
     def esta_ativo(self):
             return bool(self.isProf)  
+
+    
     class Meta:
         db_table = "Professor"
 

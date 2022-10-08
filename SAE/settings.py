@@ -77,6 +77,7 @@ WSGI_APPLICATION = 'SAE.wsgi.application'
 #DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -140,3 +141,8 @@ ACCOUNT_USERNAME_REQUIRED = False
 SILENCED_SYSTEM_CHECKS = ['auth.E003', 'auth.W004']
 
 LANGUAGE_CODE = 'pt-br'
+
+DATE_FORMAT = '%d/%m/%Y'
+DATE_INPUT_FORMATS = ('%d/%m/%Y','%Y-%m-%d')
+USE_I18N = False
+USE_L10N = False

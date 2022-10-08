@@ -43,9 +43,7 @@ def cadastro_aluno(request):
                             autenticar_usuario = User(username=al_nome, password=al_senha)                          
                             autenticar_usuario.save()       
                             user = Aluno.objects.create(al_nome=al_nome, al_email=al_email,al_nascimento=al_nascimento,al_senha=al_senha)
-                            user.isProf = True
-                            user.save()
-                            professor_desativado = Professor.objects.update(isProf=0)                  
+                            user.save()            
                             messages.success(request,"Conta criada com sucesso")                      
                             return redirect('login')
                     except (ValueError,ValidationError):
@@ -60,82 +58,54 @@ def cadastro_aluno(request):
 
 def login_user(request):      
             if 'login' in request.POST:        
-                try:
                     al_nome = request.POST.get("nome")
                     al_senha = request.POST.get("senha")
-                    professor = Professor()
-                    verificar_professor = Professor.objects.filter(isProf=1).last()
-                    if (verificar_professor is None):
-                        usuario = Aluno.objects.get(al_nome=al_nome)
-                    else:
-                        usuario = User.objects.get(username=al_nome)
+
                     if not al_nome or not al_senha:
                         messages.error(request, "Preencha todos os campos")
-                        return redirect('login')
-                    if usuario:
-                        professor = Professor()                       
-                        verificar_professor = Professor.objects.filter(isProf=1).last()
-                        if (verificar_professor is None):
-                            checar_senha=check_password(al_senha, usuario.al_senha)
-                        else:
+                        return redirect('login')     
+                    try:    
+                            al_nome = request.POST.get("nome")
+                            al_senha = request.POST.get("senha")    
+                            aluno = Aluno.objects.get(al_nome=al_nome)            
                             usuario = User.objects.get(username=al_nome)
-                            checar_senha=check_password(al_senha, usuario.password)
-                        if checar_senha:
-                            verificar_professor = Professor.objects.filter(isProf=1).last()
-                            if (verificar_professor is None):       
-                                autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')                    
-                                login(request, autenticar_usuario)
-                                return redirect('telaAluno/'+str(usuario.ra)) 
-                            else: 
-                                prof = Professor.objects.get(Usuario_id = usuario.id)          
-                                autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
-                                login(request, autenticar_usuario)
-                                mudar_campo_nome = Professor.objects.filter(Usuario=usuario).update(Nome=al_nome)
-                                return redirect('telaProfessor/'+str(prof.idProfessor))                                          
-                except (Aluno.DoesNotExist):
-                    try:
-                        usuario = User.objects.get(username=al_nome)
-                        if not al_nome or not al_senha:
-                            messages.error(request, "Preencha todos os campos")
-                            return redirect('login')
-                        if usuario:                   
-                            verificar_ativado = Professor.objects.filter(isProf=1).last()
-                            usuario = User.objects.get(username=al_nome)
-                            checar_senha=check_password(al_senha, usuario.password)
-                            if checar_senha:
-                                    prof = Professor.objects.get(Usuario_id = usuario.id)          
-                                    autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')            
+                            
+                            if aluno:
+                                checar_senha=check_password(al_senha, usuario.password)
+                                if checar_senha:
+                                    autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')                    
                                     login(request, autenticar_usuario)
-                                    mudar_campo_nome = Professor.objects.filter(Usuario=usuario).update(Nome=al_nome)
-                                    return redirect('telaProfessor/'+str(prof.idProfessor))   
-                    except(Professor.DoesNotExist,User.DoesNotExist):   
-                        messages.error(request, "Nome de usuário ou/e senha inválido(s)")
-                                        
-                except (Aluno.MultipleObjectsReturned,User.MultipleObjectsReturned,Professor.MultipleObjectsReturned):
-                    autenticar_usuario = User.objects.filter(username=al_nome).first()
-                    if autenticar_usuario:
-                        login(request, autenticar_usuario)
-                        verificar_professor = Professor.objects.filter(isProf=1).last()
-                        if (verificar_professor is None):
-                            return redirect('telaAluno/'+str(user.ra)) 
-                        else:
-                            login(request, autenticar_usuario)
-                            user = Professor.objects.get(Nome=al_nome).first()
-                            return redirect('telaProfessor/'+str(user.idProfessor))
-                except(Professor.DoesNotExist,User.DoesNotExist):   
-                        messages.error(request, "Nome de usuário ou/e senha inválido(s)")
+                                    return redirect('telaAluno/'+str(aluno.ra)) 
+
+                    except(Aluno.DoesNotExist):
+                        try:
+                                al_nome = request.POST.get("nome")
+                                al_senha = request.POST.get("senha")
+                                usuario = User.objects.get(username=al_nome)
+                                nome_professor = usuario.username
+                                adicionar_nome= Professor.objects.filter(Usuario=usuario.id).update(Nome=nome_professor)
+                                professor = Professor.objects.get(Nome=usuario)
+                                if professor:
+                                    checar_senha=check_password(al_senha, usuario.password)
+                                    if checar_senha:
+                                        autenticar_usuario = authenticate(username=al_nome, password=al_senha, backend= 'django.contrib.auth.backends.AllowAllUsersModelBackend')                    
+                                        login(request, autenticar_usuario)
+                                        return redirect('telaProfessor/'+str(professor.idProfessor)) 
+                        except(Professor.DoesNotExist):
+                            messages.error(request,"Nome de usuário ou/e senha inválido(s)")
+
             elif 'cadastro' in request.POST:
 
-                aluno= Aluno.objects.filter(ra=1)
-                print("ALUN: ",aluno)
-                prof = Professor.objects.filter(isProf=1).last()
+                alunos= Aluno.objects.filter(isProf=0).values_list('isProf',flat=True)
+                prof = Professor.objects.filter(isProf=1).values_list('isProf',flat=True)
                 
-                print("PROF: ",prof)
-                if prof is None or not aluno:
-                    return redirect('/Teladecadastroaluno')
-                else:
-                    messages.error(request,'Essa opção é exclusiva para alunos')
-                    return redirect('Login')
+                for pro in prof:
+                    for aluno in alunos:
+                        if pro == 1 and aluno == 0:
+                            return redirect('/Teladecadastroaluno')
+                        else:
+                            messages.error(request,'Essa opção é exclusiva para alunos')
+                            return redirect('login')
             return render(request,"Login.html")
 
 def atividades(request, ra):
@@ -143,25 +113,30 @@ def atividades(request, ra):
     return render(request,'atividades.html',{'material_aluno':material_aluno,'ra':ra})
 
 def visualizar_arquivo(request,arquivo):
-    extensoes = [".pdf", ".txt", ".png", ".jpg", ".gif", ".bmp",".mp3",".mp4",'.JPG']
-    if arquivo.endswith(tuple(extensoes)):
-        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
-        arquivo = open(diretorio_arquivo, 'rb') 
-        abrir_Arquivo = FileResponse(arquivo)
-        return abrir_Arquivo
-    elif arquivo.endswith('.docx'): 
-        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)        
-        sp.Popen(["C:\Program Files\Windows NT\Accessories\WordPad.exe", diretorio_arquivo])
-        os.chmod(diretorio_arquivo,stat.S_IWUSR and stat.S_IRUSR and stat.S_IRUSR)  
-        fk_aluno = request.GET.get("alu",'')      
-        return redirect('../atividades/'+str(fk_aluno))
-    else:
-        diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
-        os.system(diretorio_arquivo)    
-        os.chmod(diretorio_arquivo,S_IREAD)  
-        fk_aluno = request.GET.get("alu",'')      
-        return redirect('../atividades/'+str(fk_aluno))
-    
+    try:
+        extensoes = [".pdf", ".txt", ".png", ".jpg", ".gif", ".bmp",".mp3",".mp4",'.JPG']
+        if arquivo.endswith(tuple(extensoes)):
+            diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+            arquivo = open(diretorio_arquivo, 'rb') 
+            abrir_Arquivo = FileResponse(arquivo)
+            return abrir_Arquivo
+        elif arquivo.endswith('.docx'): 
+            diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)        
+            sp.Popen(["C:\Program Files\Windows NT\Accessories\WordPad.exe", diretorio_arquivo])
+            os.chmod(diretorio_arquivo,stat.S_IWUSR and stat.S_IRUSR and stat.S_IRUSR)  
+            fk_aluno = request.GET.get("alu",'')      
+            return redirect('../atividades/'+str(fk_aluno))
+        else:
+            diretorio_arquivo = os.path.join(settings.MEDIA_ROOT, arquivo)
+            os.system(diretorio_arquivo)    
+            os.chmod(diretorio_arquivo,S_IREAD)  
+            fk_aluno = request.GET.get("alu",'')      
+            return redirect('../atividades/'+str(fk_aluno))
+    except(FileNotFoundError,ValueError):
+            messages.error(request,"Arquivo não encontrado")
+            fk_aluno = request.GET.get("alu",'')      
+            return redirect('../atividades/'+str(fk_aluno))
+
 def baixar_arquivo(request, arquivo):
     try:
         if arquivo != '':
@@ -170,6 +145,9 @@ def baixar_arquivo(request, arquivo):
             download_arquivo = HttpResponse(diretorio ,content_type="aplicacao/arquivo")
             download_arquivo ['Content-Disposition'] = "attachment; nome_arquivo=" + arquivo
             return download_arquivo
+        else:
+            messages.error(request,"Arquivo não encontrado")
+            return redirect('../atividades/'+str(fk_aluno))
     except(FileNotFoundError,ValueError):
             messages.error(request,"Arquivo não encontrado")
             fk_aluno = request.GET.get("alu",'')      
