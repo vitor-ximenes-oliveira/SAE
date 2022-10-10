@@ -142,6 +142,7 @@ class Formulario(models.Model):
 
 class RespostasFormulario(models.Model):
     id = models.AutoField(primary_key=True)
+    alu = models.ForeignKey(Aluno,on_delete=models.CASCADE,default="")
     respostaQuestao1 = models.CharField(max_length=100,blank=True)
     respostaQuestao2 = models.CharField(max_length=100,blank=True)
     respostaQuestao3 = models.CharField(max_length=100,blank=True)
@@ -152,6 +153,7 @@ class RespostasFormulario(models.Model):
     respostaQuestao8 = models.CharField(max_length=100,blank=True)
     respostaQuestao9 = models.CharField(max_length=100,blank=True)
     respostaQuestao10 = models.CharField(max_length=100,blank=True)
+
     class Meta:
         db_table = "resposta_formulario"
     
@@ -193,5 +195,6 @@ class Professor(models.Model):
             return bool(self.isProf)  
     class Meta:
         db_table = "Professor"
+
 
 User._meta.get_field('username').validators=[validators.RegexValidator(r'^[\w.@+ ]+$', _('Digite um nome válido.'), 'Inválido')]
