@@ -99,13 +99,8 @@ def login_user(request):
                 alunos= Aluno.objects.filter(isProf=0).values_list('isProf',flat=True)
                 prof = Professor.objects.filter(isProf=1).values_list('isProf',flat=True)
                 
-                for pro in prof:
-                    for aluno in alunos:
-                        if pro == 1 and aluno == 0:
-                            return redirect('/Teladecadastroaluno')
-                        else:
-                            messages.error(request,'Essa opção é exclusiva para alunos')
-                            return redirect('login')
+                return redirect('/Teladecadastroaluno')
+                            
             return render(request,"Login.html")
 
 def atividades(request, ra):
@@ -665,32 +660,34 @@ def gabaritoFormulario(request,idProfessor):
             respostaQuestao9 = request.POST.get("btn-radio9")
             respostaQuestao10 = request.POST.get("btn-radio10")
             print("sim")
-            gabarito = RespostasFormulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
+            gabarito = Formulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
             gabarito.save() 
             print("teste2")
             messages.success(request,"Gabarito enviado com sucesso")  
             return redirect("../telaProfessor/"+str(idProfessor))
+            
     
         
         return render(request, "gabaritoFormulario.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
     
 def graficoAluno(request,ra):
-    if 'graficoAluno' in request.POST:
+    if 'responderFomulario' in request.POST:
         acertos = 0
         erros = 0
-
         nivelDoAluno = ""
 
-        questao1 = RespostasFormulario.objects.values_list("respostaQuestao1",flat=True).first()
-        questao2 = RespostasFormulario.objects.values_list("respostaQuestao2",flat=True).first()
-        questao3 = RespostasFormulario.objects.values_list("respostaQuestao3",flat=True).first()
-        questao4 = RespostasFormulario.objects.values_list("respostaQuestao4",flat=True).first()
-        questao5 = RespostasFormulario.objects.values_list("respostaQuestao5",flat=True).first()
-        questao6 = RespostasFormulario.objects.values_list("respostaQuestao6",flat=True).first()
-        questao7 = RespostasFormulario.objects.values_list("respostaQuestao7",flat=True).first()
-        questao8 = RespostasFormulario.objects.values_list("respostaQuestao8",flat=True).first()
-        questao9 = RespostasFormulario.objects.values_list("respostaQuestao9",flat=True).first()
-        questao10 = RespostasFormulario.objects.values_list("respostaQuestao10",flat=True).first()
+        #respostas do aluno
+        questao1 = RespostasFormulario.objects.values_list("respostaQuestao1",flat=True).filter(alu_id=ra)
+        questao2 = RespostasFormulario.objects.values_list("respostaQuestao2",flat=True).filter(alu_id=ra)
+        questao3 = RespostasFormulario.objects.values_list("respostaQuestao3",flat=True).filter(alu_id=ra)
+        questao4 = RespostasFormulario.objects.values_list("respostaQuestao4",flat=True).filter(alu_id=ra)
+        questao5 = RespostasFormulario.objects.values_list("respostaQuestao5",flat=True).filter(alu_id=ra)
+        questao6 = RespostasFormulario.objects.values_list("respostaQuestao6",flat=True).filter(alu_id=ra)
+        questao7 = RespostasFormulario.objects.values_list("respostaQuestao7",flat=True).filter(alu_id=ra)
+        questao8 = RespostasFormulario.objects.values_list("respostaQuestao8",flat=True).filter(alu_id=ra)
+        questao9 = RespostasFormulario.objects.values_list("respostaQuestao9",flat=True).filter(alu_id=ra)
+        questao10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
+        #gabarito do professor
         resposta1 = Formulario.objects.values_list("respostaQuestao1",flat=True).first()
         resposta2 = Formulario.objects.values_list("respostaQuestao2",flat=True).first()
         resposta3 = Formulario.objects.values_list("respostaQuestao3",flat=True).first()
@@ -751,7 +748,7 @@ def graficoAluno(request,ra):
             acertos+=1
         else:
             erros+=1
-
+            
         if( acertos <=5 ):
             nivelDoAluno = "Insuficiente"
         elif(acertos == 5 ):
@@ -761,8 +758,8 @@ def graficoAluno(request,ra):
         elif(acertos > 8):
             nivelDoAluno = "Avançado"
 
-        #return redirect(request, "/telaAluno/"+str(ra) {"acertos":acertos, "erros": erros, "nivelDoAluno": nivelDoAluno})
-    return render(request, "formularioAluno.html")
+        return redirect("/telaAluno/"+str(ra))
+    return render(request, "formularioAluno.html", {"nivelDoAluno": nivelDoAluno, "erros":erros, "acertos":acertos})
 
 def formularioAluno(request,ra):
     questao1 = Formulario.objects.values_list("questao1",flat=True).first()
@@ -815,10 +812,22 @@ def formularioAluno(request,ra):
     alternativaBquestao10 = Formulario.objects.values_list("alternativaBquestao10",flat=True).first()
     alternativaCquestao10 = Formulario.objects.values_list("alternativaCquestao10",flat=True).first()
     alternativaDquestao10 = Formulario.objects.values_list("alternativaDquestao10",flat=True).first()
+
     if request.method == 'POST':
-
-
-        return redirect("../telaAluno/"+str(ra))
+        respostaQuestao1 = request.POST.get("btn-radio")
+        respostaQuestao2 = request.POST.get("btn-radio2")
+        respostaQuestao3 = request.POST.get("btn-radio3")
+        respostaQuestao4 = request.POST.get("btn-radio4")
+        respostaQuestao5 = request.POST.get("btn-radio5")
+        respostaQuestao6 = request.POST.get("btn-radio6")
+        respostaQuestao7 = request.POST.get("btn-radio7")
+        respostaQuestao8 = request.POST.get("btn-radio8")
+        respostaQuestao9 = request.POST.get("btn-radio9")
+        respostaQuestao10 = request.POST.get("btn-radio10")
+        print("sim")
+        respostasFormulario = RespostasFormulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10,alu_id=ra)
+        respostasFormulario.save()
+        graficoAluno(request,ra)
     return render(request, "formularioAluno.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
 
 
