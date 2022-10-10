@@ -1,4 +1,4 @@
-<<<<<<< HEAD:SAE/SAE/urls.py
+
 """SAE URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -28,7 +28,7 @@ urlpatterns = [
     path('',views.login_user,name='login'),
     path('admin/', admin.site.urls),
     path('Teladecadastroaluno', views.cadastro_aluno,name='Teladecadastroaluno'),
-    path('CadastroProfessor',views.cadastro_professor,name='CadastroProfessor'),
+    #path('CadastroProfessor',views.cadastro_professor,name='CadastroProfessor'),
     path('login',views.login_user,name='login'),
     path('telaProfessor/<int:idProfessor>',views.pagina_professor,name='telaProfessor'),
     path('baixar_arquivo/<str:arquivo>',views.baixar_arquivo, name='baixar_arquivo'),
@@ -43,12 +43,12 @@ urlpatterns = [
     path('criarFormulario/<int:idProfessor>', views.criarFormulario, name='criarFormulario'),
     path('gabaritoFormulario/<int:idProfessor>', views.gabaritoFormulario,name='gabaritoFormulario'),
     path('telaAluno/<int:ra>', views.telaAluno, name='telaAluno'),
-    path('preencherGabarito/<int:idProfessor', views.preencherGabarito),
+    #path('preencherGabarito/<int:idProfessor', views.preencherGabarito),
     path('telaAluno', views.telaAluno, name="telaAluno"),
     path('formularioAluno', views.formularioAluno),
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-=======
+
 """SAE URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -97,4 +97,4 @@ urlpatterns = [
     path('graficoAluno/<int:ra>', views.graficoAluno, name="graficoAluno"),
     url(r'^editar_classe/(?P<idProfessor>[0-9]*)',views.editar_classe,name="editar_classe"),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
->>>>>>> e19470f41cca761e77e874acc46c4dee89ee6967:SAE/urls.py
+
