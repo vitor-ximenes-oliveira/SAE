@@ -8,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 import os
+#from wsgiref.types import ErrorStream
 
 class Aluno(models.Model):
     ra = models.AutoField(primary_key = True)
@@ -208,5 +209,12 @@ class Professor(models.Model):
     class Meta:
         db_table = "Professor"
 
+class acertosErros(models.Model):
+    id = models.AutoField(primary_key = True)
+    acertos = models.IntegerField(default=0)
+    erros = models.IntegerField(default=0)
+    nivelDoAluno = models.CharField(max_length=20,default="")
+    aluno = models.ForeignKey(Aluno,on_delete=models.CASCADE,default="")
+   
 
 User._meta.get_field('username').validators=[validators.RegexValidator(r'^[\w.@+ ]+$', _('Digite um nome válido.'), 'Inválido')]
