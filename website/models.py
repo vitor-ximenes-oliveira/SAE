@@ -142,7 +142,7 @@ class Formulario(models.Model):
 
 class RespostasFormulario(models.Model):
     id = models.AutoField(primary_key=True)
-    alu = models.ForeignKey(Aluno,on_delete=models.CASCADE,default="")
+    #alu = models.ForeignKey(Aluno,on_delete=models.CASCADE,default="")
     respostaQuestao1 = models.CharField(max_length=100,blank=True)
     respostaQuestao2 = models.CharField(max_length=100,blank=True)
     respostaQuestao3 = models.CharField(max_length=100,blank=True)
@@ -157,7 +157,19 @@ class RespostasFormulario(models.Model):
     class Meta:
         db_table = "resposta_formulario"
     
-
+class questoesEscolhidasAluno(models.Model):
+    id = models.AutoField(primary_key=True)
+    #alu = models.ForeignKey(Aluno,on_delete=models.CASCADE,default="")
+    respostaQuestao1 = models.CharField(max_length=100,blank=True)
+    respostaQuestao2 = models.CharField(max_length=100,blank=True)
+    respostaQuestao3 = models.CharField(max_length=100,blank=True)
+    respostaQuestao4 = models.CharField(max_length=100,blank=True)
+    respostaQuestao5 = models.CharField(max_length=100,blank=True)
+    respostaQuestao6 = models.CharField(max_length=100,blank=True)
+    respostaQuestao7 = models.CharField(max_length=100,blank=True)
+    respostaQuestao8 = models.CharField(max_length=100,blank=True)
+    respostaQuestao9 = models.CharField(max_length=100,blank=True)
+    respostaQuestao10 = models.CharField(max_length=100,blank=True)
 
 
 @receiver(pre_save, sender=EnviarArquivo)

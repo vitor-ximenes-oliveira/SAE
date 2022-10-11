@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.contrib.auth.hashers import make_password, check_password
 #from website.models import RespostasFormulario
-from website.models import Aluno, EnviarArquivo, Feedback, Professor, Turmas, Formulario, RespostasFormulario
+from website.models import Aluno, EnviarArquivo, Feedback, Professor, Turmas, Formulario, RespostasFormulario, questoesEscolhidasAluno
 from django.contrib import messages
 import os
 from django.http import FileResponse, HttpResponse, HttpResponseRedirect
@@ -20,6 +20,10 @@ from django.urls import reverse
 import os
 import subprocess as sp
 from stat import S_IREAD
+
+acertos=0
+erros=0
+nivelDoAluno = ""
 
 def cadastro_aluno(request):
     if request.method == 'POST':
@@ -226,7 +230,10 @@ def enviar_arquivo(request,idProfessor):
 
 
 def telaAluno(request,ra):
+    global nivelDoAluno
     global acertos
+    global erros
+
     if 'feedback' in request.POST:
         return redirect("/feedback/"+str(ra))
     elif 'Log out' in request.POST:
@@ -236,7 +243,7 @@ def telaAluno(request,ra):
         return redirect('atividades',ra)
     elif 'formularioAluno' in request.POST:
         return redirect('/formularioAluno/'+str(ra))
-    return render(request,"telaAluno.html",{"acertos":acertos,"erros":erros})
+    return render(request,"telaAluno.html",{"acertos":acertos,"erros":erros,"nivelDoAluno": nivelDoAluno})
 
 
 def pagina_professor(request,idProfessor):
@@ -667,10 +674,11 @@ def gabaritoFormulario(request,idProfessor):
         return render(request, "gabaritoFormulario.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
     
 def graficoAluno(request,ra):
+    global ninveldoAluno
     if 'responderFomulario' in request.POST:
         acertos = 0
         erros = 0
-        nivelDoAluno = ""
+        
 
         #respostas do aluno
         questao1 = RespostasFormulario.objects.values_list("respostaQuestao1",flat=True).filter(alu_id=ra)
@@ -758,10 +766,10 @@ def graficoAluno(request,ra):
             nivelDoAluno = "Avançado"
 
         return redirect("/telaAluno/"+str(ra))
-    return render(request, "formularioAluno.html", {"nivelDoAluno": nivelDoAluno, "erros":erros, "acertos":acertos})
+    return render(request, "formularioAluno.html", { "erros":erros, "acertos":acertos})
 
 def formularioAluno(request,ra):
-
+        global nivelDoAluno
     
         questao1 = Formulario.objects.values_list("questao1",flat=True).first()
         alternativaAquestao1 = Formulario.objects.values_list("alternativaAquestao1",flat=True).first()
@@ -825,53 +833,72 @@ def formularioAluno(request,ra):
         questaocerta8 = RespostasFormulario.objects.values_list("respostaQuestao8",flat=True).first()
         questaocerta9 = RespostasFormulario.objects.values_list("respostaQuestao9",flat=True).first()
         questaocerta10 = RespostasFormulario.objects.values_list("respostaQuestao10",flat=True).first()
- 
-        global acertos
-        global erros
-        acertos=0
-        erros=0
-        if 'responderFomulario' in request.POST:
-  
-            if(alternativaAquestao1==questaocerta1):
-                acertos = acertos+1
+        if request.method == 'POST':
+       
+            respostaQuestao1 = request.POST.get("btn-radio")
+            respostaQuestao2 = request.POST.get("btn-radio2")
+            respostaQuestao3 = request.POST.get("btn-radio3")
+            respostaQuestao4 = request.POST.get("btn-radio4")
+            respostaQuestao5 = request.POST.get("btn-radio5")
+            respostaQuestao6 = request.POST.get("btn-radio6")
+            respostaQuestao7 = request.POST.get("btn-radio7")
+            respostaQuestao8 = request.POST.get("btn-radio8")
+            respostaQuestao9 = request.POST.get("btn-radio9")
+            respostaQuestao10 = request.POST.get("btn-radio10")
+            questoesEscolhidasAluno.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
+           
+            global acertos
+            global erros
+    
+            if(alternativaAquestao1==respostaQuestao1):
+                    acertos = acertos+1
             else:
-                erros = erros+1
-            if(alternativaAquestao2==questaocerta2):
-                acertos = acertos+1
+                    erros = erros+1
+            if(alternativaAquestao2==respostaQuestao2):
+                    acertos = acertos+1
             else:
-                erros = erros+1
-            if(alternativaAquestao3==questaocerta3):
-                acertos = acertos+1
+                    erros = erros+1
+            if(alternativaAquestao3==respostaQuestao3):
+                    acertos = acertos+1
             else:
-                erros = erros+1
-            if(alternativaAquestao4==questaocerta4):
-                acertos = acertos+1
+                    erros = erros+1
+            if(alternativaAquestao4==respostaQuestao4):
+                    acertos = acertos+1
             else:
-                erros = erros+1
-            if(alternativaAquestao5==questaocerta5):
-                acertos = acertos+1
+                    erros = erros+1
+            if(alternativaAquestao5==respostaQuestao5):
+                    acertos = acertos+1
             else:
-                erros = erros+1
-            if(alternativaAquestao6==questaocerta6):
-                acertos = acertos+1
+                    erros = erros+1
+            if(alternativaAquestao6==respostaQuestao6):
+                    acertos = acertos+1
             else:
-                erros = erros+1
-            if(alternativaAquestao7==questaocerta7):
-                acertos = acertos+1
+                    erros = erros+1
+            if(alternativaAquestao7==respostaQuestao7):
+                    acertos = acertos+1
             else:
-                erros = erros+1
-            if(alternativaAquestao8==questaocerta8):
-                acertos = acertos+1
+                    erros = erros+1
+            if(alternativaAquestao8==respostaQuestao8):
+                    acertos = acertos+1
             else:
-                erros = erros+1
-            if(alternativaAquestao9==questaocerta9):
-                acertos = acertos+1
+                    erros = erros+1
+            if(alternativaAquestao9==respostaQuestao9):
+                    acertos = acertos+1
             else:
-                erros = erros+1
-            if(alternativaAquestao10==questaocerta10):
-                acertos = acertos+1
+                    erros = erros+1
+            if(alternativaAquestao10==respostaQuestao10):
+                    acertos = acertos+1
             else:
-                erros = erros+1    
+                    erros = erros+1 
+
+            if( acertos <=5 ):
+                nivelDoAluno = "Insuficiente"
+            elif(acertos == 5 ):
+                nivelDoAluno = "Básico"
+            elif(acertos > 5 and acertos <= 8 ):
+                nivelDoAluno = "Proficiente"
+            elif(acertos > 8):
+                nivelDoAluno = "Avançado"
             return redirect("../telaAluno/"+str(ra))
 
         return render(request, "formularioAluno.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
@@ -941,7 +968,7 @@ def gabaritoFormulario(request,idProfessor):
         respostaQuestao9 = request.POST.get("btn-radio9")
         respostaQuestao10 = request.POST.get("btn-radio10")
 
-        respostasFormulario = RespostasFormulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10,alu_id=ra)
+        respostasFormulario = RespostasFormulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
         respostasFormulario.save()
         messages.success(request,"Gabarito enviado com sucesso")  
         return redirect("../telaProfessor/"+str(idProfessor))
