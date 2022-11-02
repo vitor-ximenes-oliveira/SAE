@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Header</title>
+    <title>headerProfessor</title>
   </head>
   <style>
     body {
@@ -18,7 +18,7 @@
   }
   .btn_logout button {
     
-  width: 10%;
+  width: 20%;
   
   text-align: center;
 
@@ -28,7 +28,7 @@
 
   border-radius: 5px;
 
-  margin-left: 780px;
+  margin-left: 450px;
 
   margin-top: 18px;
     
@@ -81,9 +81,11 @@ table.tableHeaderProfessor td a:hover  {
     <img src="../static/imagens/education.png" alt="SAE" >
     <table class="tableHeaderProfessor">
         <tr>
-          <td><a class="nav-link" aria-current="page" href="../telaAluno/{{ra}}">Home</a></td>
-          <td><a class="nav-link" href="../atividades/{{ra}}">Atividades</a></td>
-          <td><a class="nav-link" href="../formularioAluno/{{ra}}">Questionário</a></td>
+            <td><a class="nav-link" aria-current="page" href="../telaProfessor/{{idProfessor}}">Home</a></td>
+            <td><a href="../enviar_arquivo/{{idProfessor}}">Enviar Arquivo</a></td>
+            <td><a href="../graficosFeedback/{{idProfessor}}">Ver Feedback</a></td>
+            <td><a href="../criarFormulario/{{idProfessor}}">Criar Formulário</a></td>
+            <td><a href="../inserir_classe">Criar Turma</a></td>
         </tr>
         
     </table>

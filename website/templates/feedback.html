@@ -6,13 +6,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet"  href="{% static 'estilos/feedback.css' %}">
-    <link rel="stylesheet"  href="{% static 'estilos/geral.css' %}">
+ 
+    <object data="../header.html" type="text/html"></object>
+
     <title>Feedback</title>
+
+
 </head>
 <body>
+    {% include "header.html" %}
     {% for message in messages %}
     <p id="messages">{{message}}</p>
     {% endfor %}
+
+    
+    <form action="" method="post" enctype="multipart/form-data">
+        
+        <select
+          id="ra"
+          name="professor"
+          class="custom-select custom-select-sm input-small"
+        >
+          <option disabled="true" selected="selected">-----Selecione um(a) professor(a)-----</option>
+          {%for prof in professores%}
+          <option  value="{{prof.idProfessor}}">{{prof.Nome}}</option>
+
+          {% endfor %}
+        </select>
 
     <form method="POST" class="post-form" action="">
         {% csrf_token %}
@@ -25,12 +45,12 @@
             <label class="btn" for="radio2">Bom</label>
             <input type="radio" class="btn btn-check" id="radio3" name="btn-radio" value="Médio" minlength="1" required/> 
             <label class="btn" for="radio3">Médio</label>
-            <input type="radio" class="btn btn-check" id="radio4" name="btn-radio" value="Ótimo" minlength="1" required/> 
+            <input type="radio" class="btn btn-check" id="radio4" name="btn-radio" value="Excelente" minlength="1" required/> 
             <label class="btn" for="radio4">Excelente</label>
 
         </div>
         
-        <textarea type="Justificativa1" name="Justificativa1" id="Justificativa1" cols="30" rows="10" maxlength="255"></textarea>
+        <textarea type="Justificativa1" name="Justificativa1" id="Justificativa1" cols="30" rows="10"></textarea>
     </div>
 
     <div class="container_form">
@@ -42,12 +62,12 @@
             <label class="btn" for="radio6">Bom</label>
             <input type="radio" class="btn btn-check" id="radio7" name="btn-radio2" value="Médio" minlength="1" required/> 
             <label class="btn" for="radio7">Médio</label>
-            <input type="radio" class="btn btn-check" id="radio8" name="btn-radio2" value="Ótimo" minlength="1" required/> 
+            <input type="radio" class="btn btn-check" id="radio8" name="btn-radio2" value="Excelente" minlength="1" required/> 
             <label class="btn" for="radio8">Excelente</label>
 
         </div>
         
-        <textarea name="Justificativa2" id="Justificativa2" cols="30" rows="10" maxlength="255"></textarea>
+        <textarea name="Justificativa2" id="Justificativa2" cols="30" rows="10"></textarea>
     </div>
 
     <div class="container_form">
@@ -59,12 +79,12 @@
             <label class="btn" for="radio10">Bom</label>
             <input type="radio" class="btn btn-check" id="radio11" name="btn-radio3" value="Médio" minlength="1" required/> 
             <label class="btn" for="radio11">Médio</label>
-            <input type="radio" class="btn btn-check" id="radio12" name="btn-radio3" value="Ótimo" minlength="1" required/> 
+            <input type="radio" class="btn btn-check" id="radio12" name="btn-radio3" value="Excelente" minlength="1" required/> 
             <label class="btn" for="radio12">Excelente</label>
 
         </div>
         
-        <textarea name="Justificativa3" id="Justificativa3" cols="30" rows="10" maxlength="255"></textarea>
+        <textarea name="Justificativa3" id="Justificativa3" cols="30" rows="10"></textarea>
     </div>
 
     <div class="container_form">
@@ -76,12 +96,12 @@
             <label class="btn" for="radio14">Bom</label>
             <input type="radio" class="btn btn-check" id="radio15" name="btn-radio4" value="Médio" minlength="1" required/> 
             <label class="btn" for="radio15">Médio</label>
-            <input type="radio" class="btn btn-check" id="radio16" name="btn-radio4" value="Ótimo" minlength="1" required/> 
+            <input type="radio" class="btn btn-check" id="radio16" name="btn-radio4" value="Excelente" minlength="1" required/> 
             <label class="btn" for="radio16">Excelente</label>
 
         </div>
         
-        <textarea name="Justificativa4" id="Justificativa4" cols="30" rows="10" maxlength="255"></textarea>
+        <textarea name="Justificativa4" id="Justificativa4" cols="30" rows="10"></textarea>
     </div>
 
     <div class="container_form">
@@ -93,12 +113,12 @@
             <label class="btn" for="radio18">Bom</label>
             <input type="radio" class="btn btn-check" id="radio19" name="btn-radio5" value="Médio" minlength="1" required/> 
             <label class="btn" for="radio19">Médio</label>
-            <input type="radio" class="btn btn-check" id="radio20" name="btn-radio5" value="Ótimo" minlength="1" required/> 
+            <input type="radio" class="btn btn-check" id="radio20" name="btn-radio5" value="Excelente" minlength="1" required/> 
             <label class="btn" for="radio20">Excelente</label>
 
         </div>
         
-        <textarea name="Justificativa5" id="Justificativa5" cols="30" rows="10" maxlength="255"></textarea>
+        <textarea name="Justificativa5" id="Justificativa5" cols="30" rows="10"></textarea>
     </div>
 
     <div class="container_form">
@@ -110,12 +130,12 @@
             <label class="btn" for="radio22">Bom</label>
             <input type="radio" class="btn btn-check" id="radio23" name="btn-radio6" value="Médio" minlength="1" required/> 
             <label class="btn" for="radio23">Médio</label>
-            <input type="radio" class="btn btn-check" id="radio24" name="btn-radio6" value="Ótimo" minlength="1" required/> 
+            <input type="radio" class="btn btn-check" id="radio24" name="btn-radio6" value="Excelente" minlength="1" required/> 
             <label class="btn" for="radio24">Excelente</label>
 
         </div>
         
-        <textarea name="Justificativa6" id="Justificativa6" cols="30" rows="10" maxlength="255"></textarea>
+        <textarea name="Justificativa6" id="Justificativa6" cols="30" rows="10"></textarea>
     </div>
 
     <div class="container_form">
@@ -127,12 +147,12 @@
             <label class="btn" for="radio26">Bom</label>
             <input type="radio" class="btn btn-check" id="radio27" name="btn-radio7" value="Médio" minlength="1" required/> 
             <label class="btn" for="radio27">Médio</label>
-            <input type="radio" class="btn btn-check" id="radio28" name="btn-radio7" value="Ótimo" minlength="1" required/> 
+            <input type="radio" class="btn btn-check" id="radio28" name="btn-radio7" value="Excelente" minlength="1" required/> 
             <label class="btn" for="radio28">Excelente</label>
 
         </div>
         
-        <textarea name="Justificativa7" id="Justificativa7" cols="30" rows="10" maxlength="255"></textarea>
+        <textarea name="Justificativa7" id="Justificativa7" cols="30" rows="10"></textarea>
     </div>
 
     <div class="container_form">
@@ -144,12 +164,12 @@
             <label class="btn" for="radio30">Bom</label>
             <input type="radio" class="btn btn-check" id="radio31" name="btn-radio8" value="Médio" minlength="1" required/> 
             <label class="btn" for="radio31">Médio</label>
-            <input type="radio" class="btn btn-check" id="radio32" name="btn-radio8" value="Ótimo" minlength="1" required/> 
+            <input type="radio" class="btn btn-check" id="radio32" name="btn-radio8" value="Excelente" minlength="1" required/> 
             <label class="btn" for="radio32">Excelente</label>
 
         </div>
         
-        <textarea type= "Justificativa8" name="Justificativa8" id="Justificativa8" cols="30" rows="10" maxlength="255"></textarea>
+        <textarea type= "Justificativa8" name="Justificativa8" id="Justificativa8" cols="30" rows="10"></textarea>
     </div>
 
 
@@ -162,12 +182,12 @@
             <label class="btn" for="radio34">Bom</label>
             <input type="radio" class="btn btn-check" id="radio35" name="btn-radio9" value="Médio" minlength="1" required/> 
             <label class="btn" for="radio35">Médio</label>
-            <input type="radio" class="btn btn-check" id="radio36" name="btn-radio9" value="Ótimo" minlength="1" required/> 
+            <input type="radio" class="btn btn-check" id="radio36" name="btn-radio9" value="Excelente" minlength="1" required/> 
             <label class="btn" for="radio36">Excelente</label>
 
         </div>
         
-        <textarea type= "Justicativa9" name="Justificativa9" id="Justicativa9" cols="30" rows="10" class="form-control" maxlength="255"></textarea>
+        <textarea type= "Justicativa9" name="Justificativa9" id="Justicativa9" cols="30" rows="10" class="form-control"></textarea>
     </div>
     <div class="button">
         <label class="col-sm=1 col-form-label"></label>    

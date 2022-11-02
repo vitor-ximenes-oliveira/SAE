@@ -38,6 +38,11 @@ select#prof {
   width: 24.6em;
 }
 
+.conteudoCaixa {
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
 .Checkbox_Alunos {
   margin-top: 10px;
 }
@@ -52,6 +57,12 @@ button.link-button:hover {
   border: 2px solid #000;
   color: black;
   background-color: #acafb6;
+}
+
+.inserirTurma{
+  margin-top: 100px;
+  margin-left: 10px;
+  margin-right: 20px;
 }
 
 .txtIdProfessor {

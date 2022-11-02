@@ -5,19 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../static/estilos/formularioProfessor2.css" />
-    <link rel="stylesheet" href="../static/estilos/geral.css" />
+  
+    <link rel="stylesheet" href="../static/estilos/headerProfessor.css" />
     <title>Criar Formulário do professor</title>
   </head>
-  <header class="headerProfessor">
-    <img src="../static/imagens/education.png" alt="SAE" >
-    <table class="tableHeaderProfessor">
-        <tr>
-            <td><a href="#">Home</a></td>
-            <td><a href="#">Tela Professor</a></td>
-        </tr>
-    </table>
-  </header>
+ 
   <body>
+    {% include "headerProfessor.html" %}
     <form method="POST" class="post-form" action="">
         {% csrf_token %}
     <h1>Crie seu formulário</h1>

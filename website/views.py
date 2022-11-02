@@ -1,26 +1,26 @@
-from audioop import reverse
-from django.urls import NoReverseMatch
+import os
 import stat
-from django.db import IntegrityError
-from django.shortcuts import redirect, render
-from django.contrib.auth.hashers import make_password, check_password
-#from website.models import RespostasFormulario
-from website.models import Aluno, EnviarArquivo, Feedback, Professor, Turmas, Formulario, RespostasFormulario, questoesEscolhidasAluno,acertosErros
-from django.contrib import messages
-import os
-from django.http import FileResponse, HttpResponse, HttpResponseRedirect
-from SAE import settings
-from SAE.settings import BASE_DIR, MEDIA_ROOT
-from django.contrib.auth import login,authenticate, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User 
-from django.utils.datastructures import MultiValueDictKeyError
-from django.core.exceptions import ValidationError
-from django.urls import reverse
-import os
 import subprocess as sp
+from audioop import reverse
 from stat import S_IREAD
 
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
+from django.urls import NoReverseMatch, reverse
+from django.utils.datastructures import MultiValueDictKeyError
+
+from SAE import settings
+from SAE.settings import BASE_DIR, MEDIA_ROOT
+from website.models import (Aluno, EnviarArquivo, Feedback, Formulario,
+                            Professor, RespostasFormulario, Turmas,
+                            acertosErros, questoesEscolhidasAluno)
 
 
 def cadastro_aluno(request):
@@ -147,6 +147,9 @@ def baixar_arquivo(request, arquivo):
     
 #@login_required(login_url='/login')
 def feedback(request,ra):
+    if 'Log out' in request.POST:
+        sair(request)
+        return redirect("login")
     if request.method == 'POST':
             justificativa1 = request.POST.get("Justificativa1")
             justificativa2 = request.POST.get("Justificativa2")
@@ -166,11 +169,23 @@ def feedback(request,ra):
             pergunta7 = request.POST.get("btn-radio7")
             pergunta8 = request.POST.get("btn-radio8")
             pergunta9 = request.POST.get("btn-radio9")
-            feedback = Feedback.objects.create(pergunta1=pergunta1,justificativa1=justificativa1,pergunta2=pergunta2,justificativa2=justificativa2,pergunta3=pergunta3,justificativa3=justificativa3,pergunta4=pergunta4,justificativa4=justificativa4,pergunta5=pergunta5,justificativa5=justificativa5,pergunta6=pergunta6,justificativa6=justificativa6,pergunta7=pergunta7,justificativa7=justificativa7,pergunta8=pergunta8,justificativa8=justificativa8,pergunta9=pergunta9,justificativa9=justificativa9)
-            feedback.save() 
-            messages.success(request,"Feedback enviado com sucesso")           
-            return redirect("../telaAluno/"+str(ra))
-    return render(request, 'feedback.html')
+            idProf = request.POST.get("professor")
+            try:
+                feed = Feedback()
+                idProf = request.POST.get("professor")
+                chaverofessor = Professor.objects.get(pk=idProf)
+                feed.idProf = chaverofessor
+                chaverofessor = feed.idProf
+                feedback = Feedback.objects.create(pergunta1=pergunta1,justificativa1=justificativa1,pergunta2=pergunta2,justificativa2=justificativa2,pergunta3=pergunta3,justificativa3=justificativa3,pergunta4=pergunta4,justificativa4=justificativa4,pergunta5=pergunta5,justificativa5=justificativa5,pergunta6=pergunta6,justificativa6=justificativa6,pergunta7=pergunta7,justificativa7=justificativa7,pergunta8=pergunta8,justificativa8=justificativa8,pergunta9=pergunta9,justificativa9=justificativa9,idProf=chaverofessor)
+                messages.success(request,"Feedback enviado com sucesso")
+            except (IntegrityError,Professor.DoesNotExist):
+                messages.error(request,"Escolha um professor")           
+            return redirect("../feedback/"+str(ra))
+    else:
+        
+            idProfessor = Turmas.objects.filter(alu=ra).values_list("prof_id",flat=True).first()
+            professores = Professor.objects.raw("Select idProfessor,nome from professor p join turmas t join aluno a where t.prof_id=%s and t.alu_id=%s group by alu_id",[idProfessor,ra])
+    return render(request, 'feedback.html',{'professores':professores,'ra':ra})
 
 def sair(request):
         logout(request)
@@ -178,6 +193,9 @@ def sair(request):
         return HttpResponseRedirect("/")
 
 def turmas(request,idProfessor):
+        if 'Log out' in request.POST:
+            sair(request)
+            return redirect("login")
         if request.method == 'POST':
             classe_ano_letivo = request.POST.get('ano_letivo_classe')
             ano_letivo = classe_ano_letivo.split("|")[-2]
@@ -192,6 +210,9 @@ def turmas(request,idProfessor):
         return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo})
 
 def enviar_arquivo(request,idProfessor):
+    if 'Log out' in request.POST:
+        sair(request)
+        return redirect("login")
     if 'atualizar' in request.POST:
         classe_ano_letivo = request.POST.get('ano_letivo_classe')
         ano_letivo = classe_ano_letivo.split("|")[-2]
@@ -224,7 +245,7 @@ def enviar_arquivo(request,idProfessor):
         classe = ""
         ano_letivo = ""
         turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))         
-    return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo})
+    return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo,'idProfessor':idProfessor})
 
 
 def telaAluno(request,ra):
@@ -259,9 +280,11 @@ def pagina_professor(request,idProfessor):
     elif 'enviar_arquivo' in request.POST:
         return redirect("/enviar_arquivo/"+str(idProfessor))
 
-    return render(request,"telaProfessor.html")
+    return render(request,"telaProfessor.html",{"idProfessor":idProfessor})
 
 def inserir_classe(request):
+    if 'voltar' in request.POST:
+        return redirect("../telaProfessor/"+str(idProfessor))
     if 'enviar' in request.POST:
         try:
             alunos = Aluno.objects.all()
@@ -325,7 +348,10 @@ def inserir_classe(request):
         turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id,ano_letivo")  
     return render(request, "inserir_classe.html",{'alunos':alunos,'professores':professores,'turmas':turmas})
 
-def editar_classe(request,idProfessor):              
+def editar_classe(request,idProfessor):
+        if 'Log out' in request.POST:
+            sair(request)
+            return redirect("login")              
         if 'editar' in request.POST:
             try:
                 classe_ano_letivo = request.POST.get('ano_letivo_classe')
@@ -366,6 +392,9 @@ def editar_classe(request,idProfessor):
         return render(request, "editar_classe.html",{'alunos':alunos,'turmas':turmas,'ano_letivo':ano_letivo,'classe':classe})
 
 def graficosFeedback(request,idProfessor):
+    if 'Log out' in request.POST:
+        sair(request)
+        return redirect("login")
     if 'voltar' in request.POST:
         return redirect("../telaProfessor/"+str(idProfessor))
     else:  
@@ -414,11 +443,12 @@ def graficosFeedback(request,idProfessor):
         medio9 = 0
         excelente9 = 0
 
-        pergunta1 = Feedback.objects.values_list("pergunta1", flat=True)
+        pergunta1 = Feedback.objects.filter(idProf=idProfessor).values_list("pergunta1", flat=True)
 
         for x in pergunta1:
             if(x == 'Ruim'):
                 ruim+=1
+                
             elif(x == 'Bom'):
                 bom+=1
             elif(x == 'Ótimo'):
@@ -427,7 +457,7 @@ def graficosFeedback(request,idProfessor):
                 excelente+=1
 
 
-        pergunta2 = Feedback.objects.values_list("pergunta2", flat=True)
+        pergunta2 = Feedback.objects.filter(idProf=idProfessor).values_list("pergunta2", flat=True)
 
         for x in pergunta2:
             if(x == 'Ruim'):
@@ -439,7 +469,7 @@ def graficosFeedback(request,idProfessor):
             else:
                 excelente2+=1
 
-        pergunta3 = Feedback.objects.values_list("pergunta3", flat=True)
+        pergunta3 = Feedback.objects.filter(idProf=idProfessor).values_list("pergunta3", flat=True)
 
         for x in pergunta3:
             if(x == 'Ruim'):
@@ -451,7 +481,7 @@ def graficosFeedback(request,idProfessor):
             else:
                 excelente3+=1
 
-        pergunta4 = Feedback.objects.values_list("pergunta4", flat=True)
+        pergunta4 = Feedback.objects.filter(idProf=idProfessor).values_list("pergunta4", flat=True)
 
         for x in pergunta4:
             if(x == 'Ruim'):
@@ -463,7 +493,7 @@ def graficosFeedback(request,idProfessor):
             else:
                 excelente4+=1
 
-        pergunta5 = Feedback.objects.values_list("pergunta5", flat=True)
+        pergunta5 = Feedback.objects.filter(idProf=idProfessor).values_list("pergunta5", flat=True)
 
         for x in pergunta5:
             if(x == 'Ruim'):
@@ -475,7 +505,7 @@ def graficosFeedback(request,idProfessor):
             else:
                 excelente5+=1
 
-        pergunta6 = Feedback.objects.values_list("pergunta6", flat=True)
+        pergunta6 = Feedback.objects.filter(idProf=idProfessor).values_list("pergunta6", flat=True)
 
         for x in pergunta6:
             if(x == 'Ruim'):
@@ -487,7 +517,7 @@ def graficosFeedback(request,idProfessor):
             else:
                 excelente6+=1
 
-        pergunta7 = Feedback.objects.values_list("pergunta7", flat=True)
+        pergunta7 = Feedback.objects.filter(idProf=idProfessor).values_list("pergunta7", flat=True)
 
         for x in pergunta7:
             if(x == 'Ruim'):
@@ -499,7 +529,7 @@ def graficosFeedback(request,idProfessor):
             else:
                 excelente7+=1
 
-        pergunta8 = Feedback.objects.values_list("pergunta8", flat=True)
+        pergunta8 = Feedback.objects.filter(idProf=idProfessor).values_list("pergunta8", flat=True)
 
         for x in pergunta8:
             if(x == 'Ruim'):
@@ -511,7 +541,7 @@ def graficosFeedback(request,idProfessor):
             else:
                 excelente8+=1
 
-        pergunta9 = Feedback.objects.values_list("pergunta9", flat=True)
+        pergunta9 = Feedback.objects.filter(idProf=idProfessor).values_list("pergunta9", flat=True)
 
         for x in pergunta9:
             if(x == 'Ruim'):
@@ -533,11 +563,17 @@ def graficosFeedback(request,idProfessor):
             medio9+=1
         else:
             excelente9+=1       
-    return render(request, "graficosFeedback.html" , {"ruim" : ruim, "bom" : bom, "medio" : medio , "excelente": excelente, "ruim2" : ruim2, "bom2" : bom2, "medio2" : medio2 , "excelente2": excelente2, "ruim3" : ruim3, "bom3" : bom3, "medio3" : medio3 , "excelente3": excelente3, "ruim4" : ruim4, "bom4" : bom4, "medio4" : medio4 , "excelente4": excelente4, "ruim5" : ruim5, "bom5" : bom5, "medio5" : medio5 , "excelente5": excelente5, "ruim6" : ruim6, "bom6" : bom6, "medio6" : medio6 , "excelente6": excelente6, "ruim7" : ruim7, "bom7" : bom7, "medio7" : medio7 , "excelente7": excelente7, "ruim8" : ruim8, "bom8" : bom8, "medio8" : medio8 , "excelente8": excelente8, "ruim9" : ruim9, "bom9" : bom9, "medio9" : medio9 , "excelente9": excelente9})
+        
+        
+            
+    return render(request, "graficosFeedback.html" , {"idProfessor":idProfessor,"ruim" : ruim, "bom" : bom, "medio" : medio , "excelente": excelente, "ruim2" : ruim2, "bom2" : bom2, "medio2" : medio2 , "excelente2": excelente2, "ruim3" : ruim3, "bom3" : bom3, "medio3" : medio3 , "excelente3": excelente3, "ruim4" : ruim4, "bom4" : bom4, "medio4" : medio4 , "excelente4": excelente4, "ruim5" : ruim5, "bom5" : bom5, "medio5" : medio5 , "excelente5": excelente5, "ruim6" : ruim6, "bom6" : bom6, "medio6" : medio6 , "excelente6": excelente6, "ruim7" : ruim7, "bom7" : bom7, "medio7" : medio7 , "excelente7": excelente7, "ruim8" : ruim8, "bom8" : bom8, "medio8" : medio8 , "excelente8": excelente8, "ruim9" : ruim9, "bom9" : bom9, "medio9" : medio9 , "excelente9": excelente9})
 
 def criarFormulario(request,idProfessor):
-    if request.method == 'POST':
-            print("BATATA")
+    if 'Log out' in request.POST:
+        sair(request)
+        return redirect("login")
+    if 'formulario' in request.POST:
+    
             questao1 = request.POST.get("txtQuestao")
             alternativaAquestao1 =  request.POST.get("txtAltA1")
             alternativaBquestao1 =  request.POST.get("txtAltB1")
@@ -589,13 +625,16 @@ def criarFormulario(request,idProfessor):
             alternativaCquestao10 =  request.POST.get("txtAltC10")
             alternativaDquestao10 =  request.POST.get("txtAltD10")
             formulario = Formulario.objects.create(questao1=questao1, alternativaAquestao1=alternativaAquestao1,alternativaBquestao1=alternativaBquestao1,alternativaCquestao1=alternativaCquestao1,alternativaDquestao1=alternativaDquestao1,questao2=questao2, alternativaAquestao2=alternativaAquestao2,alternativaBquestao2=alternativaBquestao2,alternativaCquestao2=alternativaCquestao2,alternativaDquestao2=alternativaDquestao2,questao3=questao3, alternativaAquestao3=alternativaAquestao3,alternativaBquestao3=alternativaBquestao3,alternativaCquestao3=alternativaCquestao3,alternativaDquestao3=alternativaDquestao3,questao4=questao4, alternativaAquestao4=alternativaAquestao4,alternativaBquestao4=alternativaBquestao4,alternativaCquestao4=alternativaCquestao4,alternativaDquestao4=alternativaDquestao4,questao5=questao5, alternativaAquestao5=alternativaAquestao5,alternativaBquestao5=alternativaBquestao5,alternativaCquestao5=alternativaCquestao5,alternativaDquestao5=alternativaDquestao5,questao6=questao6, alternativaAquestao6=alternativaAquestao6,alternativaBquestao6=alternativaBquestao6,alternativaCquestao6=alternativaCquestao6,alternativaDquestao6=alternativaDquestao6,questao7=questao7, alternativaAquestao7=alternativaAquestao7,alternativaBquestao7=alternativaBquestao7,alternativaCquestao7=alternativaCquestao7,alternativaDquestao7=alternativaDquestao7,questao8=questao8, alternativaAquestao8=alternativaAquestao8,alternativaBquestao8=alternativaBquestao8,alternativaCquestao8=alternativaCquestao8,alternativaDquestao8=alternativaDquestao8,questao9=questao9, alternativaAquestao9=alternativaAquestao9,alternativaBquestao9=alternativaBquestao9,alternativaCquestao9=alternativaCquestao9,alternativaDquestao9=alternativaDquestao9,questao10=questao10, alternativaAquestao10=alternativaAquestao10,alternativaBquestao10=alternativaBquestao10,alternativaCquestao10=alternativaCquestao10,alternativaDquestao10=alternativaDquestao10)
-            formulario.save() 
+            #formulario.save() 
             messages.success(request,"Formulario criado com sucesso")           
-            return redirect("gabaritoFormulario",idProfessor)
+            return redirect("../gabaritoFormulario/"+str(idProfessor))
       
-    return render(request, 'criarFormulario.html')
+    return render(request, 'criarFormulario.html',{"idProfessor":idProfessor})
 
 def gabaritoFormulario(request,idProfessor):
+        if 'Log out' in request.POST:
+            sair(request)
+            return redirect("login")
         questao1 = Formulario.objects.values_list("questao1",flat=True).first()
         alternativaAquestao1 = Formulario.objects.values_list("alternativaAquestao1",flat=True).first()
         alternativaBquestao1 = Formulario.objects.values_list("alternativaBquestao1",flat=True).first()
@@ -650,7 +689,6 @@ def gabaritoFormulario(request,idProfessor):
         
         if 'gabarito' in request.POST:
             respostaQuestao1 = request.POST.get("btn-radio")
-            print("TESTE: ",respostaQuestao1)
             respostaQuestao2 = request.POST.get("btn-radio2")
             respostaQuestao3 = request.POST.get("btn-radio3")
             respostaQuestao4 = request.POST.get("btn-radio4")
@@ -660,18 +698,19 @@ def gabaritoFormulario(request,idProfessor):
             respostaQuestao8 = request.POST.get("btn-radio8")
             respostaQuestao9 = request.POST.get("btn-radio9")
             respostaQuestao10 = request.POST.get("btn-radio10")
-            print("sim")
             gabarito = Formulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
-            gabarito.save() 
-            print("teste2")
+            #gabarito.save() 
             messages.success(request,"Gabarito enviado com sucesso")  
             return redirect("../telaProfessor/"+str(idProfessor))
             
     
         
-        return render(request, "gabaritoFormulario.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
+        return render(request, "gabaritoFormulario.html", {"idProfessor":idProfessor,"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
     
 def graficoAluno(request,ra):
+    if 'Log out' in request.POST:
+        sair(request)
+        return redirect("login")
     global ninveldoAluno
     if 'responderFomulario' in request.POST:
         acertos = 0
@@ -769,8 +808,11 @@ def graficoAluno(request,ra):
     return render(request, "formularioAluno.html", { "erros":erros, "acertos":acertos,"ra":ra})
 
 def formularioAluno(request,ra):
-        global nivelDoAluno
     
+        global nivelDoAluno
+        if 'Log out' in request.POST:
+            sair(request)
+            return redirect("login")
         questao1 = Formulario.objects.values_list("questao1",flat=True).first()
         alternativaAquestao1 = Formulario.objects.values_list("alternativaAquestao1",flat=True).first()
         alternativaBquestao1 = Formulario.objects.values_list("alternativaBquestao1",flat=True).first()
@@ -928,85 +970,9 @@ def formularioAluno(request,ra):
                 elif(atualizarAcertos > 8):
                     nivelDoAluno = "Avançado"
                 atualizarAcertosErros = acertosErros.objects.filter(aluno=ra).update(acertos=atualizarAcertos,erros=atualizarErros,nivelDoAluno=nivelDoAluno)
-                
-               
-           
             return redirect("../telaAluno/"+str(ra))
 
-        return render(request, "formularioAluno.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10,"ra":ra})
-
-
-def gabaritoFormulario(request,idProfessor):
-    questao1 = Formulario.objects.values_list("questao1",flat=True).first()
-    alternativaAquestao1 = Formulario.objects.values_list("alternativaAquestao1",flat=True).first()
-    alternativaBquestao1 = Formulario.objects.values_list("alternativaBquestao1",flat=True).first()
-    alternativaCquestao1 = Formulario.objects.values_list("alternativaCquestao1",flat=True).first()
-    alternativaDquestao1 = Formulario.objects.values_list("alternativaDquestao1",flat=True).first()
-    questao2 = Formulario.objects.values_list("questao2",flat=True).first()
-    alternativaAquestao2 = Formulario.objects.values_list("alternativaAquestao2",flat=True).first()
-    alternativaBquestao2 = Formulario.objects.values_list("alternativaBquestao2",flat=True).first()
-    alternativaCquestao2 = Formulario.objects.values_list("alternativaCquestao2",flat=True).first()
-    alternativaDquestao2 = Formulario.objects.values_list("alternativaDquestao2",flat=True).first()
-    questao3 = Formulario.objects.values_list("questao3",flat=True).first()
-    alternativaAquestao3 = Formulario.objects.values_list("alternativaAquestao3",flat=True).first()
-    alternativaBquestao3 = Formulario.objects.values_list("alternativaBquestao3",flat=True).first()
-    alternativaCquestao3 = Formulario.objects.values_list("alternativaCquestao3",flat=True).first()
-    alternativaDquestao3 = Formulario.objects.values_list("alternativaDquestao3",flat=True).first()
-    questao4 = Formulario.objects.values_list("questao4",flat=True).first()
-    alternativaAquestao4 = Formulario.objects.values_list("alternativaAquestao4",flat=True).first()
-    alternativaBquestao4 = Formulario.objects.values_list("alternativaBquestao4",flat=True).first()
-    alternativaCquestao4 = Formulario.objects.values_list("alternativaCquestao4",flat=True).first()
-    alternativaDquestao4 = Formulario.objects.values_list("alternativaDquestao4",flat=True).first()
-    questao5 = Formulario.objects.values_list("questao5",flat=True).first()
-    alternativaAquestao5 = Formulario.objects.values_list("alternativaAquestao5",flat=True).first()
-    alternativaBquestao5 = Formulario.objects.values_list("alternativaBquestao5",flat=True).first()
-    alternativaCquestao5 = Formulario.objects.values_list("alternativaCquestao5",flat=True).first()
-    alternativaDquestao5 = Formulario.objects.values_list("alternativaDquestao5",flat=True).first()
-    questao6 = Formulario.objects.values_list("questao6",flat=True).first()
-    alternativaAquestao6 = Formulario.objects.values_list("alternativaAquestao6",flat=True).first()
-    alternativaBquestao6 = Formulario.objects.values_list("alternativaBquestao6",flat=True).first()
-    alternativaCquestao6 = Formulario.objects.values_list("alternativaCquestao6",flat=True).first()
-    alternativaDquestao6 = Formulario.objects.values_list("alternativaDquestao6",flat=True).first()
-    questao7 = Formulario.objects.values_list("questao7",flat=True).first()
-    alternativaAquestao7 = Formulario.objects.values_list("alternativaAquestao7",flat=True).first()
-    alternativaBquestao7 = Formulario.objects.values_list("alternativaBquestao7",flat=True).first()
-    alternativaCquestao7 = Formulario.objects.values_list("alternativaCquestao7",flat=True).first()
-    alternativaDquestao7 = Formulario.objects.values_list("alternativaDquestao7",flat=True).first()
-    questao8 = Formulario.objects.values_list("questao8",flat=True).first()
-    alternativaAquestao8 = Formulario.objects.values_list("alternativaAquestao8",flat=True).first()
-    alternativaBquestao8 = Formulario.objects.values_list("alternativaBquestao8",flat=True).first()
-    alternativaCquestao8 = Formulario.objects.values_list("alternativaCquestao8",flat=True).first()
-    alternativaDquestao8 = Formulario.objects.values_list("alternativaDquestao8",flat=True).first()
-    questao9 = Formulario.objects.values_list("questao9",flat=True).first()
-    alternativaAquestao9 = Formulario.objects.values_list("alternativaAquestao9",flat=True).first()
-    alternativaBquestao9 = Formulario.objects.values_list("alternativaBquestao9",flat=True).first()
-    alternativaCquestao9 = Formulario.objects.values_list("alternativaCquestao9",flat=True).first()
-    alternativaDquestao9 = Formulario.objects.values_list("alternativaDquestao9",flat=True).first()
-    questao10 = Formulario.objects.values_list("questao10",flat=True).first()
-    alternativaAquestao10 = Formulario.objects.values_list("alternativaAquestao10",flat=True).first()
-    alternativaBquestao10 = Formulario.objects.values_list("alternativaBquestao10",flat=True).first()
-    alternativaCquestao10 = Formulario.objects.values_list("alternativaCquestao10",flat=True).first()
-    alternativaDquestao10 = Formulario.objects.values_list("alternativaDquestao10",flat=True).first()
-
-    if request.method == 'POST':
-        respostaQuestao1 = request.POST.get("btn-radio")
-        respostaQuestao2 = request.POST.get("btn-radio2")
-        respostaQuestao3 = request.POST.get("btn-radio3")
-        respostaQuestao4 = request.POST.get("btn-radio4")
-        respostaQuestao5 = request.POST.get("btn-radio5")
-        respostaQuestao6 = request.POST.get("btn-radio6")
-        respostaQuestao7 = request.POST.get("btn-radio7")
-        respostaQuestao8 = request.POST.get("btn-radio8")
-        respostaQuestao9 = request.POST.get("btn-radio9")
-        respostaQuestao10 = request.POST.get("btn-radio10")
-
-        respostasFormulario = RespostasFormulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
-        respostasFormulario.save()
-        messages.success(request,"Gabarito enviado com sucesso")  
-        return redirect("../telaProfessor/"+str(idProfessor))
-    return render(request, "formularioAluno.html", {"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
-
-
+        return render(request, "formularioAluno.html", {"ra":ra,"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10,"ra":ra})
 
 def pagina_feedback(request):
     if 'Log out' in request.POST:

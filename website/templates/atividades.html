@@ -6,13 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{% static 'estilos/atividade.css' %}" />
-    <link rel="stylesheet" href="{% static 'estilos/geral.css' %}" />
+
     <title>Lista de arquivos</title>
   </head>
   <body>
    
     <form action="" method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      {% include "header.html" %}
       <h1>Arquivos</h1>
       <hr/>
       <table class="tabelaArquivos">
@@ -24,6 +25,7 @@
               </tr>
             </thead> -->
         <tbody>
+          
           {%for m in material_aluno%}
           <tr>
             <td>{{m.arquivo}}</td>

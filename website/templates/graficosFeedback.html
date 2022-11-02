@@ -10,12 +10,12 @@
 </head>
 
 <body>
-
+  {% include "headerProfessor.html" %}
 <form action="" method="POST">
   {% csrf_token %}
-    <div class="btn_logout">
+    <!--<div class="btn_logout">
         <button name="voltar" type="submit">Voltar a tela do professor</button>
-    </div>
+    </div>-->
 
     {% block grafico %}
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
