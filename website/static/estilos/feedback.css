@@ -25,6 +25,16 @@ body {
     margin-bottom: 1em;
 }
 
+select#catapimbas{
+     width: 35em;
+ height: 3em;
+ border-radius: 5px;
+ border: solid 1px;
+ margin: 2em 0em;
+ margin-left: 1em;
+}
+
+
 .btn {
     background-color: transparent;
     border-radius: 10px;

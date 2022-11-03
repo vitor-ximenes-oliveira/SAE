@@ -11,8 +11,9 @@
 </head>
 
 <body>
+    {% include "header.html" %}
     <form method="POST" class="post-form" action="">
-        {% include "header.html" %}
+      
         {% csrf_token %}
     
     <h4>Preencha as respostas do gabarito de seu formulario</h4>
@@ -51,9 +52,9 @@
             <div class="botoes">
                 <input type="radio" class="btn btn-check" id="radio9" name="btn-radio3" value={{alternativaAquestao3}} minlength="1" required/> 
                 <label class="btn" for="radio9">{{alternativaAquestao3}}</label>
-                <input type="radio" class="btn btn-check" id="radio10" name="btn-radio3"  value={{alternativaBquestao3}}minlength="1" required/> 
+                <input type="radio" class="btn btn-check" id="radio10" name="btn-radio3"  value={{alternativaBquestao3}} minlength="1" required/> 
                 <label class="btn" for="radio10">{{alternativaBquestao3}}</label>
-                <input type="radio" class="btn btn-check" id="radio11" name="btn-radio3"  value={{alternativaCquestao3}}minlength="1" required/> 
+                <input type="radio" class="btn btn-check" id="radio11" name="btn-radio3"  value={{alternativaCquestao3}} minlength="1" required/> 
                 <label class="btn" for="radio11">{{alternativaCquestao3}}</label>
                 <input type="radio" class="btn btn-check" id="radio12" name="btn-radio3" value={{alternativaDquestao3}} minlength="1" required/> 
                 <label class="btn" for="radio12">{{alternativaDquestao3}}</label>
@@ -167,7 +168,7 @@
         
     </div>
 
-
+    
     <div class="button">
       <button type="submit" name="responderFomulario">Responder Formulario</button>
     </div>

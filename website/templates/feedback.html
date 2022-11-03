@@ -10,7 +10,17 @@
     <object data="../header.html" type="text/html"></object>
 
     <title>Feedback</title>
-
+<style>
+    
+select#catapimbas{
+     width: 35em;
+ height: 3em;
+ border-radius: 5px;
+ border: solid 1px;
+ margin: 2em 0em;
+ margin-left: 31em;
+}
+</style>
 
 </head>
 <body>
@@ -19,11 +29,10 @@
     <p id="messages">{{message}}</p>
     {% endfor %}
 
-    
     <form action="" method="post" enctype="multipart/form-data">
-        
+ 
         <select
-          id="ra"
+          id="catapimbas"
           name="professor"
           class="custom-select custom-select-sm input-small"
         >

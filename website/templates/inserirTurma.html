@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../static/estilos/geral.css" />
-  <link rel="stylesheet"  href="{% static 'estilos/inserir_classe.css' %}">
+  <link rel="stylesheet"  href="{% static 'estilos/inserirTurma.css' %}">
 
   <title>Criar Turmas</title>
 </head>
@@ -67,7 +67,7 @@
   
         <input type="text" name="idProfessor" pattern="[a-zA-Z0-9-]+" />
       </div>
-    <a href="{% url 'editar_classe' idProfessor=idProfessor %}"><button type="submit" name="classe_existente" class="link-button" value="classe_existente" >Inserir em uma já existente</button></a>
+    <a href="{% url 'editarTurma' idProfessor=idProfessor %}"><button type="submit" name="classe_existente" class="link-button" value="classe_existente" >Inserir em uma já existente</button></a>
     </form>
   </form>
   </form>
