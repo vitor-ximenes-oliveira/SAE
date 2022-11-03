@@ -718,6 +718,7 @@ def graficoAluno(request,ra):
         nivelDoAluno = 0
 
         #respostas do aluno
+        respostasAluno = []
         questao1 = RespostasFormulario.objects.values_list("respostaQuestao1",flat=True).filter(alu_id=ra)
         questao2 = RespostasFormulario.objects.values_list("respostaQuestao2",flat=True).filter(alu_id=ra)
         questao3 = RespostasFormulario.objects.values_list("respostaQuestao3",flat=True).filter(alu_id=ra)
@@ -728,7 +729,21 @@ def graficoAluno(request,ra):
         questao8 = RespostasFormulario.objects.values_list("respostaQuestao8",flat=True).filter(alu_id=ra)
         questao9 = RespostasFormulario.objects.values_list("respostaQuestao9",flat=True).filter(alu_id=ra)
         questao10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
+
+        #adicionando as respostas na lista
+        respostasAluno.append(questao1)
+        respostasAluno.append(questao2)
+        respostasAluno.append(questao3)
+        respostasAluno.append(questao4)
+        respostasAluno.append(questao5)
+        respostasAluno.append(questao6)
+        respostasAluno.append(questao7)
+        respostasAluno.append(questao8)
+        respostasAluno.append(questao9)
+        respostasAluno.append(questao10)
+
         #gabarito do professor
+        respostasGabarito = []
         resposta1 = Formulario.objects.values_list("respostaQuestao1",flat=True).first()
         resposta2 = Formulario.objects.values_list("respostaQuestao2",flat=True).first()
         resposta3 = Formulario.objects.values_list("respostaQuestao3",flat=True).first()
@@ -740,68 +755,32 @@ def graficoAluno(request,ra):
         resposta9 = Formulario.objects.values_list("respostaQuestao9",flat=True).first()
         resposta10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
 
+        respostasGabarito.append(resposta1)
+        respostasGabarito.append(resposta2)
+        respostasGabarito.append(resposta3)
+        respostasGabarito.append(resposta4)
+        respostasGabarito.append(resposta5)
+        respostasGabarito.append(resposta6)
+        respostasGabarito.append(resposta7)
+        respostasGabarito.append(resposta8)
+        respostasGabarito.append(resposta9)
+        respostasGabarito.append(resposta10)
 
-        resposta10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
+        #resposta10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
 
-        if(questao1 == resposta1):
-            acertos+=1
-        else:
-            erros+=1
-
-        if(questao2 == resposta2):
-            acertos+=1
-        else:
-            erros+=1
-
-        if(questao3 == resposta3):
-            acertos+=1
-        else:
-            erros+=1
-
-        if(questao4 == resposta4):
-            acertos+=1
-        else:
-            erros+=1
-
-        if(questao5 == resposta5):
-            acertos+=1
-        else:
-            erros+=1
-
-        if(questao6 == resposta6):
-            acertos+=1
-        else:
-            erros+=1
-
-        if(questao7 == resposta7):
-            acertos+=1
-        else:
-            erros+=1
-
-        if(questao8 == resposta8):
-            acertos+=1
-        else:
-            erros+=1
-
-        if(questao9 == resposta9):
-            acertos+=1
-        else:
-            erros+=1
-
-        if(questao10 == resposta10):
-            acertos+=1
-        else:
-            erros+=1
-            
-      
-
-        if( acertos <=5 ):
+        for x in range(0,10,1):
+            if(respostasAluno[x] == respostasGabarito[x]):
+                acertos+=1
+            else:
+                erros+=1
+    
+        if( (acertos == 0 and erros == 10) or (acertos == 1 and erros == 9) or (acertos == 2 and erros == 8) or (acertos == 3 and erros == 7) or (acertos == 4 and erros == 6)):
             nivelDoAluno = "Insuficiente"
-        elif(acertos == 5 ):
+        elif(acertos == 5 and erros == 5):
             nivelDoAluno = "Básico"
-        elif(acertos > 5 and acertos <= 8 ):
+        elif((acertos == 6 and erros == 4) or (acertos == 7 and erros == 3) or (acertos == 8 and erros == 2) ):
             nivelDoAluno = "Proficiente"
-        elif(acertos > 8):
+        elif((acertos == 9 and erros == 1) or (acertos == 10 and erros == 0)):
             nivelDoAluno = "Avançado"
 
         return redirect("/telaAluno/"+str(ra))
