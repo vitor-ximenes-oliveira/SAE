@@ -38,19 +38,37 @@
         <div>
         <span class="inf_ra">RA</span> 
         <span class="inf_nome">Nome</span>
+        <span class="inf_nivelAluno">Nível do Aluno</span>
         </div> 
         {% for aluno in alunos %}
+        
         <div class="aluno">
           
           <input type="checkbox" id="s" name="ra" value="{{aluno.pk}}"/>
-          <label class="btn btn-secondary" for="s" value="{{aluno.pk}}"
-            >{{aluno.ra}} 
+          <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">
+          <div class="ra_aluno">
+            {{aluno.ra}} 
+          </div>
             <div class="nome_aluno">
-              {{aluno.al_nome}}</div></label>
+              {{aluno.al_nome}}
+            </div>
+              
+                {% endfor %}
+
+                {% for nivelDoAluno in nivelDoAlunos %}
+                
+                <div class="nivelAluno">
+                  {{nivelDoAluno.nivelDoAluno}}</div><br>
+                
+                  {% endfor%}
+            </label>
+            
           </div>
 
-        {% endfor %}
+        
+    
       </div>
+      
       <br />
       <div class="button">
         <button id="btn" type="submit" name="enviar" class="link-button" value="enviar">

@@ -11,8 +11,11 @@
   <title>Editar turmas</title>
 </head>
 <body> 
-  {% include "headerProfessor.html" %}
+  
   <div class="box">
+  
+   
+
     <h1>Adicionar Aluno na Turma</h1>
     <form action="" method="POST" enctype="multipart/form-data">
       <section class="campoSelecioneClasse">  
@@ -39,10 +42,11 @@
           {{aluno.ra}}
             <input type="checkbox" id="s" name="aluno_ra" value="{{aluno.pk}}">
             <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">{{aluno.al_nome}}</label>
-          </div>  
+          </div> 
           {% endfor %}
         
           <button id="btnAtualizarClasse" type="submit" name="editar" value="editar">Atualizar Classe</button>
+          <button name="voltar" type="submit">Voltar na tela anterior</button>
       </form>
         
     </form>

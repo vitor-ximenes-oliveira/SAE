@@ -219,9 +219,11 @@ def enviar_arquivo(request,idProfessor):
     if 'atualizar' in request.POST:
         classe_ano_letivo = request.POST.get('ano_letivo_classe')
         ano_letivo = classe_ano_letivo.split("|")[-2]
-        classe = classe_ano_letivo.split("|")[-1]
+        classe = classe_ano_letivo.split("|")[-1]    
         alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a join turmas t on t.alu_id = a.ra where classe = %s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
-        turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))        
+        turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))     
+        nivelDoAlunos = acertosErros.objects.raw("select ae.id, ae.nivelDoAluno,ae.aluno_id from website_acertoserros ae join turmas t on t.alu_id = ae.aluno_id join aluno a on ae.aluno_id = a.ra where classe =%s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
+
     elif 'enviar' in request.POST:
         try:
             classe_ano_letivo = request.POST.get('ano_letivo_classe')
@@ -229,6 +231,7 @@ def enviar_arquivo(request,idProfessor):
             classe = classe_ano_letivo.split("|")[-1]          
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))   
             alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a join turmas t on t.alu_id = a.ra where classe = %s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
+            nivelDoAlunos = acertosErros.objects.raw("select ae.id, ae.nivelDoAluno,ae.aluno_id from website_acertoserros ae join turmas t on t.alu_id = ae.aluno_id join aluno a on ae.aluno_id = a.ra where classe =%s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
             alunos_ra = request.POST.getlist('ra')
             if not alunos_ra:
                 messages.error(request,"Selecione um aluno")
@@ -247,8 +250,9 @@ def enviar_arquivo(request,idProfessor):
         alunos = ""
         classe = ""
         ano_letivo = ""
+        nivelDoAlunos = ""
         turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))         
-    return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo,'idProfessor':idProfessor})
+    return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo,'idProfessor':idProfessor,'nivelDoAlunos':nivelDoAlunos})
 
 
 def telaAluno(request,ra):
@@ -352,9 +356,8 @@ def inserirTurma(request,idProfessor):
     return render(request, "inserirTurma.html",{'alunos':alunos,'professores':professores,'turmas':turmas,'idProfessor':idProfessor})
 
 def editarTurma(request,idProfessor):
-        if 'Log out' in request.POST:
-            sair(request)
-            return redirect("login")              
+        if 'voltar' in request.POST:
+            return redirect("../inserirTurma/"+(idProfessor))             
         if 'editar' in request.POST:
             try:
                 classe_ano_letivo = request.POST.get('ano_letivo_classe')
@@ -917,13 +920,13 @@ def formularioAluno(request,ra):
                     acertosAluno = acertosAluno+1
             else:
                     errosAluno = errosAluno+1
-            if( acertosAluno <=5 ):
+            if( (acertosAluno == 0 and errosAluno == 10) or (acertosAluno == 1 and errosAluno == 9) or (acertosAluno == 2 and errosAluno == 8) or (acertosAluno == 3 and errosAluno == 7) or (acertosAluno == 4 and errosAluno == 6)):
                 nivelDoAluno = "Insuficiente"
-            elif(acertosAluno == 5 ):
+            elif(acertosAluno == 5 and errosAluno == 5):
                 nivelDoAluno = "Básico"
-            elif(acertosAluno > 5 and acertosAluno <= 8 ):
+            elif((acertosAluno == 6 and errosAluno == 4) or (acertosAluno == 7 and errosAluno == 3) or (acertosAluno == 8 and errosAluno == 2) ):
                 nivelDoAluno = "Proficiente"
-            elif(acertosAluno > 8):
+            elif((acertosAluno == 9 and errosAluno == 1) or (acertosAluno == 10 and errosAluno == 0)):
                 nivelDoAluno = "Avançado"
             aluno = request.POST.get("aluno")
             alunoExiste = acertosErros.objects.filter(aluno=ra)
