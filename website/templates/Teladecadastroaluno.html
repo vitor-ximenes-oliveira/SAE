@@ -8,7 +8,13 @@
     <link rel="stylesheet" href="../static/estilos/CadastroAluno.css" />
     <title>Cadastro de aluno</title>
 </head>
-
+<script>
+function LimpasCampos() {
+    document.getElementById("al_nome").value = "";
+    document.getElementById("al_email").value = "";
+    document.getElementById("al_nascimento").value = "";
+}
+</script>
 <body class="Cadastro">
     <form method="POST" class="post-form" action="/Teladecadastroaluno">
         {% csrf_token %}
@@ -27,17 +33,17 @@
         <div class="container_CadastroProfessor">
             <div class="campos_flex">
                 <div class="label-float">
-                    <input type="text" name="al_nome" pattern="[a-zA-Z ]*" placeholder=" "/>
+                    <input type="text" id="al_nome" name="al_nome" pattern="[a-zA-Z ]*" placeholder=" "/>
                     <label>Nome Completo</label>
                 </div>
                 <div class="label-float">
-                    <input type="email" name="al_email" placeholder=" " pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.com">
+                    <input type="email" id="al_email" name="al_email" placeholder=" " pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.com">
                     <label>E-mail</label>
                 </div>
             </div>
             <div class="campos_flex">
                 <div class="label-float">
-                    <input type="date" name="al_nascimento" placeholder=" " max="2020-12-31" min="1900-12-31"/>
+                    <input type="date" id="al_nascimento" name="al_nascimento" placeholder=" " max="2020-12-31" min="1900-12-31"/>
                     <label>Data de Nascimento</label>
                 </div>
             </div>
@@ -56,7 +62,7 @@
             <div class="botaoCriar">
             <button class="btn" type="submit" name="CriaConta" value="CriaConta">Criar</button>
       
-                <button class="btnVoltar" type="submit" name="voltar" value="voltar">Voltar</button>
+                <button class="btnVoltar" type="submit" name="voltar" value="voltar" onclick="LimpasCampos();">Voltar</button>
             </div>
         </div>
         

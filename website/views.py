@@ -3,7 +3,6 @@ import stat
 import subprocess as sp
 from audioop import reverse
 from stat import S_IREAD
-
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -15,7 +14,6 @@ from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import NoReverseMatch, reverse
 from django.utils.datastructures import MultiValueDictKeyError
-
 from SAE import settings
 from SAE.settings import BASE_DIR, MEDIA_ROOT
 from website.models import (Aluno, EnviarArquivo, Feedback, Formulario,
@@ -58,6 +56,8 @@ def cadastro_aluno(request):
                 messages.error(request,"Preencha todos os campos") 
                     
     elif 'voltar' in request.POST:
+            al_nome = request.POST.get("")
+            al_email = request.POST.get("")
             return redirect("login")   
     return render(request,'Teladecadastroaluno.html')
 
@@ -82,7 +82,7 @@ def login_user(request):
                                     login(request, autenticar_usuario)
                                     return redirect('telaAluno/'+str(aluno.ra)) 
 
-                    except(Aluno.DoesNotExist):
+                    except(Aluno.DoesNotExist,User.DoesNotExist):
                         try:
                                 al_nome = request.POST.get("nome")
                                 al_senha = request.POST.get("senha")
@@ -298,21 +298,21 @@ def inserirTurma(request,idProfessor):
             ano_letivo = request.POST.get("ano_letivo")
             classe = request.POST.get("classe")
             professores = Professor.objects.all()
-            idProfessor = request.POST.get("professor")
-            profi = Turmas.objects.filter(prof=idProfessor).values_list('prof_id',flat=True).first()
+            pkProfessor = request.POST.get("professor")
+            profi = Turmas.objects.filter(prof=pkProfessor).values_list('prof_id',flat=True).first()
             nova_turma = Turmas.objects.get(ano_letivo=ano_letivo,classe=classe,prof=profi)
-            if idProfessor is None:
+            if pkProfessor is None:
                 messages.error(request,"Selecione um professor")
-                return redirect('inserirTruma')
+                return redirect('../inserirTurma/'+str(idProfessor))
         except Turmas.MultipleObjectsReturned:         
                 messages.error(request,"Já existe uma turma com essas informações")
-                return redirect('/inserirTurma')
+                return redirect('../inserirTurma/'+str(idProfessor))
         except Turmas.DoesNotExist:
             if request.POST.get("classe") and request.POST.get("ano_letivo"):
                 alunos_selecionados = request.POST.getlist('aluno_ra')
-                if idProfessor is None or not alunos_selecionados:
+                if pkProfessor is None or not alunos_selecionados or not ano_letivo:
                         messages.error(request,"Preencha todos os campos da opção que deseja executar")
-                        return redirect("/inserirTurma")
+                        return redirect("../inserirTurma/"+str(idProfessor))
                 for aluno in alunos_selecionados:
                     for professor in request.POST.getlist('professor'):              
                             turmas = Turmas()
@@ -325,8 +325,9 @@ def inserirTurma(request,idProfessor):
                             turmas.save()
                 messages.success(request,"Turma criada com sucesso")
             else:
+             
                 messages.error(request,"Preencha todos os campos da opção que deseja executar")
-                return redirect("/inserirTurma")  
+                return redirect("../inserirTurma/"+str(idProfessor))  
         turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id,ano_letivo")  
     elif 'classe_existente' in request.POST:
         alunos = Aluno.objects.all()
@@ -334,21 +335,21 @@ def inserirTurma(request,idProfessor):
         turmas = Turmas.objects.raw("SELECT * from turmas t join professor p on t.prof_id = p.idProfessor group by classe,prof_id,ano_letivo")  
         try:   
             if request.POST.get("idProfessor"):
-                idProfessor = request.POST.get("idProfessor")   
+                pkProfessor = request.POST.get("idProfessor")   
                 for prof_id in Professor.objects.values_list("idProfessor",flat=True):
-                    if str(prof_id) == str(idProfessor):    
-                        return redirect(reverse('editarTurma',args=[idProfessor]))  
+                    if str(prof_id) == str(pkProfessor):    
+                        return redirect(reverse('editarTurma',args=[pkProfessor]))
                 messages.error(request,"ID inválido")
-                return redirect("/inserirTurma")
+                return redirect("../inserirTurma/"+str(idProfessor))
             else:    
                 messages.error(request,"Insira o ID do professor")
-                return redirect("/inserirTurma")
+                return redirect("../inserirTurma/"+str(idProfessor))
         except ValueError:
                     messages.error(request,"Não existe um professor com esse ID")
-                    return redirect("/inserirTurma")
+                    return redirect("../inserirTurma/"+str(idProfessor))
         except NoReverseMatch:
             messages.error(request,"Insira um ID que seja válido")
-            return redirect("/inserirTurma")
+            return redirect("../inserirTurma/"+str(idProfessor))
     else:     
         professores = Professor.objects.all()
         alunos = Aluno.objects.all()
@@ -364,6 +365,7 @@ def editarTurma(request,idProfessor):
                 ano_letivo = classe_ano_letivo.split("|")[-2]
                 classe = classe_ano_letivo.split("|")[-1]
                 alunos = request.POST.getlist('aluno_ra')
+                
             except UnboundLocalError:
                 messages.error("Selecione um aluno")
                 return redirect('editarTurma',idProfessor)
@@ -380,16 +382,16 @@ def editarTurma(request,idProfessor):
                     turmas.ano_letivo = ano_letivo                    
                     turmas.save()
             messages.success(request,"Turma atualizada com sucesso")            
-            alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id from aluno a left outer join turmas t on t.alu_id = a.ra where alu_id not in (select alu_id from turmas where classe = %s and ano_letivo=%s and prof_id=%s or prof_id<>NULL) group by alu_id",[classe,ano_letivo,idProfessor])
+            alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a left outer join turmas t on t.alu_id = a.ra where alu_id not in (select alu_id from turmas where classe = %s and ano_letivo=%s and prof_id=%s or prof_id<>NULL) group by alu_id",[classe,ano_letivo,idProfessor])
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))
             return redirect("../editarTurma/"+str(idProfessor))
         elif 'atualizar' in request.POST:
             classe_ano_letivo = request.POST.get('ano_letivo_classe')
             ano_letivo = classe_ano_letivo.split("|")[-2]
             classe = classe_ano_letivo.split("|")[-1]
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])  
+            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))  
 
-            alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a left outer join turmas t on t.alu_id = a.ra where alu_id not in (select alu_id from turmas where classe = %s and ano_letivo=%s and prof_id=%s or t.prof_id<>NULL) group by alu_id",[classe,ano_letivo,idProfessor])
+            alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a left outer join turmas t on t.alu_id = a.ra where a.ra not in (select alu_id from turmas where classe = %s and ano_letivo=%s and prof_id=%s or t.prof_id<>NULL) group by alu_id",[classe,ano_letivo,idProfessor])
         else:
             alunos = ""
             classe=""
@@ -630,9 +632,7 @@ def criarFormulario(request,idProfessor):
             alternativaBquestao10 =  request.POST.get("txtAltB10")
             alternativaCquestao10 =  request.POST.get("txtAltC10")
             alternativaDquestao10 =  request.POST.get("txtAltD10")
-
             formulario = Formulario.objects.create(questao1=questao1, alternativaAquestao1=alternativaAquestao1,alternativaBquestao1=alternativaBquestao1,alternativaCquestao1=alternativaCquestao1,alternativaDquestao1=alternativaDquestao1,questao2=questao2, alternativaAquestao2=alternativaAquestao2,alternativaBquestao2=alternativaBquestao2,alternativaCquestao2=alternativaCquestao2,alternativaDquestao2=alternativaDquestao2,questao3=questao3, alternativaAquestao3=alternativaAquestao3,alternativaBquestao3=alternativaBquestao3,alternativaCquestao3=alternativaCquestao3,alternativaDquestao3=alternativaDquestao3,questao4=questao4, alternativaAquestao4=alternativaAquestao4,alternativaBquestao4=alternativaBquestao4,alternativaCquestao4=alternativaCquestao4,alternativaDquestao4=alternativaDquestao4,questao5=questao5, alternativaAquestao5=alternativaAquestao5,alternativaBquestao5=alternativaBquestao5,alternativaCquestao5=alternativaCquestao5,alternativaDquestao5=alternativaDquestao5,questao6=questao6, alternativaAquestao6=alternativaAquestao6,alternativaBquestao6=alternativaBquestao6,alternativaCquestao6=alternativaCquestao6,alternativaDquestao6=alternativaDquestao6,questao7=questao7, alternativaAquestao7=alternativaAquestao7,alternativaBquestao7=alternativaBquestao7,alternativaCquestao7=alternativaCquestao7,alternativaDquestao7=alternativaDquestao7,questao8=questao8, alternativaAquestao8=alternativaAquestao8,alternativaBquestao8=alternativaBquestao8,alternativaCquestao8=alternativaCquestao8,alternativaDquestao8=alternativaDquestao8,questao9=questao9, alternativaAquestao9=alternativaAquestao9,alternativaBquestao9=alternativaBquestao9,alternativaCquestao9=alternativaCquestao9,alternativaDquestao9=alternativaDquestao9,questao10=questao10, alternativaAquestao10=alternativaAquestao10,alternativaBquestao10=alternativaBquestao10,alternativaCquestao10=alternativaCquestao10,alternativaDquestao10=alternativaDquestao10)
-            #formulario.save() 
             messages.success(request,"Formulario criado com sucesso")           
             return redirect("../gabaritoFormulario/"+str(idProfessor))
       
@@ -706,7 +706,6 @@ def gabaritoFormulario(request,idProfessor):
             respostaQuestao9 = request.POST.get("btn-radio9")
             respostaQuestao10 = request.POST.get("btn-radio10")
             gabarito = RespostasFormulario.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
-            #gabarito.save() 
             messages.success(request,"Gabarito enviado com sucesso")  
             return redirect("../telaProfessor/"+str(idProfessor))
             
@@ -849,22 +848,9 @@ def formularioAluno(request,ra):
         alternativaBquestao10 = Formulario.objects.values_list("alternativaBquestao10",flat=True).last()
         alternativaCquestao10 = Formulario.objects.values_list("alternativaCquestao10",flat=True).last()
         alternativaDquestao10 = Formulario.objects.values_list("alternativaDquestao10",flat=True).last()
-        
-        
-        #questaocerta1 = RespostasFormulario.objects.values_list("respostaQuestao1",flat=True).first()
-        #questaocerta2 = RespostasFormulario.objects.values_list("respostaQuestao2",flat=True).first()
-        #questaocerta3 = RespostasFormulario.objects.values_list("respostaQuestao3",flat=True).first()
-        #questaocerta4 = RespostasFormulario.objects.values_list("respostaQuestao4",flat=True).first()
-        #questaocerta5 = RespostasFormulario.objects.values_list("respostaQuestao5",flat=True).first()
-        #questaocerta6 = RespostasFormulario.objects.values_list("respostaQuestao6",flat=True).first()
-        #questaocerta7 = RespostasFormulario.objects.values_list("respostaQuestao7",flat=True).first()
-        #questaocerta8 = RespostasFormulario.objects.values_list("respostaQuestao8",flat=True).first()
-        #questaocerta9 = RespostasFormulario.objects.values_list("respostaQuestao9",flat=True).first()
-        #questaocerta10 = RespostasFormulario.objects.values_list("respostaQuestao10",flat=True).first()
-        if 'responderFomulario' in request.POST:
-       
+
+        if 'responderFomulario' in request.POST:   
             respostaQuestao1 = request.POST.get("btn-radio")
-            print("RESP1: ",respostaQuestao1)
             respostaQuestao2 = request.POST.get("btn-radio2")
             respostaQuestao3 = request.POST.get("btn-radio3")
             respostaQuestao4 = request.POST.get("btn-radio4")

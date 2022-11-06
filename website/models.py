@@ -1,6 +1,5 @@
 import os
 from datetime import *
-
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import User
 from django.core import validators
@@ -9,8 +8,6 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
-
-
 class Aluno(models.Model):
     ra = models.AutoField(primary_key = True)
     al_nome = models.CharField(max_length=100)
@@ -161,7 +158,6 @@ class RespostasFormulario(models.Model):
     
 class questoesEscolhidasAluno(models.Model):
     id = models.AutoField(primary_key=True)
-    #alu = models.ForeignKey(Aluno,on_delete=models.CASCADE,default="")
     respostaQuestao1 = models.TextField(blank = True)
     respostaQuestao2 = models.TextField(blank = True)
     respostaQuestao3 = models.TextField(blank = True)
@@ -178,14 +174,11 @@ class questoesEscolhidasAluno(models.Model):
 def sobrescrever_arquivo(sender, **kwargs):
     verificar_pasta = kwargs['instance']
     try:
-
-        print("verificar_pasta: ",verificar_pasta)
         if verificar_pasta.arquivo:
             arquivo_igual = verificar_pasta.arquivo.path
-            print("Arquivo substituido com sucesso")
             os.remove(arquivo_igual)
     except FileNotFoundError:
-        print("")
+        pass
 
 def data_valida(data):
     if data > datetime.now().date() - relativedelta(years=18) or data < datetime.now().date() - relativedelta(years=100):
