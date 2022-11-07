@@ -194,7 +194,7 @@ class Professor(models.Model):
     Nome = models.CharField(max_length=50, blank=True)
     Email = models.EmailField()
     Nascimento = models.DateField(default=date.today,blank=True,help_text=('Insira uma data que seja menor que 18 e maior que 100 anos atrás'),validators=[data_valida])
-    Materia = models.CharField(max_length=50,blank=False,default="",help_text=('Entrar no SAE como professor'))
+    Materia = models.CharField(max_length=50,blank=False,default="")
     isProf = models.BooleanField(default=1) 
 
     @property

@@ -26,7 +26,7 @@ select#catapimbas{
 
 </head>
 <body>
-    {% include "header.html" %}
+    {% include 'header.html' with acertos=acertos %}
     {% for message in messages %}
     <p id="messages">{{message}}</p>
     {% endfor %}

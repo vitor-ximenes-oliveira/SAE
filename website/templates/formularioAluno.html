@@ -10,10 +10,29 @@
     <link rel="stylesheet" href="../static/estilos/geral.css" />
 
     <title>Formulario de Nivelamento</title>
+
+    <style>
+        #h1{
+            margin-left: 370px;
+            margin-right: 50px;
+        }
+    </style>
 </head>
 
 <body>
-    {% include "header.html" %}
+    {% if questao1 == "" %}
+    <body>
+        <form method="post">
+            {% csrf_token %}
+        <h1 id="h1">Professor ainda não criou o formulário</h1>
+        <div class="button">
+            <button type="submit" name="sair">Sair</button>
+          </div>
+        </form>
+    </body>
+    {% else %}
+    
+    {% include 'header.html' with acertos=acertos %}
     <form method="POST" class="post-form" action="">
       
         {% csrf_token %}
@@ -175,5 +194,5 @@
       <button type="submit" name="responderFomulario">Responder Formulario</button>
     </div>
     </form>
-
+{% endif %}
 </body>

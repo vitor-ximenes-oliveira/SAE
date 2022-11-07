@@ -95,14 +95,20 @@
                     <img src="{% static 'imagens/feedback.png' %}">
                     <p>enviar Feedback</p>
             </div>
-        <button  name="formularioAluno" type="submit">
+        
+          {% if acertos == None %}
+
+          {% else %}
+          <button  name="formularioAluno" type="submit">
         <form method="POST" class="post-form" action="">
           {% csrf_token %}
+          
             <div class="card" id="card_feedback">
                     <img src="{% static 'imagens/formulario_aluno.png'%}">
                     <p>Responder Questionário</p>
             </div>
         </button>
+        {% endif %}
         <button type="submit" name="atividades">
             <div class="card" id="card_perfil">
                 <img src="{% static 'imagens/arquivo.png'%}">

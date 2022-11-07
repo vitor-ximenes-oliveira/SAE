@@ -195,23 +195,6 @@ def sair(request):
         messages.success(request,"Você saiu do seu perfil")
         return HttpResponseRedirect("/")
 
-def turmas(request,idProfessor):
-        if 'Log out' in request.POST:
-            sair(request)
-            return redirect("login")
-        if request.method == 'POST':
-            classe_ano_letivo = request.POST.get('ano_letivo_classe')
-            ano_letivo = classe_ano_letivo.split("|")[-2]
-            classe = classe_ano_letivo.split("|")[-1]
-            alunos = Aluno.objects.raw("select a.ra, a.al_nome, a.al_email, al_nascimento from aluno a join turmas t on a.ra = t.alu_id join Professor p on t.prof_id = idProfessor where t.classe =%s and t.ano_letivo=%s and t.prof_id = %s group by a.al_nome order by a.ra",[classe,ano_letivo,idProfessor])
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])
-        else:
-            alunos = ""
-            ano_letivo = ""
-            classe = ""
-            turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",[idProfessor])     
-        return render(request, 'turmas.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo})
-
 def enviar_arquivo(request,idProfessor):
     if 'Log out' in request.POST:
         sair(request)
@@ -260,6 +243,7 @@ def telaAluno(request,ra):
     erros = acertosErros.objects.filter(aluno=ra).values_list("erros",flat=True).first()
     nivelDoAluno = acertosErros.objects.filter(aluno=ra).values_list("nivelDoAluno",flat=True).first()
 
+    print("acertos: ",acertos)
     if 'feedback' in request.POST:
         return redirect("/feedback/"+str(ra))
     elif 'Log out' in request.POST:
@@ -270,7 +254,6 @@ def telaAluno(request,ra):
     elif 'formularioAluno' in request.POST:
         return redirect('/formularioAluno/'+str(ra))
     return render(request,"telaAluno.html",{"acertos":acertos,"erros":erros,"nivelDoAluno": nivelDoAluno})
-
 
 def pagina_professor(request,idProfessor):
     if 'turmas' in request.POST:
@@ -772,8 +755,6 @@ def graficoAluno(request,ra):
         respostasGabarito.append(resposta9)
         respostasGabarito.append(resposta10)
 
-        #resposta10 = Formulario.objects.values_list("respostaQuestao10",flat=True).first()
-
         for x in range(0,10,1):
             if(respostasAluno[x] == respostasGabarito[x]):
                 acertos+=1
@@ -788,13 +769,14 @@ def graficoAluno(request,ra):
             nivelDoAluno = "Proficiente"
         elif((acertos == 9 and erros == 1) or (acertos == 10 and erros == 0)):
             nivelDoAluno = "Avançado"
-
         return redirect("/telaAluno/"+str(ra))
     return render(request, "formularioAluno.html", { "erros":erros, "acertos":acertos,"ra":ra})
 
 def formularioAluno(request,ra):
     
         global nivelDoAluno
+        if 'sair' in request.POST:
+            return redirect("../telaAluno/"+str(ra))
         if 'Log out' in request.POST:
             sair(request)
             return redirect("login")
@@ -860,7 +842,7 @@ def formularioAluno(request,ra):
             respostaQuestao8 = request.POST.get("btn-radio8")
             respostaQuestao9 = request.POST.get("btn-radio9")
             respostaQuestao10 = request.POST.get("btn-radio10")
-            questoesEscolhidasAluno.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
+            questoesEscolhidasAluno.objects.create(questao1, respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
            
             acertosAluno=0
             errosAluno=0
