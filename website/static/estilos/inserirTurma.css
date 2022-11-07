@@ -1,9 +1,15 @@
 body {
   background-color: #aacdec;
-  display: block !important;
+  height: 120vh;
+}
+
+.containerInserirTurmas {
+  width: 100%;
+  display: flex;
   justify-content: center;
-  height: 97vh;
+  align-content: center;
   align-items: center;
+  padding: 2em 0;
 }
 
 .box {
@@ -11,7 +17,7 @@ body {
   background: azure;
   height: 90vh;
   border-radius: 24px;
-  /* display: flex; */
+  display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 11px 9px 16px;
