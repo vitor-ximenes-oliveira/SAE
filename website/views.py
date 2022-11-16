@@ -243,7 +243,6 @@ def telaAluno(request,ra):
     erros = acertosErros.objects.filter(aluno=ra).values_list("erros",flat=True).first()
     nivelDoAluno = acertosErros.objects.filter(aluno=ra).values_list("nivelDoAluno",flat=True).first()
 
-    print("acertos: ",acertos)
     if 'feedback' in request.POST:
         return redirect("/feedback/"+str(ra))
     elif 'Log out' in request.POST:
@@ -275,7 +274,11 @@ def pagina_professor(request,idProfessor):
 def inserirTurma(request,idProfessor):
     if 'voltar' in request.POST:
         return redirect("../telaProfessor/"+str(idProfessor))
+    if 'Log out' in request.POST:
+        sair(request)
+        return redirect('login')
     if 'enviar' in request.POST:
+
         try:
             alunos = Aluno.objects.all()
             ano_letivo = request.POST.get("ano_letivo")
@@ -842,7 +845,7 @@ def formularioAluno(request,ra):
             respostaQuestao8 = request.POST.get("btn-radio8")
             respostaQuestao9 = request.POST.get("btn-radio9")
             respostaQuestao10 = request.POST.get("btn-radio10")
-            questoesEscolhidasAluno.objects.create(questao1, respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
+            questoesEscolhidasAluno.objects.create(respostaQuestao1=respostaQuestao1,respostaQuestao2=respostaQuestao2,respostaQuestao3=respostaQuestao3,respostaQuestao4=respostaQuestao4,respostaQuestao5=respostaQuestao5,respostaQuestao6=respostaQuestao6,respostaQuestao7=respostaQuestao7,respostaQuestao8=respostaQuestao8,respostaQuestao9=respostaQuestao9,respostaQuestao10=respostaQuestao10)
            
             acertosAluno=0
             errosAluno=0
@@ -929,10 +932,10 @@ def formularioAluno(request,ra):
 
         return render(request, "formularioAluno.html", {"ra":ra,"questao1": questao1,"alternativaAquestao1":alternativaAquestao1, "alternativaBquestao1":alternativaBquestao1,"alternativaCquestao1":alternativaCquestao1,"alternativaDquestao1":alternativaDquestao1,"questao2":questao2,"alternativaAquestao2":alternativaAquestao2, "alternativaBquestao2":alternativaBquestao2,"alternativaCquestao2":alternativaCquestao2,"alternativaDquestao2":alternativaDquestao2,"questao3":questao3,"alternativaAquestao3":alternativaAquestao3, "alternativaBquestao3":alternativaBquestao3,"alternativaCquestao3":alternativaCquestao3,"alternativaDquestao3":alternativaDquestao3,"questao4":questao4,"alternativaAquestao4":alternativaAquestao4, "alternativaBquestao4":alternativaBquestao4,"alternativaCquestao4":alternativaCquestao4,"alternativaDquestao4":alternativaDquestao4,"questao5":questao5,"alternativaAquestao5":alternativaAquestao5, "alternativaBquestao5":alternativaBquestao5,"alternativaCquestao5":alternativaCquestao5,"alternativaDquestao5":alternativaDquestao5,"questao6":questao6,"alternativaAquestao6":alternativaAquestao6, "alternativaBquestao6":alternativaBquestao6,"alternativaCquestao6":alternativaCquestao6,"alternativaDquestao6":alternativaDquestao6,"questao7":questao7,"alternativaAquestao7":alternativaAquestao7, "alternativaBquestao7":alternativaBquestao7,"alternativaCquestao7":alternativaCquestao7,"alternativaDquestao7":alternativaDquestao7,"questao8":questao8,"alternativaAquestao8":alternativaAquestao8, "alternativaBquestao8":alternativaBquestao8,"alternativaCquestao8":alternativaCquestao8,"alternativaDquestao8":alternativaDquestao8,"questao9":questao9,"alternativaAquestao9":alternativaAquestao9, "alternativaBquestao9":alternativaBquestao9,"alternativaCquestao9":alternativaCquestao9,"alternativaDquestao9":alternativaDquestao9,"questao10":questao10,"alternativaAquestao10":alternativaAquestao10, "alternativaBquestao10":alternativaBquestao10,"alternativaCquestao10":alternativaCquestao10,"alternativaDquestao10":alternativaDquestao10})
 
-def pagina_feedback(request):
+'''def pagina_feedback(request):
     if 'Log out' in request.POST:
         return redirect("telaProfessor")
-    return render(request, "graficosFeedback.html")
+    return render(request, "graficosFeedback.html")'''
         
 
 
