@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<title>Turmas</title>
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'estilos/headerProfessor.css' %}" />
+    <link rel="stylesheet" href="{% static 'estilos/turmas.css' %}" />
+    <link rel="stylesheet" href="{% static 'estilos/geral.css' %}" />
+</head>
+ 
+   <body>
+    {% include "headerProfessor.html" %}
+    <form action="" method="post" enctype="multipart/form-data" >
+       <h1>Turmas</h1>
+      <hr/>
+
+    <select id="ra" name="ano_letivo_classe" class="custom-select custom-select-sm input-small">
+      <option disabled="true" selected="selected">---Selecione uma classe---</option>
+      {%for turma in turmas%}
+      <option value="{{turma.ano_letivo}}|{{turma.classe}}"
+        {% if turma.ano_letivo == ano_letivo and turma.classe == classe %} selected {% endif %}>  
+        {{turma.classe}} Ano Letino: {{turma.ano_letivo}}</option>
+      {% endfor %}
+      
+    </select>  
+    {% csrf_token %}
+    <button class="btnAtualizar" type="submit" name="turma" value="turma">Atualizar</button><br>
+    
+    <div class="TurmalTotal">
+     <div> 
+      <span class="inf_ra">RA</span> 
+      <span class="inf_nome">Nome</span> 
+     </div> 
+      {% for aluno in alunos %}
+      <div class="aluno">
+     
+      {{aluno.ra}}
+      <a class="link_aluno" href="/PerfilAluno/{{aluno.ra}}" style="text-decoration:none;">{{aluno.al_nome}}</a>
+      </div>
+      {% endfor %}
+  </div>
+    </form>   
+
+    {% for message in messages %}
+    <p id="messages">{{message}}</p>
+    {% endfor %}
+
+   </body>

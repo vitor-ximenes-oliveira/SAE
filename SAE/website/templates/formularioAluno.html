@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"  href="{% static 'estilos/gabarito.css' %}">
+    <link rel="stylesheet" href="../static/estilos/geral.css" />
+
+    <title>Formulario de Nivelamento</title>
+
+    <style>
+        #h1{
+            margin-left: 370px;
+            margin-right: 50px;
+        }
+    </style>
+</head>
+
+<body>
+  
+    {% if questao1 == None %}
+    <body>
+        <form method="post">
+            {% csrf_token %}
+        <h1 id="h1">Professor ainda não criou o formulário</h1>
+        <div class="button">
+            <button type="submit" name="sair">Sair</button>
+          </div>
+        </form>
+    </body>
+    {% else %}
+    
+    {% include 'header.html' with acertos=acertos %}
+    {% for message in messages %}
+    <p id="messages">{{message}}</p>
+    {% endfor %}
+    <form method="POST" class="post-form" action="">
+      
+        {% csrf_token %}
+
+    <h4>Preencha as respostas do gabarito de seu formulario</h4>
+    <select
+        id="ra"
+        name="turma"
+        class="custom-select custom-select-sm input-small">
+     
+        <option disabled="true" selected="selected">---Selecione uma classe---</option>
+        {%for turma in turmas%}
+        <option  value="{{turma.ano_letivo}}|{{turma.classe}}"
+          {% if turma.classe == classe and turma.ano_letivo == ano_letivo %} selected {% endif %}>
+          {{turma.classe}} Ano Letivo:{{turma.ano_letivo}}
+        {% endfor %}
+      </select>
+      {% csrf_token %}
+      <button class="btnAtualizar" type="submit" name="atualizar" value="turma">
+        Atualizar</button
+      ><br />
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao1}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio1" name="btn-radio" value={{alternativaAquestao1}} /> 
+                <label class="btn" for="radio1">{{alternativaAquestao1}}</label>
+                <input type="radio" class="btn btn-check" id="radio2" name="btn-radio" value={{alternativaBquestao1}} /> 
+                <label class="btn" for="radio2">{{alternativaBquestao1}}</label>
+                <input type="radio" class="btn btn-check" id="radio3" name="btn-radio"  value={{alternativaCquestao1}}/> 
+                <label class="btn" for="radio3">{{alternativaCquestao1}}</label>
+                <input type="radio" class="btn btn-check" id="radio4" name="btn-radio" value={{alternativaDquestao1}} /> 
+                <label class="btn" for="radio4">{{alternativaDquestao1}}</label>
+            </div>
+    
+    </div>
+
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao2}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio5" name="btn-radio2" value={{alternativaAquestao2}} /> 
+                <label class="btn" for="radio5">{{alternativaAquestao2}}</label>
+                <input type="radio" class="btn btn-check" id="radio6" name="btn-radio2"  value={{alternativaBquestao2}}/> 
+                <label class="btn" for="radio6">{{alternativaBquestao2}}</label>
+                <input type="radio" class="btn btn-check" id="radio7" name="btn-radio2"  value={{alternativaCquestao2}}/> 
+                <label class="btn" for="radio7">{{alternativaCquestao2}}</label>
+                <input type="radio" class="btn btn-check" id="radio8" name="btn-radio2" value={{alternativaDquestao2}} /> 
+                <label class="btn" for="radio8">{{alternativaDquestao2}}</label>
+            </div>
+       
+    </div>
+
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao3}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio9" name="btn-radio3" value={{alternativaAquestao3}} > 
+                <label class="btn" for="radio9">{{alternativaAquestao3}}</label>
+                <input type="radio" class="btn btn-check" id="radio10" name="btn-radio3"  value={{alternativaBquestao3}} /> 
+                <label class="btn" for="radio10">{{alternativaBquestao3}}</label>
+                <input type="radio" class="btn btn-check" id="radio11" name="btn-radio3"  value={{alternativaCquestao3}} /> 
+                <label class="btn" for="radio11">{{alternativaCquestao3}}</label>
+                <input type="radio" class="btn btn-check" id="radio12" name="btn-radio3" value={{alternativaDquestao3}} /> 
+                <label class="btn" for="radio12">{{alternativaDquestao3}}</label>
+            </div>
+        
+    </div>
+
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao4}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio13" name="btn-radio4" value={{alternativaAquestao4}} /> 
+                <label class="btn" for="radio13">{{alternativaAquestao4}}</label>
+                <input type="radio" class="btn btn-check" id="radio14" name="btn-radio4"  value={{alternativaBquestao4}} /> 
+                <label class="btn" for="radio14">{{alternativaBquestao4}}</label>
+                <input type="radio" class="btn btn-check" id="radio15" name="btn-radio4"  value={{alternativaCquestao4}} /> 
+                <label class="btn" for="radio15">{{alternativaCquestao4}}</label>
+                <input type="radio" class="btn btn-check" id="radio16" name="btn-radio4" value={{alternativaDquestao4}} /> 
+                <label class="btn" for="radio16">{{alternativaDquestao4}}</label>
+            </div>
+       
+    </div>
+
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao5}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio17" name="btn-radio5" value={{alternativaAquestao5}} /> 
+                <label class="btn" for="radio17">{{alternativaAquestao5}}</label>
+                <input type="radio" class="btn btn-check" id="radio18" name="btn-radio5"  value={{alternativaBquestao5}} /> 
+                <label class="btn" for="radio18">{{alternativaBquestao5}}</label>
+                <input type="radio" class="btn btn-check" id="radio19" name="btn-radio5"  value={{alternativaCquestao5}} /> 
+                <label class="btn" for="radio19">{{alternativaCquestao5}}</label>
+                <input type="radio" class="btn btn-check" id="radio20" name="btn-radio5" value={{alternativaDquestao5}} /> 
+                <label class="btn" for="radio20">{{alternativaDquestao5}}</label>
+            </div>
+        
+    </div>
+
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao6}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio21" name="btn-radio6" value={{alternativaAquestao6}} /> 
+                <label class="btn" for="radio21">{{alternativaAquestao6}}</label>
+                <input type="radio" class="btn btn-check" id="radio22" name="btn-radio6"  value={{alternativaBquestao6}}/> 
+                <label class="btn" for="radio22">{{alternativaBquestao6}}</label>
+                <input type="radio" class="btn btn-check" id="radio23" name="btn-radio6"  value={{alternativaCquestao6}}/> 
+                <label class="btn" for="radio23">{{alternativaCquestao6}}</label>
+                <input type="radio" class="btn btn-check" id="radio24" name="btn-radio6" value={{alternativaDquestao6}} /> 
+                <label class="btn" for="radio24">{{alternativaDquestao6}}</label>
+            </div>
+        
+    </div>
+
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao7}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio25" name="btn-radio7" value={{alternativaAquestao7}} /> 
+                <label class="btn" for="radio25">{{alternativaAquestao7}}</label>
+                <input type="radio" class="btn btn-check" id="radio26" name="btn-radio7"  value={{alternativaBquestao7}}/> 
+                <label class="btn" for="radio26">{{alternativaBquestao7}}</label>
+                <input type="radio" class="btn btn-check" id="radio27" name="btn-radio7"  value={{alternativaCquestao7}}/> 
+                <label class="btn" for="radio27">{{alternativaCquestao7}}</label>
+                <input type="radio" class="btn btn-check" id="radio28" name="btn-radio7" value={{alternativaDquestao7}} /> 
+                <label class="btn" for="radio28">{{alternativaDquestao7}}</label>
+            </div>
+        
+    </div>
+
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao8}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio29" name="btn-radio8" value={{alternativaAquestao8}} /> 
+                <label class="btn" for="radio29">{{alternativaAquestao8}}</label>
+                <input type="radio" class="btn btn-check" id="radio30" name="btn-radio8"  value={{alternativaBquestao8}}/> 
+                <label class="btn" for="radio30">{{alternativaBquestao8}}</label>
+                <input type="radio" class="btn btn-check" id="radio31" name="btn-radio8"  value={{alternativaCquestao8}}/> 
+                <label class="btn" for="radio31">{{alternativaCquestao8}}</label>
+                <input type="radio" class="btn btn-check" id="radio32" name="btn-radio8" value={{alternativaDquestao8}} /> 
+                <label class="btn" for="radio32">{{alternativaDquestao8}}</label>
+            </div>
+        
+    </div>
+
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao9}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio33" name="btn-radio9" value={{alternativaAquestao9}} /> 
+                <label class="btn" for="radio33">{{alternativaAquestao9}}</label>
+                <input type="radio" class="btn btn-check" id="radio34" name="btn-radio9"  value={{alternativaBquestao9}}/> 
+                <label class="btn" for="radio34">{{alternativaBquestao9}}</label>
+                <input type="radio" class="btn btn-check" id="radio35" name="btn-radio9"  value={{alternativaCquestao9}}/> 
+                <label class="btn" for="radio35">{{alternativaCquestao9}}</label>
+                <input type="radio" class="btn btn-check" id="radio36" name="btn-radio9" value={{alternativaDquestao9}}/> 
+                <label class="btn" for="radio36">{{alternativaDquestao9}}</label>
+            </div>
+        
+    </div>
+
+    <div class="container_form"> 
+        <label class="txt_Questao">{{questao10}}<label class="txt_Questao" >
+            <div class="botoes">
+                <input type="radio" class="btn btn-check" id="radio37" name="btn-radio10" value={{alternativaAquestao10}} /> 
+                <label class="btn" for="radio37">{{alternativaAquestao10}}</label>
+                <input type="radio" class="btn btn-check" id="radio38" name="btn-radio10"  value={{alternativaBquestao10}}/> 
+                <label class="btn" for="radio38">{{alternativaBquestao10}}</label>
+                <input type="radio" class="btn btn-check" id="radio39" name="btn-radio10"  value={{alternativaCquestao10}}/> 
+                <label class="btn" for="radio39">{{alternativaCquestao10}}</label>
+                <input type="radio" class="btn btn-check" id="radio40" name="btn-radio10" value={{alternativaDquestao10}} /> 
+                <label class="btn" for="radio40">{{alternativaDquestao10}}</label>
+                <input type = "hidden" name="aluno" value={{ra}}>
+            </div>
+        
+    </div>
+
+    
+    <div class="button">
+      <button type="submit" name="responderFomulario">Responder Formulario</button>
+    </div>
+    </form>
+{% endif %}
+</body>

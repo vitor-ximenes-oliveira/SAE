@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  {% load static%}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'estilos/enviar_arquivo.css' %}" />
+    <link rel="stylesheet" href="{% static 'estilos/geral.css' %}" />
+
+    <title>Enviar Arquivo</title>
+  </head>
+  <style>
+    #btn {
+      width: 40%;
+    }
+    .enviarArquivo {
+      margin-left: 570px;
+    }
+    select#ra {
+      margin-left: 380px;
+    }
+    input#myFile {
+      margin-left: 450px;
+    }
+
+    .inf_ra {
+      margin-left: 340px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .inf_nome {
+      margin-left: 50px;
+    }
+    .inf_nivelAluno {
+      margin-left: 350px;
+      margin-right: 145px;
+    }
+    .nome_aluno {
+      margin-left: 428px;
+      margin-top: -34px;
+      margin-bottom: 5px;
+    }
+    .ra_aluno {
+      margin-left: 340px;
+      margin-top: -43px;
+      margin-bottom: 7px;
+    }
+    .nivelAluno {
+      margin-left: 850px;
+      margin-top: -40px;
+      margin-bottom: 5px;
+      color: brown;
+    }
+
+    .TurmalTotal {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      font-size: 23px;
+      margin-left: 1em;
+    }
+
+    .aluno input {
+      width: 2em;
+      height: 1.5em;
+      margin-left: 300px;
+      margin-top: -3em;
+      margin-bottom: 20px;
+    }
+    .msg {
+      margin-right: 5em;
+      margin-left: 600px;
+      margin-top: 20px;
+    }
+  </style>
+  <body>
+    {% include "headerProfessor.html" %}
+    <form action="" method="post" enctype="multipart/form-data">
+      <div class="enviarArquivo">
+        <h1>Enviar Arquivos</h1>
+      </div>
+      <hr />
+      <select
+        id="ra"
+        name="ano_letivo_classe"
+        class="custom-select custom-select-sm input-small"
+      >
+        <option disabled="true" selected="selected">
+          ---Selecione uma classe---
+        </option>
+        {%for turma in turmas%} <option
+        value="{{turma.ano_letivo}}|{{turma.classe}}" {% if turma.classe == classe and turma.ano_letivo == ano_letivo %} selected {% endif   %}>
+        {{turma.classe}} Ano Letivo:{{turma.ano_letivo}} 
+        {% endfor %}
+      </select>
+      {% csrf_token %}
+      <button class="btnAtualizar" type="submit" name="atualizar" value="turma">
+        Atualizar</button
+      ><br />
+
+      <input type="file" id="myFile" name="arquivo" />
+
+      <div class="TurmalTotal">
+        <div>
+          <span class="inf_ra">RA</span>
+          <span class="inf_nome">Nome</span>
+          <span class="inf_nivelAluno">Nível do Aluno</span>
+        </div>
+        {% for aluno in alunos %}
+
+          <div class="aluno">
+            <input type="checkbox" id="s" name="ra" value="{{aluno.pk}}" />
+            <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">
+              <div class="ra_aluno">{{aluno.ra}}</div>
+              <div class="nome_aluno">{{aluno.al_nome}}</div>
+
+              {% for nivelDoAluno in nivelDoAlunos %}
+                <div class="nivelAluno">{{nivelDoAluno.nivelDoAluno}}</div>
+              {% endfor%}
+            </label>
+          </div>
+        {% endfor %} 
+      </div>
+
+      <br />
+      <div class="button">
+        <button
+          id="btn"
+          type="submit"
+          name="enviar"
+          class="link-button"
+          value="enviar"
+        >
+          Enviar
+        </button>
+      </div>
+    </form>
+
+    {% for message in messages %}
+    <div class="msg">
+      <label id="mensagem">{{message}}</label>
+    </div>
+    {% endfor %}
+  </body>
+</html>

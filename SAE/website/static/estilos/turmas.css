@@ -1,0 +1,79 @@
+body {
+    background-color: #aacdec;
+  }
+  
+  select#ra {
+    width: 25em;
+  }
+  
+  select#ra {
+    width: 35em;
+    height: 3em;
+    border-radius: 5px;
+    border: solid 1px;
+    margin: 2em 0em;
+    margin-left: 1em;
+  }
+  
+  select#ra:hover {
+    border: solid 3px;
+    background: #acafb6;
+  }
+  
+  button.btnAtualizar {
+    padding: 0.7em;
+    margin-left: 2%;
+    width: 8em;
+    border-radius: 10px;
+  }
+  
+  button.btnAtualizar:hover {
+    border: solid 3px;
+    background: #acafb6;
+  }
+  
+  
+  .TurmalTotal{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    font-size: 20px;
+    margin-left: 1em;
+    text-decoration: none;
+  }
+ 
+  .inf_ra{
+     margin-right: 50px;
+  }
+  
+  .aluno{
+    margin-left: 5px;
+  }
+  .link_aluno{
+     display: inline-block;
+     margin-left: 62px;   
+  }
+  
+  .button {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: center;
+      height: 3em;
+  }
+  
+  #btn {
+      width: 90%;
+      text-align: center;
+      height: 3em;
+      border: solid 1px;
+      border-radius: 5px;
+  }
+  
+  #btn:hover {
+      border: 2px solid #000;
+      color: black;
+      background-color: #acafb6;
+  }
+
+  

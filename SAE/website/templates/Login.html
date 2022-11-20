@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'estilos/CadastroProfessor.css' %}">
+    <title>Login</title>
+</head>
+
+<body>
+    <form method="POST" class="post-form" action="">
+        {% csrf_token %}
+    <div class="loginPage">
+        <div class="container_textoHome">
+            <div class="iconLogin">
+                <img src="{% static 'imagens/education.png' %}">
+            </div>
+            <h1 style="color: #5a9bd5 ;">
+                Bem vindo ao <span style="color: #000;">SAE</span>
+                
+            </h1>
+            {% for message in messages %}
+                <p id="messages">{{message}}</p>
+            {% endfor %}
+        </div>
+        <div class="container_login">
+            <div class="label-float">
+                <input type="text" name="nome" pattern="[a-zA-Z ]*"  placeholder=" " />
+                <label>Usuário</label>
+            </div>
+            <div class="label-float">
+                <input type="password" name="senha" pattern="[a-zA-Z0-9*/- ]*"  placeholder=" " />
+                <label>Senha</label>
+            </div>
+            <div class="botoes">
+                <button class="btn" name="login" type="submit" value="Entrar">Entrar</button>
+                <button class="btn" name="cadastro" type="submit" value="CriaConta">Criar conta</button>
+            </div>
+        </div>
+
+    </div>
+</form>
+</body>
+
+</html>

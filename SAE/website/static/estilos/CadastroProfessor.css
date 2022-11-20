@@ -1,0 +1,154 @@
+/*Inicio Campo flutuante */
+body {
+    font-family: roboto;
+    background-color: #aacdec;
+}
+
+.label-float {
+    position: relative;
+    padding-top: 13px;
+}
+
+.label-float input {
+    border: 0;
+    border-bottom: 2px solid lightgrey;
+    background-color: #ebeef5;
+    outline: none;
+    min-width: 180px;
+    font-size: 28px;
+    transition: all .3s ease-out;
+    -webkit-transition: all .3s ease-out;
+    -moz-transition: all .3s ease-out;
+    -webkit-appearance: none;
+    border-radius: 0;
+    height: 2em;
+    border-radius: 10px;
+}
+
+.label-float input:focus {
+    border-bottom: 2px solid #3951b2;
+}
+
+.label-float input::placeholder {
+    color: transparent;
+}
+
+.label-float label {
+    color: #5d49cc;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 10px;
+    margin-top: 22px;
+    font-size: 20px;
+    transition: all .3s ease-out;
+    -webkit-transition: all .3s ease-out;
+    -moz-transition: all .3s ease-out;
+}
+
+.label-float input:required:invalid+label {
+    color: red;
+}
+
+.label-float input:focus:required:invalid {
+    border-bottom: 2px solid red;
+}
+
+.label-float input:required:invalid+label:before {
+    content: '*';
+}
+
+.label-float input:focus+label,
+.label-float input:not(:placeholder-shown)+label {
+    font-size: 18px;
+    margin-top: -5px;
+    color: #000;
+}
+
+/* Fim Campo flutuante */
+
+/* Incio Pagina login */
+/* .container_textoHome {
+    width: 50%;
+} */
+
+.loginPage {
+    display: flex;
+    justify-content: space-around;
+    padding: 7em 0;
+}
+
+.iconLogin {
+    background: #5a9bd5;
+    height: 14em;
+    border-radius: 140px;
+    width: 14em;
+}
+
+.iconLogin img {
+    height: 8em;
+    padding: 3em;
+}
+
+.container_login {
+    background-color: #5a9bd5;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    border-radius: 17px;
+    width: 22em;
+    height: 25em;
+    padding: 2em;
+}
+
+.btn {
+    height: 4em;
+    width: 10em;
+    margin-left: 31%;
+    background-color: #ebeef5;
+    border-radius: 10px;
+}
+
+.btn:hover {
+    background-color: #acafb6;
+}
+
+.botoes {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin-top: 5em;
+}
+
+/* fim Pagina login */
+
+/* Inicio Cadastro Professor */
+
+.container_CadastroProfessor {
+    background-color: #5a9bd5;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    border-radius: 17px;
+    width: 34em;
+    height: 23em;
+    padding: 2em;
+}
+
+.campos_flex {
+    display: flex;
+    justify-content: space-around;
+    gap: 2em;
+}
+
+.campos_flex input {
+    width: 16em;
+    font-size: 17px;
+}
+
+.container_CadastroProfessor .btn {
+    margin-left: 38%;
+    margin-top: 4em;
+}
+
+/* Fim Cadastro Professor */

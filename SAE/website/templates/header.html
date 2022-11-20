@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Header</title>
+  </head>
+  <style>
+    body {
+    background-color: #aacdec;
+    font-family: "Roboto", sans-serif;
+  }
+  nav.navbar.navbar-expand-lg.bg-light {
+    background: #ffdead !important;
+
+    
+  }
+  .btn_logout button {
+    
+  width: 10%;
+  
+  text-align: center;
+
+  height: 2em;
+
+  border: solid 1px;
+
+  border-radius: 5px;
+
+  margin-left: 690px;
+
+  margin-top: 18px;
+    
+  }
+
+  .btn_logout  :hover {
+
+  color: #cc0e17;
+ 
+
+  }
+  header {
+    background-color:rgb(248, 222, 183);
+    display: flex;
+    gap: 1em;
+
+    
+}
+
+header img {
+    width: 3em;
+    padding: 0.5em;
+}
+
+/* table.tableHeaderProfessor td {
+    border-right: solid 1.5px;
+    border-left: solid 1.5px;
+    padding: 0.5em;
+} */
+
+table.tableHeaderProfessor td a {
+    text-decoration: none;
+    font-size: 17px;
+    color: rgb(100, 92, 92);
+    /* border-right: solid 1px; */
+
+    padding: 1em;
+}
+
+
+table.tableHeaderProfessor td a:hover  {
+
+    color: rgb(143, 40, 40);
+
+
+
+  }
+  </style>
+  <header class="headerProfessor">
+    <img src="../static/imagens/education.png" alt="SAE" >
+    <table class="tableHeaderProfessor">
+        <tr>
+          <td><a class="nav-link" aria-current="page" href="../telaAluno/{{ra}}">Home</a></td>
+          <td><a class="nav-link" href="../atividades/{{ra}}">Atividades</a></td>
+
+        
+  
+          <td><a class="nav-link" href="../formularioAluno/{{ra}}">Questionário</a></td>
+
+          <td><a class="nav-link" href="../feedback/{{ra}}">Feedback</a></td>
+        </tr>
+        
+    </table>
+    <div class="btn_logout">
+          
+        <form method="POST" action="">
+          {% csrf_token %}
+
+    <button name="Log out" href="sair">Log out</button>
+  </div>
+  </header>
+  <body>
+      </div>
+    </nav>
+  </body>
+</form>
+</html>

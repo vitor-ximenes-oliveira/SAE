@@ -1,0 +1,45 @@
+body {
+  background-color: #aacdec;
+}
+
+table.tabelaArquivos {
+  text-align: center;
+  border: solid 1px;
+  margin-top: 5px;
+  width: 100%;
+  background: #ffdab9;
+  border-radius: 5px;
+  box-shadow: 8px 6px 12px;
+}
+
+table.tabelaArquivos td {
+  border-bottom: solid 1px;
+}
+
+.btn-sm {
+  width: 70%;
+  border-radius: 10px;
+  border: solid 1px;
+  height: 2em;
+}
+
+.btn-sm a {
+  text-decoration: none;
+  color: #000;
+}
+
+.baixarArquivo.btn-sm {
+  background: #00ff7f;
+}
+
+.baixarArquivo.btn-sm:hover {
+  background: #00fa9a;
+}
+
+.visualizarrArquivo.btn-sm {
+  background: #00bfff;
+}
+
+.visualizarrArquivo.btn-sm:hover {
+  background: #87ceeb;
+}
