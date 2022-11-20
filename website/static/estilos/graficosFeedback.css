@@ -1,0 +1,13 @@
+body {
+    color: #5d49cc;
+    background-color: #5d49cc;
+}
+
+.container_charts {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    align-content: center;
+    flex-direction: column;
+    padding: 1em;
+}

@@ -1,0 +1,23 @@
+body {
+    background-color: #aacdec;
+  }
+  nav.navbar.navbar-expand-lg.bg-light {
+    background: #ffdead !important;
+    
+  }
+  .btn_logout button {
+    
+  width: 100%;
+  text-align: center;
+  height: 2em;
+  border: solid 1px;
+  border-radius: 5px;
+  top: 10;
+  right: 10;
+  background: #d3d3d3;
+  }
+
+  button.btn_logout:hover {
+  border: solid 3px;
+  background: #acafb6;
+  }
