@@ -16,28 +16,24 @@
       width: 40%;
     }
     .enviarArquivo {
-      margin-left: 570px;
+      text-align: center;
     }
     select#ra {
-      margin-left: 380px;
-    }
+    margin-left: 28rem;
+}
     input#myFile {
       margin-left: 450px;
     }
 
-    .inf_ra {
+    /* .inf_ra {
       margin-left: 340px;
       margin-top: 10px;
       margin-bottom: 10px;
-    }
-    .inf_nome {
+    } */
+    /* .inf_nome {
       margin-left: 50px;
-    }
-    .inf_nivelAluno {
-      margin-left: 350px;
-      margin-right: 145px;
-    }
-    .nome_aluno {
+    } */
+    /* .nome_aluno {
       margin-left: 428px;
       margin-top: -34px;
       margin-bottom: 5px;
@@ -46,15 +42,23 @@
       margin-left: 340px;
       margin-top: -43px;
       margin-bottom: 7px;
-    }
-    .nivelAluno {
-      margin-left: 850px;
-      margin-top: -40px;
-      margin-bottom: 5px;
-      color: brown;
-    }
+    } */
 
     .TurmalTotal {
+      display: flex;
+      gap: 1em;
+      font-size: 23px;
+      justify-content: center;
+    }
+
+    .parteTabelaAluno {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    font-size: 23px;
+    margin-left: 1em;
+}
+    .parteTabelaNiveis {
       display: flex;
       flex-direction: column;
       gap: 1em;
@@ -62,10 +66,13 @@
       margin-left: 1em;
     }
 
+    .nivelAluno {
+      color: brown;
+    }
+
     .aluno input {
       width: 2em;
       height: 1.5em;
-      margin-left: 300px;
       margin-top: -3em;
       margin-bottom: 20px;
     }
@@ -103,26 +110,53 @@
       <input type="file" id="myFile" name="arquivo" />
 
       <div class="TurmalTotal">
-        <div>
-          <span class="inf_ra">RA</span>
-          <span class="inf_nome">Nome</span>
-          <span class="inf_nivelAluno">Nível do Aluno</span>
-        </div>
-        {% for aluno in alunos %}
-
-          <div class="aluno">
-            <input type="checkbox" id="s" name="ra" value="{{aluno.pk}}" />
-            <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">
-              <div class="ra_aluno">{{aluno.ra}}</div>
-              <div class="nome_aluno">{{aluno.al_nome}}</div>
-
-              {% for nivelDoAluno in nivelDoAlunos %}
-                <div class="nivelAluno">{{nivelDoAluno.nivelDoAluno}}</div>
-              {% endfor%}
-            </label>
+        <div class="parteTabelaAluno">
+          <div>
+            <span class="inf_ra">RA</span>
+            <span class="inf_nome">Nome</span>
+          
           </div>
-        {% endfor %} 
+
+          {% for aluno in alunos %}
+            <div class="aluno">
+              <input type="checkbox" id="s" name="ra" value="{{aluno.pk}}" />
+              <label class="btn btn-secondary" for="s" value="{{aluno.pk}}">
+                <div class="ra_aluno">{{aluno.ra}}</div>
+                <div class="nome_aluno">{{aluno.al_nome}}</div>
+              </label>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="parteTabelaNiveis">
+          <div>
+            <span>Nível do Aluno</span>
+          </div>           
+          {% for listaNivelAluno in listaNiveisAlunos %}
+            <div class="nivelAluno">{{listaNivelAluno}}</div>
+          {% endfor%}
+        </div>
       </div>
+      
+      <!-- <div class="TurmalTotal">
+        <table>
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              <th>RA</th>
+              <th>Nome</th>
+              <th>Nível do Aluno</th>
+            </tr>
+          </thead>
+
+          <tr>
+            {% for aluno in alunos %}
+            <td>
+              <input type="checkbox" id="s" name="ra" value="{{aluno.pk}}" />
+            </td>
+            {% endfor %}
+          </tr>
+        </table>
+      </div> -->
 
       <br />
       <div class="button">

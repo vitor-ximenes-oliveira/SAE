@@ -104,6 +104,9 @@ def login_user(request):
             return render(request,"Login.html")
 
 def atividades(request, ra):
+    if 'Log out' in request.POST:
+        sair(request)
+        return redirect("login")
     material_aluno = EnviarArquivo.objects.filter(alu=ra)
     return render(request,'atividades.html',{'material_aluno':material_aluno,'ra':ra})
 
@@ -206,7 +209,11 @@ def enviar_arquivo(request,idProfessor):
             classe = classe_ano_letivo.split("|")[-1]    
             alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a join turmas t on t.alu_id = a.ra where classe = %s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))     
-            nivelDoAlunos = acertosErros.objects.raw("select ae.id, ae.nivelDoAluno,ae.aluno_id from website_acertoserros ae join turmas t on t.alu_id = ae.aluno_id join aluno a on ae.aluno_id = a.ra where classe =%s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
+            listaNiveisAlunos = []
+            fKAlunos = Turmas.objects.filter(prof=idProfessor).filter(classe=classe).filter(ano_letivo=ano_letivo).values_list("alu_id",flat=True)
+            for fkAluno in fKAlunos:
+                nivelDoAlunos = acertosErros.objects.filter(aluno=fkAluno).values_list("nivelDoAluno",flat=True).last()
+                listaNiveisAlunos.append(nivelDoAlunos)        
         except (AttributeError,UnboundLocalError):
             messages.error(request,"Selecione uma turma")
             return redirect("../enviar_arquivo/"+str(idProfessor))
@@ -217,8 +224,12 @@ def enviar_arquivo(request,idProfessor):
             classe = classe_ano_letivo.split("|")[-1]          
             turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))   
             alunos = Aluno.objects.raw("select a.ra,t.ano_letivo,t.prof_id,classe,alu_id,a.al_nome from aluno a join turmas t on t.alu_id = a.ra where classe = %s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
-            nivelDoAlunos = acertosErros.objects.raw("select ae.id, ae.nivelDoAluno,ae.aluno_id from website_acertoserros ae join turmas t on t.alu_id = ae.aluno_id join aluno a on ae.aluno_id = a.ra where classe =%s and ano_letivo=%s and prof_id=%s group by alu_id",[classe,ano_letivo,idProfessor])
-            alunos_ra = request.POST.getlist('ra')
+            listaNiveisAlunos = []
+            fKAlunos = Turmas.objects.filter(prof=idProfessor).filter(classe=classe).filter(ano_letivo=ano_letivo).values_list("alu_id",flat=True)
+            for fkAluno in fKAlunos:
+                nivelDoAlunos = acertosErros.objects.filter(aluno=fkAluno).values_list("nivelDoAluno",flat=True).last()
+                listaNiveisAlunos.append(nivelDoAlunos)            
+                alunos_ra = request.POST.getlist('ra')
             if not alunos_ra:
                 messages.error(request,"Selecione um aluno")
                 return redirect('enviar_arquivo',idProfessor)
@@ -238,12 +249,12 @@ def enviar_arquivo(request,idProfessor):
             return redirect('enviar_arquivo',idProfessor)
 
     else:
+        listaNiveisAlunos = ""
         alunos = ""
         classe = ""
         ano_letivo = ""
-        nivelDoAlunos = ""
         turmas = Turmas.objects.raw("SELECT idTurma, ano_letivo, classe, alu_id,prof_id FROM turmas where prof_id=%s GROUP BY classe,ano_letivo",str(idProfessor))         
-    return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo,'idProfessor':idProfessor,'nivelDoAlunos':nivelDoAlunos})
+    return render(request, 'enviar_arquivo.html', {'turmas': turmas,'alunos':alunos,'classe':classe,'ano_letivo':ano_letivo,'idProfessor':idProfessor,'listaNiveisAlunos':listaNiveisAlunos})
 
 
 def telaAluno(request,ra):
@@ -458,7 +469,7 @@ def graficosFeedback(request,idProfessor):
                 
             elif(x == 'Bom'):
                 bom+=1
-            elif(x == 'Ótimo'):
+            elif(x == 'Médio'):
                 medio+=1
             else:
                 excelente+=1
@@ -471,7 +482,7 @@ def graficosFeedback(request,idProfessor):
                 ruim2+=1
             elif(x == 'Bom'):
                 bom2+=1
-            elif(x == 'Ótimo'):
+            elif(x == 'Médio'):
                 medio2+=1
             else:
                 excelente2+=1
@@ -483,7 +494,7 @@ def graficosFeedback(request,idProfessor):
                 ruim3+=1
             elif(x == 'Bom'):
                 bom3+=1
-            elif(x == 'Ótimo'):
+            elif(x == 'Médio'):
                 medio3+=1
             else:
                 excelente3+=1
@@ -495,7 +506,7 @@ def graficosFeedback(request,idProfessor):
                 ruim4+=1
             elif(x == 'Bom'):
                 bom4+=1
-            elif(x == 'Ótimo'):
+            elif(x == 'Médio'):
                 medio4+=1
             else:
                 excelente4+=1
@@ -507,7 +518,7 @@ def graficosFeedback(request,idProfessor):
                 ruim5+=1
             elif(x == 'Bom'):
                 bom5+=1
-            elif(x == 'Ótimo'):
+            elif(x == 'Médio'):
                 medio5+=1
             else:
                 excelente5+=1
@@ -519,7 +530,7 @@ def graficosFeedback(request,idProfessor):
                 ruim6+=1
             elif(x == 'Bom'):
                 bom6+=1
-            elif(x == 'Ótimo'):
+            elif(x == 'Médio'):
                 medio6+=1
             else:
                 excelente6+=1
@@ -531,7 +542,7 @@ def graficosFeedback(request,idProfessor):
                 ruim7+=1
             elif(x == 'Bom'):
                 bom7+=1
-            elif(x == 'Ótimo'):
+            elif(x == 'Médio'):
                 medio7+=1
             else:
                 excelente7+=1
@@ -543,7 +554,7 @@ def graficosFeedback(request,idProfessor):
                 ruim8+=1
             elif(x == 'Bom'):
                 bom8+=1
-            elif(x == 'Ótimo'):
+            elif(x == 'Médio'):
                 medio8+=1
             else:
                 excelente8+=1
@@ -555,7 +566,7 @@ def graficosFeedback(request,idProfessor):
                 ruim9+=1
             elif(x == 'Bom'):
                 bom9+=1
-            elif(x == 'Ótimo'):
+            elif(x == 'Médio'):
                 medio9+=1
             else:
                 excelente9+=1
